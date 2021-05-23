@@ -27,6 +27,10 @@ resources:
       type: github
       name: cctbx/cctbx_project
       endpoint: phenix-installer
+  # this pipeline resource needs to be commented out when run for the first time
+  pipelines:
+    - pipeline: data_cache
+      source: 'Update data cache'
 
 extends:
   template: .azure-pipelines/data-cache.yml@cctbx_project
