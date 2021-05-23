@@ -1,4 +1,26 @@
-# Use "Update data cache" pipeline from cctbx_project
+# Pipeline name: Update data cache
+
+# Daily update of data cache artifacts
+#   - miniconda
+#   - chem_data
+#   - phenix_regression
+#   - phenix_examples
+
+# no continuous integration or pull request builds
+trigger: none
+pr: none
+
+# Daily updates
+schedules:
+- cron: '0 0 * * *'
+  displayName: Daily update of data cache artifacts
+  branches:
+    include:
+    - master
+    - main
+  always: true
+
+# template location
 resources:
   repositories:
     - repository: cctbx_project
@@ -6,5 +28,5 @@ resources:
       name: cctbx/cctbx_project
       endpoint: phenix-installer
 
-jobs:
-- template: .azure-pipelines/azure-pipelines-data-cache.yml@cctbx_project
+extends:
+  template: .azure-pipelines/data-cache.yml@cctbx_project
