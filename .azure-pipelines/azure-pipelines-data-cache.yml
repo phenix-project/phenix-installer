@@ -4,6 +4,7 @@ resources:
     - repository: cctbx_project
       type: github
       name: cctbx/cctbx_project
+      endpoint: phenix-installer
 
 jobs:
 - template: .azure_pipelines/azure-pipelines-data-cache.yml@cctbx_project
