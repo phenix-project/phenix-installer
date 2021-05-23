@@ -1,0 +1,9 @@
+# Use "Update data cache" pipeline from cctbx_project
+resources:
+  repositories:
+    - repository: cctbx_project
+      type: github
+      name: cctbx/cctbx_project
+
+jobs:
+- template: .azure_pipelines/azure-pipelines-data-cache.yml@cctbx_project
