@@ -87,10 +87,12 @@ jobs:
       set -x -e
       cd $(Pipeline.Workspace)
       python bootstrap.py hot update --builder=phenix --use-conda --python 37 --cciuser=builder
+    displayName: Download remaining sources
 
   # base and build
   - script: |
       set -x -e
+      cd $(Pipeline.Workspace)
       python bootstrap.py base build --builder=phenix --use-conda --python 37 --nproc=4
     displayName: Configure and Build
 
