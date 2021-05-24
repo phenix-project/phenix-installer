@@ -7,6 +7,9 @@ resources:
       type: github
       name: cctbx/cctbx_project
       endpoint: phenix-installer
+  pipelines:
+  - pipeline: data_cache
+    source: 'Update data cache'
 
 jobs:
 - job: Build_phenix_source_tarball
