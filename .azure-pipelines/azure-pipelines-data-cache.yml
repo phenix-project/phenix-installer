@@ -33,4 +33,4 @@ resources:
     source: 'Update data cache'
 
 extends:
-  template: .azure-pipelines/data-cache.yml@cctbx_project
+  template: .azure-pipelines/templates/update-data-cache.yml@cctbx_project
