@@ -99,6 +99,7 @@ jobs:
   # build source tarball
   # build/bin/libtbx.create_installer --version $(version) --install_script modules/cctbx_project/libtbx/auto_build/plus_installer.py --dist_dir dist/$(version) tmp/cctbx-$(version)
   - script: |
+      cd $(Pipeline.Workspace)
       build/bin/libtbx.create_installer --version $(version) --install_script modules/phenix/phenix/installer/phenix_installer.py --license modules/phenix/LICENSE.txt --readme modules/phenix/CHANGES --readme modules/phenix/phenix/installer/README --readme modules/phenix/phenix/installer/SOURCES --dist_dir dist/$(version) tmp/phenix-installer-$(version)-source
       cd ./dist/$(version)
       echo $(BINSTAR_TOKEN) > ./password
@@ -106,6 +107,6 @@ jobs:
     displayName: Build source tarball
 
   # publish source tarball as artifact
-  - publish: ./dist/$(version)/phenix-$(version).enc
+  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix-$(version).enc
     artifact: phenix-$(version)
     continueOnError: true
