@@ -77,7 +77,7 @@ jobs:
     displayName: Download bootstrap.py
 
   # download test data
-  template: .azure-pipelines/templates/download-data-cache.yml@cctbx_project
+  - template: .azure-pipelines/templates/download-data-cache.yml@cctbx_project
 
   # download remaining sources
   - script: |
