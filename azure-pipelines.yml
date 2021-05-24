@@ -16,10 +16,14 @@ jobs:
 
   # variables for version
   variables:
-    year: $(Get-Date -Format yyyy)
-    month: $(Get-Date -Format MM)
-    day: $(Get-Date -Format dd)
-    version: $(year).$(month).a$(day)
+  - name: year
+    value: $(Get-Date -Format yyyy)
+  - name: month
+    value: $(Get-Date -Format MM)
+  - name: day
+    value: $(Get-Date -Format dd)
+  - name: version
+    value: $(year).$(month).a$(day)
   # variable for token
   - group: BINSTAR_TOKEN
 
