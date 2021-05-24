@@ -1,0 +1,102 @@
+# Build phenix source tarball
+
+# template location
+resources:
+  repositories:
+    - repository: cctbx_project
+      type: github
+      name: cctbx/cctbx_project
+      endpoint: phenix-installer
+
+jobs:
+- job: Build_phenix_source_tarball
+  pool:
+    vmImage: ubuntu-18.04
+  timeoutInMinutes: 360
+
+  # variables for version
+  variables:
+    year: $(Get-Date -Format yyyy)
+    month: $(Get-Date -Format MM)
+    day: $(Get-Date -Format dd)
+    version: $(year).$(month).a$(day)
+  # variable for token
+  - group: BINSTAR_TOKEN
+
+  steps:
+
+  # ubuntu setup
+  - script: |
+      sudo apt-get install -y build-essential curl git libgl1-mesa-dev libglu1-mesa-dev locales subversion
+      sudo locale-gen en_US.UTF-8
+      sudo update-locale
+    displayName: Install dependencies for Ubuntu
+
+  # set version
+  - powershell: |
+      Write-Host "##vso[task.setVariable variable=year]$(year)"
+      Write-Host "##vso[task.setVariable variable=month]$(month)"
+      Write-Host "##vso[task.setVariable variable=day]$(day)"
+      Write-Host $(year)
+      Write-Host $(month)
+      Write-Host $(day)
+    displayName: Set variables from date
+
+  - script: |
+      version=$(year).$(month).a$(day)
+      echo "##vso[task.setVariable variable=version]$version"
+      echo $(version)
+    displayName: Set version
+
+  - script: |
+      set -x -e
+      release=`echo $(Build.SourceBranch) | sed 's/refs\/heads\/releases\///'`
+      echo "##vso[task.setVariable variable=version]$release"
+      echo $(version)
+    displayName: Override version for release branch
+    condition: startswith(variables['Build.SourceBranch'], 'refs/heads/releases/')
+
+  # add conda to path
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
+  - bash: echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: Add conda to PATH
+
+  # download sources
+  - checkout: none
+
+  # link bootstrap.py
+  - script: |
+      set -x -e
+      cd $(Pipeline.Workspace)
+      wget https://raw.githubusercontent.com/cctbx/cctbx_project/master/libtbx/auto_build/bootstrap.py
+      mkdir modules
+    displayName: Download bootstrap.py
+
+  # download test data
+  template: .azure-pipelines/templates/download-data-cache.yml@cctbx_project
+
+  # download remaining sources
+  - script: |
+      set -x -e
+      cd $(Pipeline.Workspace)
+      python bootstrap.py hot update --builder=phenix --use-conda --python 37 --cciuser=builder
+
+  # base and build
+  - script: |
+      set -x -e
+      python bootstrap.py base build --builder=phenix --use-conda --python 37 --nproc=4
+    displayName: Configure and Build
+
+  # build source tarball
+  # build/bin/libtbx.create_installer --version $(version) --install_script modules/cctbx_project/libtbx/auto_build/plus_installer.py --dist_dir dist/$(version) tmp/cctbx-$(version)
+  - script: |
+      build/bin/libtbx.create_installer --version $(version) --install_script modules/phenix/phenix/installer/phenix_installer.py --license modules/phenix/LICENSE.txt --readme modules/phenix/CHANGES --readme modules/phenix/phenix/installer/README --readme modules/phenix/phenix/installer/SOURCES --dist_dir dist/$(version) tmp/phenix-installer-$(version)-source
+      cd ./dist/$(version)
+      echo $(BINSTAR_TOKEN) > ./password
+      openssl enc -aes-256-cbc -salt -in phenix-$(version).tar.gz -out phenix-$(version).enc -md sha256 -pass file:./password
+    displayName: Build source tarball
+
+  # publish source tarball as artifact
+  - publish: ./dist/$(version)/phenix-$(version).enc
+    artifact: phenix-$(version)
+    continueOnError: true
