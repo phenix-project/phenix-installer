@@ -27,8 +27,8 @@ jobs:
     value: $(Get-Date -Format dd)
   - name: version
     value: $(year).$(month).a$(day)
-  # variable for token
-  - group: BINSTAR_TOKEN
+  # variable for secrets
+  - group: ENV_GROUP
 
   steps:
 
@@ -68,8 +68,9 @@ jobs:
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: Add conda to PATH
 
-  # download sources
-  - checkout: none
+  # download support scripts
+  - checkout: self
+    path: $(Pipeline.Workspace)/phenix-installer
 
   # link bootstrap.py
   - script: |
@@ -102,8 +103,7 @@ jobs:
       cd $(Pipeline.Workspace)
       build/bin/libtbx.create_installer --version $(version) --install_script modules/phenix/phenix/installer/phenix_installer.py --license modules/phenix/LICENSE.txt --readme modules/phenix/CHANGES --readme modules/phenix/phenix/installer/README --readme modules/phenix/phenix/installer/SOURCES --dist_dir dist/$(version) tmp/phenix-installer-$(version)-source
       cd ./dist/$(version)
-      echo $(BINSTAR_TOKEN) > ./password
-      openssl enc -aes-256-cbc -salt -in phenix-installer-$(version)-source.tar.gz -out phenix-$(version).enc -md sha256 -pass file:./password
+      openssl enc -aes-256-cbc -salt -in phenix-installer-$(version)-source.tar.gz -out phenix-$(version).enc -md sha256 -pass env:TARBALL_PASSWORD
     displayName: Build source tarball
 
   # publish source tarball as artifact
