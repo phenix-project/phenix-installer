@@ -72,7 +72,9 @@ jobs:
   - checkout: self
     path: ./phenix-installer
 
-  - script: mv phenix-installer $(Pipeline.Workspace)/phenix-installer
+  - script: |
+      ls
+      mv ./s/phenix-installer $(Pipeline.Workspace)/phenix-installer
     displayName: Move phenix-installer
 
   # link bootstrap.py
