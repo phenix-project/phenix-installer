@@ -70,12 +70,11 @@ jobs:
 
   # download support scripts
   - checkout: self
-    path: $(Pipeline.Workspace)/phenix-installer
+    path: ./phenix-installer
 
   # link bootstrap.py
   - script: |
       set -x -e
-      cd $(Pipeline.Workspace)
       wget https://raw.githubusercontent.com/cctbx/cctbx_project/master/libtbx/auto_build/bootstrap.py
       mkdir modules
     displayName: Download bootstrap.py
@@ -86,27 +85,24 @@ jobs:
   # download remaining sources
   - script: |
       set -x -e
-      cd $(Pipeline.Workspace)
       python bootstrap.py hot update --builder=phenix --use-conda --python 37 --cciuser=builder
     displayName: Download remaining sources
 
   # base and build
   - script: |
       set -x -e
-      cd $(Pipeline.Workspace)
       python bootstrap.py base build --builder=phenix --use-conda --python 37 --nproc=4
     displayName: Configure and Build
 
   # build source tarball
   # build/bin/libtbx.create_installer --version $(version) --install_script modules/cctbx_project/libtbx/auto_build/plus_installer.py --dist_dir dist/$(version) tmp/cctbx-$(version)
   - script: |
-      cd $(Pipeline.Workspace)
       build/bin/libtbx.create_installer --version $(version) --install_script modules/phenix/phenix/installer/phenix_installer.py --license modules/phenix/LICENSE.txt --readme modules/phenix/CHANGES --readme modules/phenix/phenix/installer/README --readme modules/phenix/phenix/installer/SOURCES --dist_dir dist/$(version) tmp/phenix-installer-$(version)-source
       cd ./dist/$(version)
       openssl enc -aes-256-cbc -salt -in phenix-installer-$(version)-source.tar.gz -out phenix-$(version).enc -md sha256 -pass env:TARBALL_PASSWORD
     displayName: Build source tarball
 
   # publish source tarball as artifact
-  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix-$(version).enc
+  - publish: ./dist/$(version)/phenix-$(version).enc
     artifact: phenix-$(version)
     continueOnError: true
