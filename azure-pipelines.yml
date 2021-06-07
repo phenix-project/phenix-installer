@@ -70,11 +70,11 @@ jobs:
 
   # download support scripts
   - checkout: self
-    path: ./phenix-installer
+    path: ./phenix-installer/
 
   - script: |
       ls
-      mv ./s/phenix-installer $(Pipeline.Workspace)/phenix-installer
+      mv ./phenix-installer $(Pipeline.Workspace)/phenix-installer
     displayName: Move phenix-installer
 
   # link bootstrap.py
