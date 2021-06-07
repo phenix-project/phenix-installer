@@ -73,6 +73,7 @@ jobs:
     path: ./phenix-installer/
 
   - script: |
+      pwd
       ls
       mv ./phenix-installer $(Pipeline.Workspace)/phenix-installer
     displayName: Move phenix-installer
