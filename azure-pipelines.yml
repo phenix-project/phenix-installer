@@ -97,6 +97,14 @@ jobs:
       python bootstrap.py base build --builder=phenix --use-conda --python 37 --nproc=4
     displayName: Configure and Build
 
+  # remove symoblic link for Windows
+  - script: |
+      set -x -e
+      cd $(Pipeline.Workspace)/modules/phenix/wxGUI2/images
+      rm -f splash-refine.png
+      cp splash-refine-1.3.png splash-refine.png
+    displayName: Remove symoblic link to image
+
   # build source tarball
   # build/bin/libtbx.create_installer --version $(version) --install_script modules/cctbx_project/libtbx/auto_build/plus_installer.py --dist_dir dist/$(version) tmp/cctbx-$(version)
   - script: |
