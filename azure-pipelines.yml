@@ -123,7 +123,7 @@ jobs:
         -aes-256-cbc \
         -salt \
         -in phenix-installer-$(version)-source.tar \
-        -out phenix-$(version).enc \
+        -out phenix.enc \
         -md sha256 \
         -pass env:TARBALL_PASSWORD
       tar -zcf phenix-$(version).tar.gz phenix-$(version).enc
