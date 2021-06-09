@@ -128,10 +128,10 @@ jobs:
         -out phenix.enc \
         -md sha256 \
         -pass env:TARBALL_PASSWORD
-      tar -zcf phenix-$(version).tar.gz phenix-$(version).enc
+      tar -zcf phenix.tar.gz phenix.enc
     displayName: Build source tarball
 
   # publish source tarball as artifact
-  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix-$(version).tar.gz
-    artifact: phenix-$(version)
+  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.tar.gz
+    artifact: phenix
     continueOnError: true
