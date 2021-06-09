@@ -117,6 +117,7 @@ jobs:
         --readme modules/phenix/phenix/installer/SOURCES \
         --dist_dir dist/$(version) \
         tmp/phenix-installer-$(version)-source
+      rm -fr build tmp modules
       cd ./dist/$(version)
       gzip -d phenix-installer-$(version)-source.tar.gz
       openssl enc \
