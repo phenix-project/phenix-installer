@@ -111,10 +111,12 @@ jobs:
       cd $(Pipeline.Workspace)
       build/bin/libtbx.create_installer --version $(version) --install_script modules/phenix/phenix/installer/phenix_installer.py --license modules/phenix/LICENSE.txt --readme modules/phenix/CHANGES --readme modules/phenix/phenix/installer/README --readme modules/phenix/phenix/installer/SOURCES --dist_dir dist/$(version) tmp/phenix-installer-$(version)-source
       cd ./dist/$(version)
-      openssl enc -aes-256-cbc -salt -in phenix-installer-$(version)-source.tar.gz -out phenix-$(version).enc -md sha256 -pass env:TARBALL_PASSWORD
+      gzip -d phenix-installer-$(version)-source.tar.gz
+      openssl enc -aes-256-cbc -salt -in phenix-installer-$(version)-source.tar -out phenix-$(version).enc -md sha256 -pass env:TARBALL_PASSWORD
+      tar -zcf phenix-$(version).tar.gz phenix-$(version).enc
     displayName: Build source tarball
 
   # publish source tarball as artifact
-  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix-$(version).enc
+  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix-$(version).tar.gz
     artifact: phenix-$(version)
     continueOnError: true
