@@ -125,7 +125,7 @@ jobs:
         -aes-256-cbc \
         -salt \
         -md sha256 \
-        -iter 1000 \
+        -iter 100000 \
         -pbkdf2 \
         -in phenix-installer-$(version)-source.tar \
         -out phenix.enc \
