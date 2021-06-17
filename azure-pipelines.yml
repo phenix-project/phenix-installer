@@ -41,9 +41,13 @@ jobs:
 
   # set version
   - powershell: |
+      $trimmed_month = $(month).TrimStart("0")
+      $trimmed_day = $(day).TrimStart("0")
+      Write-Host $trimmed_month
+      Write-Host $trimmed_day
       Write-Host "##vso[task.setVariable variable=year]$(year)"
-      Write-Host "##vso[task.setVariable variable=month]$(month)"
-      Write-Host "##vso[task.setVariable variable=day]$(day)"
+      Write-Host "##vso[task.setVariable variable=month]$trimmed_month"
+      Write-Host "##vso[task.setVariable variable=day]$trimmed_day"
       Write-Host $(year)
       Write-Host $(month)
       Write-Host $(day)
@@ -130,10 +134,10 @@ jobs:
         -in phenix-installer-$(version)-source.tar \
         -out phenix.enc \
         -pass env:BINSTAR_TOKEN
-      tar -zcf phenix.tar.gz phenix.enc
+      tar -zcf phenix-$(version).tar.gz phenix.enc
     displayName: Build source tarball
 
   # publish source tarball as artifact
-  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.tar.gz
+  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix-$(version).tar.gz
     artifact: phenix
     continueOnError: true
