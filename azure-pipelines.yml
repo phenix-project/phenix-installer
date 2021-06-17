@@ -134,10 +134,10 @@ jobs:
         -in phenix-installer-$(version)-source.tar \
         -out phenix.enc \
         -pass env:BINSTAR_TOKEN
-      tar -zcf phenix-$(version).tar.gz phenix.enc
+      tar -zcf phenix.tar.gz phenix.enc
     displayName: Build source tarball
 
   # publish source tarball as artifact
-  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix-$(version).tar.gz
+  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.tar.gz
     artifact: phenix
     continueOnError: true
