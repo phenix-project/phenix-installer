@@ -133,7 +133,7 @@ jobs:
         -pbkdf2 \
         -in phenix-installer-$(version)-source.tar \
         -out phenix.enc \
-        -pass env:BINSTAR_TOKEN
+        -pass env:TARBALL_PASSWORD
       tar -zcf phenix.tar.gz phenix.enc
     displayName: Build source tarball
 
