@@ -5,7 +5,7 @@ schedules:
     displayName: Nightly source update
     branches:
       include:
-      - master
+      - main
 
 # template location
 resources:
