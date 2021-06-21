@@ -1,5 +1,12 @@
 # Build phenix source tarball
 
+schedules:
+  - cron: '0 2 * * *'
+    displayName: Nightly source update
+    branches:
+      include:
+      - master
+
 # template location
 resources:
   repositories:
