@@ -1,0 +1,100 @@
+# Update phenix-feedstock to trigger building of conda packages
+
+# no continuous integration builds or pull requests
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+  - pipeline: source_tarball
+    source: source_tarball
+    trigger:
+      branches:
+        include:
+        - ci
+        - main
+        - releases/*
+  repositories:
+  - repository: phenix_feedstock
+    type: github
+    name: phenix-project/phenix-feedstock
+    endpoint: phenix-project
+
+jobs:
+- job: Update_phenix_feedstock
+  pool:
+    vmImage: ubuntu-latest
+  timeoutInMinutes: 120
+
+  # variables for version
+  variables:
+    year: $(Get-Date -Format yyyy)
+    month: $(Get-Date -Format MM)
+    day: $(Get-Date -Format dd)
+    version: $(year).$(month)a$(day)
+
+  steps:
+
+  # set version
+  - powershell: |
+      $trimmed_month = $(month).TrimStart("0")
+      $trimmed_day = $(day).TrimStart("0")
+      Write-Host $trimmed_month
+      Write-Host $trimmed_day
+      Write-Host "##vso[task.setVariable variable=year]$(year)"
+      Write-Host "##vso[task.setVariable variable=month]$trimmed_month"
+      Write-Host "##vso[task.setVariable variable=day]$trimmed_day"
+      Write-Host $(year)
+      Write-Host $(month)
+      Write-Host $(day)
+    displayName: Set variables from date
+
+  - script: |
+      version=$(year).$(month)a$(day)
+      echo "##vso[task.setVariable variable=version]$version"
+      echo $(version)
+    displayName: Set version
+
+  - script: |
+      set -x -e
+      release=`echo $(Build.SourceBranch) | sed 's/refs\/heads\/releases\///'`
+      echo "##vso[task.setVariable variable=version]$release"
+      echo $(version)
+    displayName: Override version for release branch
+    condition: startswith(variables['Build.SourceBranch'], 'refs/heads/releases/')
+
+  # download sources
+  - checkout: phenix_feedstock
+    persistCredentials: true
+
+  # add conda to path
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
+  - bash: echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: Add conda to PATH
+
+  # update phenix-project/phenix-feedstock to trigger conda package builds
+  - script: |
+      set -x -e
+
+      git config user.name "Billy K. Poon"
+      git config user.email "bkpoon@lbl.gov"
+
+      git checkout master
+
+      python ./recipe/update_meta.py \
+        --organization phenix-release \
+        --project $(System.TeamProject) \
+        --runId $(resources.pipeline.source_tarball.runID) \
+        --new-version $(version) \
+        --meta-path ./recipe/meta.yaml
+
+      git commit -am "Update for v$(version)"
+
+      conda create -n smithy -c conda-forge -y conda-smithy
+      source activate smithy
+
+      conda smithy rerender -c auto
+
+      git push -u origin master
+    displayName: Update and rerender nightly-feedstock
+    condition: eq(variables['Build.Reason'], 'ResourceTrigger')
