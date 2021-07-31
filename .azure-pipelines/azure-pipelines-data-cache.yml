@@ -12,7 +12,7 @@ pr: none
 
 # Daily updates
 schedules:
-- cron: '0 5 * * *'
+- cron: '0 4 * * *'
   displayName: Daily update of data cache artifacts
   branches:
     include:
