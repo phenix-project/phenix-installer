@@ -1,11 +1,12 @@
 # Build phenix source tarball
 
 schedules:
-  - cron: '0 2 * * *'
+  - cron: '0 5 * * *'
     displayName: Nightly source update
     branches:
       include:
       - main
+    always: true
 
 # template location
 resources:
@@ -98,14 +99,14 @@ jobs:
   - script: |
       set -x -e
       cd $(Pipeline.Workspace)
-      python bootstrap.py hot update --builder=phenix --use-conda --python 37 --cciuser=builder
+      python bootstrap.py hot update --builder=phenix_voyager --use-conda --python 37 --cciuser=builder
     displayName: Download remaining sources
 
   # base and build
   - script: |
       set -x -e
       cd $(Pipeline.Workspace)
-      python bootstrap.py base build --builder=phenix --use-conda --python 37 --nproc=4
+      python bootstrap.py base build --builder=phenix_voyager --use-conda --python 37 --nproc=4
     displayName: Configure and Build
 
   # remove symoblic link for Windows
