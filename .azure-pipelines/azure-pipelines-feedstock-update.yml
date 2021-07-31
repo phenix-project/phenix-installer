@@ -74,7 +74,7 @@ jobs:
       git config user.name "Billy K. Poon"
       git config user.email "bkpoon@lbl.gov"
 
-      git checkout master
+      git checkout test
 
       python ./recipe/update_meta.py \
         --organization phenix-release \
@@ -90,6 +90,6 @@ jobs:
 
       conda smithy rerender -c auto
 
-      git push -u origin master
+      git push -u origin test
     displayName: Update and rerender nightly-feedstock
-    condition: eq(variables['Build.Reason'], 'ResourceTrigger')
+    # condition: eq(variables['Build.Reason'], 'ResourceTrigger')
