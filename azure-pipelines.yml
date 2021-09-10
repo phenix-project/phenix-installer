@@ -124,7 +124,7 @@ jobs:
       cd $(Pipeline.Workspace)
       build/bin/libtbx.create_installer \
         --version $(version) \
-        --install_script modules/phenix/phenix/installer/phenix_installer.py \
+        --install_script modules/phenix/phenix/installer/phenix_voyager_installer.py \
         --license modules/phenix/LICENSE.txt --readme modules/phenix/CHANGES \
         --readme modules/phenix/phenix/installer/README \
         --readme modules/phenix/phenix/installer/SOURCES \
