@@ -8,12 +8,7 @@ resources:
   pipelines:
   - pipeline: source_tarball
     source: source_tarball
-    trigger:
-      branches:
-        include:
-        - ci
-        - main
-        - releases/*
+    trigger: true
   repositories:
   - repository: phenix_feedstock
     type: github
