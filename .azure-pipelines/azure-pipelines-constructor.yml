@@ -1,0 +1,105 @@
+# Update phenix-feedstock to trigger building of conda packages
+
+schedules:
+  - cron: '30 7 * * *'
+    displayName: Nightly feedstock update
+    branches:
+      include:
+      - main
+    always: true
+
+# no continuous integration builds or pull requests
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+  - pipeline: phenix_feedstock
+    project: 'feedstock-builds'
+    source: 'phenix-feedstock'
+    trigger: true
+
+jobs:
+- job: Construct_phenix_installer
+  pool:
+    vmImage: ubuntu-latest
+  timeoutInMinutes: 120
+
+  # variables for version
+  variables:
+    year: $(Get-Date -Format yyyy)
+    month: $(Get-Date -Format MM)
+    day: $(Get-Date -Format dd)
+    version: $(year).$(month)a$(day)
+
+  steps:
+
+  # set version
+  - powershell: |
+      $trimmed_month = $(month).TrimStart("0")
+      $trimmed_day = $(day).TrimStart("0")
+      Write-Host $trimmed_month
+      Write-Host $trimmed_day
+      Write-Host "##vso[task.setVariable variable=year]$(year)"
+      Write-Host "##vso[task.setVariable variable=month]$trimmed_month"
+      Write-Host "##vso[task.setVariable variable=day]$trimmed_day"
+      Write-Host $(year)
+      Write-Host $(month)
+      Write-Host $(day)
+    displayName: Set variables from date
+
+  - script: |
+      version=$(year).$(month)a$(day)
+      echo "##vso[task.setVariable variable=version]$version"
+      echo $(version)
+    displayName: Set version
+
+  - script: |
+      set -xe
+      release=`echo $(Build.SourceBranch) | sed 's/refs\/heads\/releases\///'`
+      echo "##vso[task.setVariable variable=version]$release"
+      echo $(version)
+    displayName: Override version for release branch
+    condition: startswith(variables['Build.SourceBranch'], 'refs/heads/releases/')
+
+  # download sources
+  - checkout: self
+
+  # add conda to path
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
+  - bash: echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: Add conda to PATH
+
+  # set up constructor environment
+  - script: |
+      set -xe
+      conda create -n construct -c conda-forge constructor requests
+
+  # download latest artifact
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: 'specific'
+      project: '$(resources.pipeline.phenix_feedstock.projectID)'
+      pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
+      allowPartiallySucceededBuilds: true
+      allowFailedBuilds: true
+      artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.runID)_linux_64_numpy1.18python3.7.____cpython
+  # # get latest artifact name
+  # - script: |
+  #     set -xe
+  #     conda activate construct
+
+  #     cd constructor
+
+  #     python ./get_artifact_name.py \
+  #     --organization phenix-release \
+  #     --project $(System.TeamProject) \
+  #     --runId $(resources.pipeline.phenix_feedstock.runID)
+
+  #   displayName: Get latest artifact name
+
+  # # download latest artifact
+  # - script: |
+  #     set -xe
+  #     cd constructor
+  #     wget

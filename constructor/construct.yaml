@@ -1,0 +1,12 @@
+name: phenix
+version: 2021.9.a17
+
+company: Lawrence Berkeley National Laboratory
+license_file: LICENSE.txt
+
+initialize_by_default: false
+
+channels:
+  - https://conda.anaconda.org/conda-forge
+
+environment: phenix
