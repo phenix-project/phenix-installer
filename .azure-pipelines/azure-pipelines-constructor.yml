@@ -65,34 +65,39 @@ jobs:
   # set up constructor environment
   - script: |
       set -xe
-      conda create -n construct -y -c conda-forge constructor requests
-    displayName: Set up constructor
+      conda create -n construct -y -c conda-forge constructor
+    displayName: Set up constructor environment
 
-  # download latest artifact
+  # download latest phenix conda package
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
       project: '$(resources.pipeline.phenix_feedstock.projectID)'
       pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
+      preferTriggeringPipeline: true
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
       artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.runID)_linux_64_numpy1.18python3.7.____cpython
-  # # get latest artifact name
-  # - script: |
-  #     set -xe
-  #     conda activate construct
 
-  #     cd constructor
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/linux-64
 
-  #     python ./get_artifact_name.py \
-  #     --organization phenix-release \
-  #     --project $(System.TeamProject) \
-  #     --runId $(resources.pipeline.phenix_feedstock.runID)
+      conda create -n phenix -y
+      source activate phenix
+      conda install -y phenix*
 
-  #   displayName: Get latest artifact name
+      cd ${CONDA_PREFIX}/share/phenix/conda_envs
+      conda install -y --file phenix_py37_linux-64.txt
 
-  # # download latest artifact
-  # - script: |
-  #     set -xe
-  #     cd constructor
-  #     wget
+      pip install ortools
+
+    displayName: Create installer environment
+
+  - script: |
+      set -xe
+      source activate construct
+      cd constructor
+      constructor --cache-dir $(Pipeline.Workspace)/constructor .
+      ls
+    displayName: Create installer
