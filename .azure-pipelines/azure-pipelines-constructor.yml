@@ -76,7 +76,7 @@ jobs:
       pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
-      artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.buildID)_linux_64_numpy1.18python3.7.____cpython
+      artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.runID)_linux_64_numpy1.18python3.7.____cpython
   # # get latest artifact name
   # - script: |
   #     set -xe
