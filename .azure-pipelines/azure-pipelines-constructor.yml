@@ -1,12 +1,4 @@
-# Update phenix-feedstock to trigger building of conda packages
-
-schedules:
-  - cron: '30 7 * * *'
-    displayName: Nightly feedstock update
-    branches:
-      include:
-      - main
-    always: true
+# Run constructor after phenix-feedstock finishes
 
 # no continuous integration builds or pull requests
 trigger: none
@@ -73,7 +65,8 @@ jobs:
   # set up constructor environment
   - script: |
       set -xe
-      conda create -n construct -c conda-forge constructor requests
+      conda create -n construct -y -c conda-forge constructor requests
+    displayName: Set up constructor
 
   # download latest artifact
   - task: DownloadPipelineArtifact@2
