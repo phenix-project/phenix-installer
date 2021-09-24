@@ -96,6 +96,7 @@ jobs:
 
   - script: |
       set -xe
+      mkdir -p $(Pipeline.Workspace)/constructor/linux-64
       source activate construct
       cd constructor
       constructor --cache-dir $(Pipeline.Workspace)/constructor .
