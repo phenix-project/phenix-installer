@@ -57,6 +57,12 @@ jobs:
   # download sources
   - checkout: self
 
+  - script: |
+      set -xe
+      cd constructor
+      sed 's/version\:\ VERSION/version\:\ $(version)/g' construct.yaml > construct.yaml
+    displayName:
+
   - bash: sudo chown -R $USER $CONDA
     displayName: Take ownership of conda installation
 
