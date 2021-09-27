@@ -57,6 +57,9 @@ jobs:
   # download sources
   - checkout: self
 
+  - bash: sudo chown -R $USER $CONDA
+    displayName: Take ownership of conda installation
+
   # add conda to path
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
@@ -67,6 +70,13 @@ jobs:
       set -xe
       conda create -n construct -y -c conda-forge constructor
     displayName: Set up constructor environment
+
+  # patch constructor to avoid check
+  - script: |
+      set -xe
+      cd constructor
+      python patch_fcp.py --site-packages ${CONDA}/envs/construct/lib/python3.9/site-packages
+    displayName: Patch constructor
 
   # download latest phenix conda package
   - task: DownloadPipelineArtifact@2
