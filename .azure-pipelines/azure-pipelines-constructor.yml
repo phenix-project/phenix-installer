@@ -13,8 +13,20 @@ resources:
 
 jobs:
 - job: Construct_phenix_installer
+
+  strategy:
+    matrix:
+      linux:
+        vmImage: ubuntu-latest
+        platform: linux
+        py_ver: 3.7
+      macOS:
+        vmImage: macOS-latest
+        platform: osx
+        py_ver: 3.7
+
   pool:
-    vmImage: ubuntu-latest
+    vmImage: $(vmImage)
   timeoutInMinutes: 120
 
   # variables for version
@@ -60,7 +72,7 @@ jobs:
   - script: |
       set -xe
       cd constructor
-      python update_version.py --version $(version)
+      python3 update_version.py --version $(version)
     displayName: Update version
 
   - bash: sudo chown -R $USER $CONDA
@@ -74,14 +86,14 @@ jobs:
   # set up constructor environment
   - script: |
       set -xe
-      conda create -n construct -y -c conda-forge constructor
+      conda create -n construct -y -c conda-forge constructor python=3.9
     displayName: Set up constructor environment
 
   # patch constructor to avoid check
   - script: |
       set -xe
       cd constructor
-      python patch_fcp.py --site-packages ${CONDA}/envs/construct/lib/python3.9/site-packages
+      python3 patch_fcp.py --site-packages ${CONDA}/envs/construct/lib/python3.9/site-packages
     displayName: Patch constructor
 
   # download latest phenix conda package
@@ -93,18 +105,22 @@ jobs:
       preferTriggeringPipeline: true
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
-      artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.runID)_linux_64_numpy1.18python3.7.____cpython
+      artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.runID)_$(platform)_64_numpy1.18python$(py_ver).____cpython
 
   - script: |
       set -xe
-      cd $(Pipeline.Workspace)/linux-64
+
+      cd $(Pipeline.Workspace)/$(platform)-64
 
       conda create -n phenix -y
       source activate phenix
       conda install -y phenix*
 
       cd ${CONDA_PREFIX}/share/phenix/conda_envs
-      conda install -y --file phenix_py37_linux-64.txt
+
+      version=`echo $(py_ver) | sed 's/\.//'`
+
+      conda install -y --file phenix_py${version}_$(platform)-64.txt
 
       pip install ortools
 
@@ -112,9 +128,8 @@ jobs:
 
   - script: |
       set -xe
-      mkdir -p $(Pipeline.Workspace)/constructor/linux-64
       source activate construct
       cd constructor
-      constructor --cache-dir $(Pipeline.Workspace)/constructor .
+      constructor .
       ls
     displayName: Create installer
