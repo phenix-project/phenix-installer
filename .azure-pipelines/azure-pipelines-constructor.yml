@@ -20,26 +20,32 @@ jobs:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.7
+        np_ver: 1.18
       linux_py38:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.8
+        np_ver: 1.18
       linux_py39:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.9
+        np_ver: 1.19
       macOS_py37:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.7
+        np_ver: 1.18
       macOS_py38:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.8
+        np_ver: 1.18
       macOS_py39:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.9
+        np_ver: 1.19
 
   pool:
     vmImage: $(vmImage)
@@ -121,7 +127,7 @@ jobs:
       preferTriggeringPipeline: true
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
-      artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.runID)_$(platform)_64_numpy1.18python$(py_ver).____cpython
+      artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.runID)_$(platform)_64_numpy$(np_ver)python$(py_ver).____cpython
 
   - script: |
       set -xe
