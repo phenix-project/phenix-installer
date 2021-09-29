@@ -16,14 +16,30 @@ jobs:
 
   strategy:
     matrix:
-      linux:
+      linux_py37:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.7
-      macOS:
+      linux_py38:
+        vmImage: ubuntu-latest
+        platform: linux
+        py_ver: 3.8
+      linux_py39:
+        vmImage: ubuntu-latest
+        platform: linux
+        py_ver: 3.9
+      macOS_py37:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.7
+      macOS_py38:
+        vmImage: macOS-latest
+        platform: osx
+        py_ver: 3.8
+      macOS_py39:
+        vmImage: macOS-latest
+        platform: osx
+        py_ver: 3.9
 
   pool:
     vmImage: $(vmImage)
