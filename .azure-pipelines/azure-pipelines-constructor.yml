@@ -17,17 +17,17 @@ jobs:
   strategy:
     matrix:
       linux_py37:
-        vmImage: ubuntu-latest
+        vmImage: ubuntu-18.04
         platform: linux
         py_ver: 3.7
         np_ver: 1.18
       linux_py38:
-        vmImage: ubuntu-latest
+        vmImage: ubuntu-18.04
         platform: linux
         py_ver: 3.8
         np_ver: 1.18
       linux_py39:
-        vmImage: ubuntu-latest
+        vmImage: ubuntu-18.04
         platform: linux
         py_ver: 3.9
         np_ver: 1.19
@@ -49,7 +49,7 @@ jobs:
 
   pool:
     vmImage: $(vmImage)
-  timeoutInMinutes: 120
+  timeoutInMinutes: 360
 
   # variables for version
   variables:
@@ -59,6 +59,13 @@ jobs:
     version: $(year).$(month)a$(day)
 
   steps:
+
+  - task: InstallSSHKey@0
+    inputs:
+      knownHostsEntry: cci.lbl.gov,131.243.194.153 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnPOtqyYASs6hc3fsmUQn92ovSozJsMsJyrMWjppUERX1tD4Fh0D7YaNhLvYpKi5mYVREo+tsKoOatCcqKGHCONWpzx7JHXUzfIBsy6nCeygRyyW4yuyoCuYFvOYLkaM4PrN/7XaZEnp1ux6/ZcbRxBDNK4f42svJUV39OX33tRuQWpP+O85paJr1ePHVz6U2n14a+3fRN3DBMti1dJuKOThU4djYEBQimx54pnW71eYORN2oUz+N/4RHAcomtxZpcUMl3Qadw8hD4s1XM6fzJ0Que7KefnnrPOgAEtZxKl9j09aaE70Oh+ie5Y6ckwddJ/4qZB5m2tBaEi3xuy0TSQ==
+      sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA7XgVgdU9GmZuo5yVyW/htrAuxe7ypuq7IowWwfUC0WZw9SPzQ8kOGj63plF3ytx/qpgvUlS1AiywO20rZ83gHmRdAiuvt9laH09KlWEUhIhAQTzesqBG5aUT0MKo01yxijoRl5HC8w/MdOanc0h01e6IxnZvgG0N30RB1i4xVPCtR/VBmXSp4R0T+Q/gJjfQssuBxHVMrrute4V3uUHek58FL2QgUB0+zq6ipETjuCJxTSyYVAFtCYDPYs+0lAYYkWrXALCr9kX9s22jYtkyv5kNw6mEW8nhtA7GbTdJLv4M6/WYtcvQV8TDcNCfltOfl81U3gcZ9zhQDKGVoNaJEw== buildbot@cci.lbl.gov
+      sshKeySecureFile: id_rsa
+    displayName: Download SSH key
 
   # set version
   - powershell: |
@@ -155,3 +162,17 @@ jobs:
       constructor .
       ls
     displayName: Create installer
+
+  - script: |
+      set -xe
+
+      dev=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+
+      cd constructor
+      for f in `/bin/ls phenix*`; do
+        echo ${f}
+        scp ${f} builder@cci.lbl.gov:/net/cci-filer2/raid1/auto_build/phenix_installers/${dev}/${f}
+      done
+
+    displayName: Upload installer
+    condition: eq(variables['py_ver'], '3.7')
