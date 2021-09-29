@@ -10,3 +10,5 @@ channels:
   - https://conda.anaconda.org/conda-forge
 
 environment: phenix
+
+installer_type: all
