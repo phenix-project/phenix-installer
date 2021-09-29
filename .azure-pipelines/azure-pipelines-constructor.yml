@@ -36,11 +36,11 @@ jobs:
         platform: osx
         py_ver: 3.7
         np_ver: 1.18
-      macOS_py38:
-        vmImage: macOS-latest
-        platform: osx
-        py_ver: 3.8
-        np_ver: 1.18
+      # macOS_py38:
+      #   vmImage: macOS-latest
+      #   platform: osx
+      #   py_ver: 3.8
+      #   np_ver: 1.18
       macOS_py39:
         vmImage: macOS-latest
         platform: osx
