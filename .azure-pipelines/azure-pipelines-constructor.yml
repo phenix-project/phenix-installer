@@ -167,12 +167,23 @@ jobs:
       set -xe
 
       dev=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+      installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+
+      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}"
+      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}"
 
       cd constructor
       for f in `/bin/ls phenix*`; do
-        echo ${f}
-        scp ${f} builder@cci.lbl.gov:/net/cci-filer2/raid1/auto_build/phenix_installers/${dev}/${f}
+        echo Copying ${f}
+        scp ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/${f}
       done
+
+      for f in `/bin/ls phenix*`; do
+        echo Moving ${f}
+        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/${f} ${installer_dir}/${dev}/${f}"
+      done
+
+      ssh builder@cci.lbl.gov "rm -fr ${installer_dir}/staging/${dev}"
 
     displayName: Upload installer
     condition: eq(variables['py_ver'], '3.7')
