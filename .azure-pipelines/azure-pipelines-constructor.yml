@@ -185,7 +185,5 @@ jobs:
         done
       done
 
-      ssh builder@cci.lbl.gov "rm -fr ${installer_dir}/staging/${dev}"
-
     displayName: Upload installer
     condition: eq(variables['py_ver'], '3.7')
