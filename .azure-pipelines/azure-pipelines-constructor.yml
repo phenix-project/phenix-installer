@@ -170,19 +170,30 @@ jobs:
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
       ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}"
+      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}/$(platform)-64"
       ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}"
+      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}/$(platform)-64"
 
-      for d in constructor $(Pipeline.Workspace)/$(platform)-64; do
-        cd ${d}
-        for f in `/bin/ls phenix*`; do
-          echo Copying ${f}
-          scp ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/${f}
-        done
+      cd constructor
+      for f in `/bin/ls phenix*`; do
+        echo Copying ${f}
+        scp ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/${f}
+      done
 
-        for f in `/bin/ls phenix*`; do
-          echo Moving ${f}
-          ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/${f} ${installer_dir}/${dev}/${f}"
-        done
+      for f in `/bin/ls phenix*`; do
+        echo Moving ${f}
+        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/${f} ${installer_dir}/${dev}/${f}"
+      done
+
+      cd $(Pipeline.Workspace)/$(platform)-64
+      for f in `/bin/ls phenix*`; do
+        echo Copying ${f}
+        scp ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/$(platform)-64/${f}
+      done
+
+      for f in `/bin/ls phenix*`; do
+        echo Moving ${f}
+        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)-64/${f} ${installer_dir}/${dev}/$(platform)-64/${f}"
       done
 
     displayName: Upload installer
