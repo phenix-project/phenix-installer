@@ -1,5 +1,9 @@
 # Build phenix source tarball
 
+# no continuous integration builds or pull requests
+trigger: none
+pr: none
+
 schedules:
   - cron: '0 5 * * *'
     displayName: Nightly source update
