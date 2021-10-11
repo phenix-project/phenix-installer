@@ -193,7 +193,7 @@ jobs:
 
       for f in `/bin/ls phenix*`; do
         echo Moving ${f}
-        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)-64/${f} ${installer_dir}/${dev}/$(platform)-64/${f}"
+        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)-64/${f} ${installer_dir}/${dev}/phenix_${dev}_$(platform)-64_py37.tar.bz2"
       done
 
     displayName: Upload installer
