@@ -171,6 +171,7 @@ jobs:
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
       ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}"
+      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}/$(platform)-64"
       ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}"
       ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}/$(platform)-64"
 
@@ -193,7 +194,7 @@ jobs:
 
       for f in `/bin/ls phenix*`; do
         echo Moving ${f}
-        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)-64/${f} ${installer_dir}/${dev}/phenix_${dev}_$(platform)-64_py37.tar.bz2"
+        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)-64/${f} ${installer_dir}/${dev}/$(platform)-64/${f}"
       done
 
     displayName: Upload installer
