@@ -134,12 +134,18 @@ jobs:
       preferTriggeringPipeline: true
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
-      artifact: conda_artifacts_$(resources.pipeline.phenix_feedstock.runID)_$(platform)_64_numpy$(np_ver)python$(py_ver).____cpython
+      patterns: '**/*$(platform)_64_numpy$(np_ver)python$(py_ver)*'
 
   - script: |
       set -xe
 
-      cd $(Pipeline.Workspace)/$(platform)-64
+      cd $(Pipeline.Workspace)/conda_artifacts*
+      unzip phenix-feedstock*.zip
+
+      if [ -d build_artifacts ]; then
+        cd build_artifacts
+      fi
+      cd $(platform)-64
 
       conda create -n phenix -y
       source activate phenix
