@@ -173,7 +173,7 @@ jobs:
       set -xe
 
       #dev=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
-      dev=`python3 -c 'import time; print("1.20rc1-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+      dev=`python3 -c 'import time; print("1.20rc2-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
       ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}"
