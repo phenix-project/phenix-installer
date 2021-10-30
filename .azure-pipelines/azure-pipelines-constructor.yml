@@ -151,6 +151,9 @@ jobs:
       source activate phenix
       conda install -y phenix*
 
+      mkdir $(Pipeline.Workspace)/$(platform)-64
+      mv phenix* $(Pipeline.Workspace)/$(platform)-64/
+
       cd ${CONDA_PREFIX}/share/phenix/conda_envs
 
       version=`echo $(py_ver) | sed 's/\.//'`
