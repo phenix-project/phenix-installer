@@ -147,12 +147,13 @@ jobs:
       fi
       cd $(platform)-64
 
+      mkdir $(Pipeline.Workspace)/$(platform)-64
+      mv phenix* $(Pipeline.Workspace)/$(platform)-64/
+
+      cd $(Pipeline.Workspace)/$(platform)-64
       conda create -n phenix -y
       source activate phenix
       conda install -y phenix*
-
-      mkdir $(Pipeline.Workspace)/$(platform)-64
-      mv phenix* $(Pipeline.Workspace)/$(platform)-64/
 
       cd ${CONDA_PREFIX}/share/phenix/conda_envs
 
