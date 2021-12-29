@@ -72,7 +72,7 @@ jobs:
     displayName: Set version
 
   - script: |
-      set -x -e
+      set -xe
       release=`echo $(Build.SourceBranch) | sed 's/refs\/heads\/releases\///'`
       echo "##vso[task.setVariable variable=version]$release"
       echo $(version)
@@ -90,7 +90,7 @@ jobs:
 
   # link bootstrap.py
   - script: |
-      set -x -e
+      set -xe
       cd $(Pipeline.Workspace)
       wget https://raw.githubusercontent.com/cctbx/cctbx_project/master/libtbx/auto_build/bootstrap.py
       mkdir modules
@@ -101,21 +101,21 @@ jobs:
 
   # download remaining sources
   - script: |
-      set -x -e
+      set -xe
       cd $(Pipeline.Workspace)
       python bootstrap.py hot update --builder=phenix_voyager --use-conda --python 37 --cciuser=builder
     displayName: Download remaining sources
 
   # base and build
   - script: |
-      set -x -e
+      set -xe
       cd $(Pipeline.Workspace)
       python bootstrap.py base build --builder=phenix_voyager --use-conda --python 37 --nproc=4
     displayName: Configure and Build
 
   # remove symoblic link for Windows
   - script: |
-      set -x -e
+      set -xe
       cd $(Pipeline.Workspace)/modules/phenix/wxGUI2/images
       rm -f splash-refine.png
       cp splash-refine-1.3.png splash-refine.png
@@ -124,7 +124,7 @@ jobs:
   # build source tarball
   # build/bin/libtbx.create_installer --version $(version) --install_script modules/cctbx_project/libtbx/auto_build/plus_installer.py --dist_dir dist/$(version) tmp/cctbx-$(version)
   - script: |
-      set -x -e
+      set -xe
       cd $(Pipeline.Workspace)
       build/bin/libtbx.create_installer \
         --version $(version) \
