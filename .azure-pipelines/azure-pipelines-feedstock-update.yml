@@ -110,4 +110,5 @@ jobs:
 
       git push -u origin master
     displayName: Update and rerender phenix-feedstock
+    continueOnError: true
     # condition: eq(variables['Build.Reason'], 'ResourceTrigger')
