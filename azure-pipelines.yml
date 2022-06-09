@@ -44,6 +44,11 @@ jobs:
 
   steps:
 
+  - task: DownloadSecureFile@1
+    name: upload_key
+    inputs:
+      secureFile: phenix-lbl-04e6cb0d1bf7.json
+
   # ubuntu setup
   - script: |
       sudo apt-get install -y build-essential curl git libgl1-mesa-dev libglu1-mesa-dev locales subversion
@@ -136,6 +141,7 @@ jobs:
         tmp/phenix-installer-$(version)-source
       rm -fr build tmp modules
       cd ./dist/$(version)
+      cp -a phenix-installer-$(version)-source.tar.gz $(Pipeline.Workspace)
       gzip -d phenix-installer-$(version)-source.tar.gz
       openssl enc \
         -aes-256-cbc \
@@ -147,9 +153,83 @@ jobs:
         -out phenix.enc \
         -pass env:TARBALL_PASSWORD
       tar -zcf phenix.tar.gz phenix.enc
+      gzip phenix-installer-$(version)-source.tar
     displayName: Build source tarball
 
-  # publish source tarball as artifact
+  # publish complete source tarball as artifact
   - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.tar.gz
     artifact: phenix
+    continueOnError: true
+
+  # upload full source tarball to Google Drive
+  - script: |
+      set -xe
+      conda create -n upload -y -c xfel -c conda-forge cctbx.xfel pydrive2
+      source activate upload
+      libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+        --credentials $(upload_key.secureFilePath) \
+        --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
+        --folder_list $(version) \
+        --files $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-source.tar.gz
+    displayName: Upload full source tarball to Google Drive
+    continueOnError: true
+
+  # build reduced source tarball without chem_data
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/dist/$(version)
+      rm phenix.tar.gz
+      mv $(Pipeline.Workspace)/phenix-installer-$(version)-source.tar.gz .
+      tar -xf phenix-installer-$(version)-source.tar.gz
+      rm phenix-installer-$(version)-source.tar.gz
+      mv ./phenix-installer-$(version)-source/modules/chem_data $(Pipeline.Workspace)
+      tar -cf phenix-installer-$(version)-source.tar phenix-installer-$(version)-source
+      openssl enc \
+        -aes-256-cbc \
+        -salt \
+        -md sha256 \
+        -iter 100000 \
+        -pbkdf2 \
+        -in phenix-installer-$(version)-source.tar \
+        -out phenix.enc \
+        -pass env:TARBALL_PASSWORD
+      tar -zcf phenix.tar.gz phenix.enc
+      gzip phenix-installer-$(version)-source.tar
+      mv phenix-installer-$(version)-source.tar.gz phenix-installer-$(version)-reduced-source.tar.gz
+    displayName: Build reduced tarball
+
+  # publish reduced source tarball as artifact
+  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.tar.gz
+    artifact: phenix_reduced
+    continueOnError: true
+
+  # publish chem_data directory as artifact
+  - publish: $(Pipeline.Workspace)/chem_data
+    artifact: chem_data
+    continueOnError: true
+
+  # upload reduced source tarball to Google Drive
+  - script: |
+      set -xe
+      source activate upload
+      libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+        --credentials $(upload_key.secureFilePath) \
+        --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
+        --folder_list $(version) \
+        --files $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-reduced-source.tar.gz
+    displayName: Upload reduced source tarball to Google Drive
+    continueOnError: true
+
+  # upload chem_data tarball to Google Drive
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      tar -zcf chem_data.tar.gz ./chem_data
+      source activate upload
+      libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+        --credentials $(upload_key.secureFilePath) \
+        --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
+        --folder_list $(version) \
+        --files $(Pipeline.Workspace)/chem_data.tar.gz
+    displayName: Upload chem_data tarball to Google Drive
     continueOnError: true
