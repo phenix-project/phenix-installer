@@ -1,0 +1,87 @@
+# Script for downloading statistics for conda packages
+
+# no continuous integration builds or pull requests
+trigger: none
+pr: none
+
+# Daily downloads
+schedules:
+- cron: '0 0 * * *'
+  displayName: Daily download of statistics for conda packages
+  branches:
+    include:
+    - main
+  always: true
+
+jobs:
+- job: download
+
+  pool:
+    vmImage: ubuntu-latest
+  timeoutInMinutes: 360
+
+  # variables for date
+  variables:
+    year: $(Get-Date -Format yyyy)
+    month: $(Get-Date -Format MM)
+    day: $(Get-Date -Format dd)
+    version: $(year)-$(month)-$(day)
+
+  steps:
+
+  - task: DownloadSecureFile@1
+    name: upload_key
+    inputs:
+      secureFile: phenix-lbl-04e6cb0d1bf7.json
+
+  # set version
+  - powershell: |
+      $trimmed_month = $(month).TrimStart("0")
+      $trimmed_day = $(day).TrimStart("0")
+      Write-Host $trimmed_month
+      Write-Host $trimmed_day
+      Write-Host "##vso[task.setVariable variable=year]$(year)"
+      Write-Host "##vso[task.setVariable variable=month]$trimmed_month"
+      Write-Host "##vso[task.setVariable variable=day]$trimmed_day"
+      Write-Host $(year)
+      Write-Host $(month)
+      Write-Host $(day)
+    displayName: Set variables from date
+
+  - script: |
+      version=$(year)-$(month)-$(day)
+      echo "##vso[task.setVariable variable=version]$version"
+      echo $(version)
+    displayName: Set version
+
+  # download support scripts
+  - checkout: self
+    path: ./phenix-installer
+
+  # add conda to path
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
+  - bash: echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: Add conda to PATH
+
+  # get statistics
+  - script: |
+      set -xe
+      conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
+      source activate upload
+      conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
+
+      for package in cctbx cctbx-base dials dxtbx; do
+
+        rm -f ./$(version).json
+
+        curl -o ./$(version).json https://api.anaconda.org/package/conda-forge/${package}
+
+        libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+          --credentials $(upload_key.secureFilePath) \
+          --folder_id 1aPlu6EeA8d3nAuzKwadFnI_BEjzXddZS \
+          --folder_list ${package} \
+          --files ./$(version).json
+      done
+
+
+    displayName: Upload JSON files to Google Drive
