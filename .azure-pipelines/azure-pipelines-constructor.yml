@@ -17,17 +17,17 @@ jobs:
   strategy:
     matrix:
       linux_py37:
-        vmImage: ubuntu-18.04
+        vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.7
         np_ver: 1.18
       linux_py38:
-        vmImage: ubuntu-18.04
+        vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.8
         np_ver: 1.18
       linux_py39:
-        vmImage: ubuntu-18.04
+        vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.9
         np_ver: 1.19
