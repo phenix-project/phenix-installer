@@ -67,6 +67,11 @@ jobs:
       sshKeySecureFile: id_rsa
     displayName: Download SSH key
 
+  - task: DownloadSecureFile@1
+    name: ssh_config
+    inputs:
+      secureFile: ssh.config
+
   # set version
   - powershell: |
       $trimmed_month = $(month).TrimStart("0")
@@ -181,31 +186,31 @@ jobs:
       # dev=`python3 -c 'import time; print("1.20.1-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
-      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}"
-      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}/$(platform)-64"
-      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}"
-      ssh builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}/$(platform)-64"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}/$(platform)-64"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}/$(platform)-64"
 
       cd constructor
       for f in `/bin/ls phenix*`; do
         echo Copying ${f}
-        scp ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/${f}
+        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/${f}
       done
 
       for f in `/bin/ls phenix*`; do
         echo Moving ${f}
-        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/${f} ${installer_dir}/${dev}/${f}"
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/${f} ${installer_dir}/${dev}/${f}"
       done
 
       cd $(Pipeline.Workspace)/$(platform)-64
       for f in `/bin/ls phenix*`; do
         echo Copying ${f}
-        scp ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/$(platform)-64/${f}
+        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/$(platform)-64/${f}
       done
 
       for f in `/bin/ls phenix*`; do
         echo Moving ${f}
-        ssh builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)-64/${f} ${installer_dir}/${dev}/$(platform)-64/${f}"
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)-64/${f} ${installer_dir}/${dev}/$(platform)-64/${f}"
       done
 
     displayName: Upload installer
