@@ -26,7 +26,7 @@ resources:
 jobs:
 - job: Build_phenix_source_tarball
   pool:
-    vmImage: ubuntu-18.04
+    vmImage: ubuntu-latest
   timeoutInMinutes: 360
 
   # variables for version
@@ -48,6 +48,11 @@ jobs:
     name: upload_key
     inputs:
       secureFile: phenix-lbl-04e6cb0d1bf7.json
+
+  - task: DownloadSecureFile@1
+    name: ssh_config
+    inputs:
+      secureFile: ssh.config
 
   # ubuntu setup
   - script: |
@@ -109,6 +114,7 @@ jobs:
   # download remaining sources
   - script: |
       set -xe
+      export SVN_SSH="ssh -F $(ssh_config.secureFilePath)"
       cd $(Pipeline.Workspace)
       python bootstrap.py hot update --builder=phenix_voyager --use-conda --python 37 --cciuser=builder
     displayName: Download remaining sources
