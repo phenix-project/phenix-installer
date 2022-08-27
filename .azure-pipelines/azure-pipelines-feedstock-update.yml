@@ -1,13 +1,5 @@
 # Update phenix-feedstock to trigger building of conda packages
 
-schedules:
-  - cron: '30 7 * * *'
-    displayName: Nightly feedstock update
-    branches:
-      include:
-      - main
-    always: true
-
 # no continuous integration builds or pull requests
 trigger: none
 pr: none
