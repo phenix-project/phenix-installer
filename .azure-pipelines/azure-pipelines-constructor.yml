@@ -185,6 +185,19 @@ jobs:
 
   - script: |
       set -xe
+      ls
+      ls $(Pipeline.Workspace)
+
+      rm -fr $(Pipeline.Workspace)/conda*
+
+      df -h
+      for d in `/bin/ls $(Pipeline.Workspace)`; do
+        du -sh $(Pipeline.Workspace)/$d
+      done
+    displayName: Clean up
+
+  - script: |
+      set -xe
       source activate construct
       cd constructor
       constructor .
