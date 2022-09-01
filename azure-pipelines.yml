@@ -173,8 +173,11 @@ jobs:
   # upload full source tarball to Google Drive
   - script: |
       set -xe
-      conda create -n upload -y -c xfel -c conda-forge cctbx.xfel pydrive2
+
+      conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
       source activate upload
+      conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
+
       libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
         --credentials $(upload_key.secureFilePath) \
         --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
