@@ -151,8 +151,8 @@ jobs:
       preferTriggeringPipeline: true
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
-      patterns: '**/*$(platform)_64_python$(py_ver)*'
-      # patterns: '**/*$(platform)_64_numpy$(np_ver)python$(py_ver)*'
+      # patterns: '**/*$(platform)_64_python$(py_ver)*'
+      patterns: '**/*$(platform)_64_numpy$(np_ver)python$(py_ver)*'
 
   - script: |
       set -xe
