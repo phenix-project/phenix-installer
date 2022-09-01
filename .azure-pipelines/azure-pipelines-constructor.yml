@@ -20,32 +20,42 @@ jobs:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.7
-        np_ver: 1.18
+        np_ver: 1.19
       linux_py38:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.8
-        np_ver: 1.18
+        np_ver: 1.19
       linux_py39:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.9
         np_ver: 1.19
+      linux_py310:
+        vmImage: ubuntu-latest
+        platform: linux
+        py_ver: 3.10
+        np_ver: 1.21
       macOS_py37:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.7
-        np_ver: 1.18
-      # macOS_py38:
-      #   vmImage: macOS-latest
-      #   platform: osx
-      #   py_ver: 3.8
-      #   np_ver: 1.18
+        np_ver: 1.19
+      macOS_py38:
+        vmImage: macOS-latest
+        platform: osx
+        py_ver: 3.8
+        np_ver: 1.19
       macOS_py39:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.9
         np_ver: 1.19
+      macOS_py310:
+        vmImage: macOS-latest
+        platform: osx
+        py_ver: 3.10
+        np_ver: 1.21
 
   pool:
     vmImage: $(vmImage)
@@ -87,14 +97,16 @@ jobs:
     displayName: Set variables from date
 
   - script: |
-      version=$(year).$(month)a$(day)
+      # version=$(year).$(month)a$(day)
+      version=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
       echo "##vso[task.setVariable variable=version]$version"
       echo $(version)
     displayName: Set version
 
   - script: |
       set -xe
-      release=`echo $(Build.SourceBranch) | sed 's/refs\/heads\/releases\///'`
+      # release=`echo $(Build.SourceBranch) | sed 's/refs\/heads\/releases\///'`
+      release=`python3 -c 'import time; print("1.21rc1-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
       echo "##vso[task.setVariable variable=version]$release"
       echo $(version)
     displayName: Override version for release branch
