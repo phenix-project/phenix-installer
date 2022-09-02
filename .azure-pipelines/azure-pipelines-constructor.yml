@@ -78,6 +78,11 @@ jobs:
     displayName: Download SSH key
 
   - task: DownloadSecureFile@1
+    name: upload_key
+    inputs:
+      secureFile: phenix-lbl-04e6cb0d1bf7.json
+
+  - task: DownloadSecureFile@1
     name: ssh_config
     inputs:
       secureFile: ssh.config
@@ -135,6 +140,16 @@ jobs:
       conda create -n construct -y -c conda-forge constructor python=3.9
     displayName: Set up constructor environment
 
+  # set up Google Drive upload environment
+  - script: |
+      conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
+      source activate upload
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        conda install -y -c conda-forge python.app
+      fi
+      conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
+    displayName: Set up upload environment
+
   # patch constructor to avoid check
   - script: |
       set -xe
@@ -167,6 +182,25 @@ jobs:
 
       mkdir $(Pipeline.Workspace)/$(platform)-64
       mv phenix* $(Pipeline.Workspace)/$(platform)-64/
+    displayName: Extract artifact
+
+  - script: |
+      set -xe
+
+      source activate upload
+
+      for f in `/bin/ls $(Pipeline.Workspace)/$(platform)-64/`; do
+        echo Uploading ${f}
+        libtbx.python ./scripts/upload_installer.py \
+          --credentials $(upload_key.secureFilePath) \
+          --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
+          --folder_list "$(version)/$(platform)-64" \
+          --files $(Pipeline.Workspace)/$(platform)-64/${f}
+      done
+    displayName: Upload conda package to Google Drive
+
+  - script: |
+      set -xe
 
       cd $(Pipeline.Workspace)/$(platform)-64
       conda create -n phenix -y
@@ -175,9 +209,9 @@ jobs:
 
       cd ${CONDA_PREFIX}/share/phenix/conda_envs
 
-      version=`echo $(py_ver) | sed 's/\.//'`
+      pyver=`echo $(py_ver) | sed 's/\.//'`
 
-      conda install -y --file phenix_py${version}_$(platform)-64.txt
+      conda install -y --file phenix_py${pyver}_$(platform)-64.txt
 
       pip install ortools
 
@@ -203,6 +237,22 @@ jobs:
       constructor .
       ls
     displayName: Create installer
+
+  - script: |
+      set -xe
+
+      source activate upload
+
+      for f in `/bin/ls ./constructor/phenix*`; do
+        echo Uploading ${f}
+        libtbx.python ./scripts/upload_installer.py \
+          --credentials $(upload_key.secureFilePath) \
+          --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
+          --folder_list "$(version)/$(py_ver)" \
+          --files ${f}
+      done
+
+    displayName: Upload installer to Google Drive
 
   - script: |
       set -xe

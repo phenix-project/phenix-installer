@@ -32,7 +32,10 @@ if __name__ == '__main__':
     cred_file=namespace.credentials,
     folder_id=namespace.folder_id
   )
-  pi.upload(folder_list=[namespace.folder_list], files=[namespace.files])
+  folder_list = [namespace.folder_list]
+  if '/' in namespace.folder_list:
+    folder_list = namespace.folder_list.split('/')
+  pi.upload(folder_list=folder_list, files=[namespace.files])
   # pi = pydrive2_interface(
   #   cred_file='/Users/bkpoon/Downloads/phenix-lbl-4f3f6ca7f212.json',
   #   folder_id='1DVRkUc_nlS4i19zyI7OVdUcHcTI50YTz')
