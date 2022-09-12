@@ -151,18 +151,16 @@ jobs:
       rm -fr build tmp modules
       cd ./dist/$(version)
       cp -a phenix-installer-$(version)-source.tar.gz $(Pipeline.Workspace)
-      gzip -d phenix-installer-$(version)-source.tar.gz
       openssl enc \
         -aes-256-cbc \
         -salt \
         -md sha256 \
         -iter 100000 \
         -pbkdf2 \
-        -in phenix-installer-$(version)-source.tar \
+        -in phenix-installer-$(version)-source.tar.gz \
         -out phenix.enc \
         -pass env:TARBALL_PASSWORD
       tar -zcf phenix.tar.gz phenix.enc
-      gzip phenix-installer-$(version)-source.tar
     displayName: Build source tarball
 
   # publish complete source tarball as artifact
@@ -195,18 +193,17 @@ jobs:
       tar -xf phenix-installer-$(version)-source.tar.gz
       rm phenix-installer-$(version)-source.tar.gz
       mv ./phenix-installer-$(version)-source/modules/chem_data $(Pipeline.Workspace)
-      tar -cf phenix-installer-$(version)-source.tar phenix-installer-$(version)-source
+      tar -zcf phenix-installer-$(version)-source.tar.gz phenix-installer-$(version)-source
       openssl enc \
         -aes-256-cbc \
         -salt \
         -md sha256 \
         -iter 100000 \
         -pbkdf2 \
-        -in phenix-installer-$(version)-source.tar \
+        -in phenix-installer-$(version)-source.tar.gz \
         -out phenix.enc \
         -pass env:TARBALL_PASSWORD
       tar -zcf phenix.tar.gz phenix.enc
-      gzip phenix-installer-$(version)-source.tar
       mv phenix-installer-$(version)-source.tar.gz phenix-installer-$(version)-reduced-source.tar.gz
     displayName: Build reduced tarball
 
