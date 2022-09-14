@@ -12,3 +12,5 @@ channels:
 environment: phenix
 
 installer_type: all
+
+post_install: ./scripts/post_install.sh
