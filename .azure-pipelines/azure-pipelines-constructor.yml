@@ -20,17 +20,17 @@ jobs:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.7
-        np_ver: 1.19
+        np_ver: 1.20
       linux_py38:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.8
-        np_ver: 1.19
+        np_ver: 1.20
       linux_py39:
         vmImage: ubuntu-latest
         platform: linux
         py_ver: 3.9
-        np_ver: 1.19
+        np_ver: 1.20
       linux_py310:
         vmImage: ubuntu-latest
         platform: linux
@@ -40,17 +40,17 @@ jobs:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.7
-        np_ver: 1.19
+        np_ver: 1.20
       macOS_py38:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.8
-        np_ver: 1.19
+        np_ver: 1.20
       macOS_py39:
         vmImage: macOS-latest
         platform: osx
         py_ver: 3.9
-        np_ver: 1.19
+        np_ver: 1.20
       macOS_py310:
         vmImage: macOS-latest
         platform: osx
