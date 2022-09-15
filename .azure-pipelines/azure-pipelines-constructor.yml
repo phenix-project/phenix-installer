@@ -198,6 +198,7 @@ jobs:
           --files $(Pipeline.Workspace)/$(platform)-64/${f}
       done
     displayName: Upload conda package to Google Drive
+    continueOnError: true
 
   - script: |
       set -xe
@@ -253,6 +254,7 @@ jobs:
       done
 
     displayName: Upload installer to Google Drive
+    continueOnError: true
 
   - script: |
       set -xe
@@ -290,3 +292,4 @@ jobs:
 
     displayName: Upload installer
     condition: eq(variables['py_ver'], '3.7')
+    continueOnError: true
