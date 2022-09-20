@@ -18,42 +18,68 @@ jobs:
     matrix:
       linux_py37:
         vmImage: ubuntu-latest
-        platform: linux
+        artifact_platform: linux_64
+        platform: linux-64
         py_ver: 3.7
         np_ver: 1.20
       linux_py38:
         vmImage: ubuntu-latest
-        platform: linux
+        artifact_platform: linux_64
+        platform: linux-64
         py_ver: 3.8
         np_ver: 1.20
       linux_py39:
         vmImage: ubuntu-latest
-        platform: linux
+        artifact_platform: linux_64
+        platform: linux-64
         py_ver: 3.9
         np_ver: 1.20
       linux_py310:
         vmImage: ubuntu-latest
-        platform: linux
+        artifact_platform: linux_64
+        platform: linux-64
         py_ver: 3.10
         np_ver: 1.21
       macOS_py37:
         vmImage: macOS-latest
-        platform: osx
+        artifact_platform: osx_64
+        platform: osx-64
         py_ver: 3.7
         np_ver: 1.20
       macOS_py38:
         vmImage: macOS-latest
-        platform: osx
+        artifact_platform: osx_64
+        platform: osx-64
         py_ver: 3.8
         np_ver: 1.20
       macOS_py39:
         vmImage: macOS-latest
-        platform: osx
+        artifact_platform: osx_64
+        platform: osx-64
         py_ver: 3.9
         np_ver: 1.20
       macOS_py310:
         vmImage: macOS-latest
-        platform: osx
+        artifact_platform: osx_64
+        platform: osx-64
+        py_ver: 3.10
+        np_ver: 1.21
+      macOS_arm64_py38:
+        vmImage: macOS-latest
+        artifact_platform: osx_arm64
+        platform: osx-arm64
+        py_ver: 3.8
+        np_ver: 1.20
+      macOS_arm64_py39:
+        vmImage: macOS-latest
+        artifact_platform: osx_arm64
+        platform: osx-arm64
+        py_ver: 3.9
+        np_ver: 1.20
+      macOS_arm64_py310:
+        vmImage: macOS-latest
+        artifact_platform: osx_arm64
+        platform: osx-arm64
         py_ver: 3.10
         np_ver: 1.21
 
@@ -137,7 +163,7 @@ jobs:
   # set up constructor environment
   - script: |
       set -xe
-      conda create -n construct -y -c conda-forge constructor python=3.9
+      conda create -n construct -y -c conda-forge ctools/label/dev::constructor
     displayName: Set up constructor environment
 
   # set up Google Drive upload environment
@@ -151,11 +177,11 @@ jobs:
     displayName: Set up upload environment
 
   # patch constructor to avoid check
-  - script: |
-      set -xe
-      cd constructor
-      python3 patch_fcp.py --site-packages ${CONDA}/envs/construct/lib/python3.9/site-packages
-    displayName: Patch constructor
+  # - script: |
+  #     set -xe
+  #     cd constructor
+  #     python3 patch_fcp.py --site-packages ${CONDA}/envs/construct/lib/python3.9/site-packages
+  #   displayName: Patch constructor
 
   # download latest phenix conda package
   - task: DownloadPipelineArtifact@2
@@ -166,8 +192,8 @@ jobs:
       preferTriggeringPipeline: true
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
-      # patterns: '**/*$(platform)_64_python$(py_ver)*'
-      patterns: '**/*$(platform)_64_numpy$(np_ver)python$(py_ver)*'
+      # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
+      patterns: '**/*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
 
   - script: |
       set -xe
@@ -178,10 +204,10 @@ jobs:
       if [ -d build_artifacts ]; then
         cd build_artifacts
       fi
-      cd $(platform)-64
+      cd $(platform)
 
-      mkdir $(Pipeline.Workspace)/$(platform)-64
-      mv phenix* $(Pipeline.Workspace)/$(platform)-64/
+      mkdir $(Pipeline.Workspace)/$(platform)
+      mv phenix* $(Pipeline.Workspace)/$(platform)/
     displayName: Extract artifact
 
   - script: |
@@ -189,13 +215,13 @@ jobs:
 
       source activate upload
 
-      for f in `/bin/ls $(Pipeline.Workspace)/$(platform)-64/`; do
+      for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/`; do
         echo Uploading ${f}
         libtbx.python ./scripts/upload_installer.py \
           --credentials $(upload_key.secureFilePath) \
           --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
-          --folder_list "$(version)/$(platform)-64" \
-          --files $(Pipeline.Workspace)/$(platform)-64/${f}
+          --folder_list "$(version)/$(platform)" \
+          --files $(Pipeline.Workspace)/$(platform)/${f}
       done
     displayName: Upload conda package to Google Drive
     continueOnError: true
@@ -203,7 +229,7 @@ jobs:
   - script: |
       set -xe
 
-      cd $(Pipeline.Workspace)/$(platform)-64
+      cd $(Pipeline.Workspace)/$(platform)
       conda create -n phenix -y
       source activate phenix
       conda install -y phenix*
@@ -212,9 +238,7 @@ jobs:
 
       pyver=`echo $(py_ver) | sed 's/\.//'`
 
-      conda install -y --file phenix_py${pyver}_$(platform)-64.txt
-
-      pip install ortools
+      conda install -y --file phenix_py${pyver}_$(platform).txt
 
     displayName: Create installer environment
 
@@ -233,11 +257,32 @@ jobs:
 
   - script: |
       set -xe
+
       source activate construct
       cd constructor
       constructor .
       ls
     displayName: Create installer
+    condition: ne(variables['platform'], 'osx-arm64')
+
+  - script: |
+      set -xe
+
+      # cross-platform constructor
+      # https://github.com/conda-forge/miniforge/blob/main/scripts/build.sh
+      TEMP_DIR=$(mktemp -d)
+      mkdir "${TEMP_DIR}/conda-standalone"
+      pushd "${TEMP_DIR}/conda-standalone"
+      curl -L -O "https://repo.anaconda.com/pkgs/misc/conda-execs/conda-4.10.3-osx-arm64.exe"
+      CONDA_EXE="${PWD}/conda-4.10.3-osx-arm64.exe"
+      popd
+
+      source activate construct
+      cd constructor
+      constructor . --conda-exe ${CONDA_EXE} --platform $(platform)
+      ls
+    displayName: Create installer (cross-platform)
+    condition: eq(variables['platform'], 'osx-arm64')
 
   - script: |
       set -xe
@@ -264,9 +309,9 @@ jobs:
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
       ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}"
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}/$(platform)-64"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}/$(platform)"
       ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}"
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}/$(platform)-64"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}/$(platform)"
 
       cd constructor
       for f in `/bin/ls phenix*`; do
@@ -279,17 +324,18 @@ jobs:
         ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/${f} ${installer_dir}/${dev}/${f}"
       done
 
-      cd $(Pipeline.Workspace)/$(platform)-64
+      cd $(Pipeline.Workspace)/$(platform)
       for f in `/bin/ls phenix*`; do
         echo Copying ${f}
-        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/$(platform)-64/${f}
+        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/$(platform)/${f}
       done
 
       for f in `/bin/ls phenix*`; do
         echo Moving ${f}
-        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)-64/${f} ${installer_dir}/${dev}/$(platform)-64/${f}"
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)/${f} ${installer_dir}/${dev}/$(platform)/${f}"
       done
 
     displayName: Upload installer
-    condition: eq(variables['py_ver'], '3.7')
+    condition: or(eq(variables['py_ver'], '3.7'),
+                  and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'osx-arm64')))
     continueOnError: true
