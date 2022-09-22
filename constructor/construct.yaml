@@ -1,4 +1,5 @@
-name: phenix
+name: Phenix
+pkg_name: PKG_NAME
 version: VERSION
 
 company: Lawrence Berkeley National Laboratory
