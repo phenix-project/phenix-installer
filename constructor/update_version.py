@@ -22,7 +22,7 @@ def update_version(filename, pkg_name, version):
 if __name__ == '__main__':
 
   now = datetime.datetime.now()
-  default_version = '.'.join([now.year, now.month, now.day])
+  default_version = '.'.join([str(now.year), str(now.month), str(now.day)])
 
   parser = argparse.ArgumentParser(description=__doc__)
 
