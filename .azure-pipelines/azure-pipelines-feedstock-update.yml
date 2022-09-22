@@ -109,6 +109,16 @@ jobs:
       git remote set-url origin git@github.com:phenix-project/phenix-feedstock.git
 
       git push -u origin master
+
+      # windows branch
+      git checkout win
+      git reset --hard origin/master
+      sed -i s/"true  # \[win\]"/"true  # \[not win\]"/g ./recipe/meta.yaml
+      git commit -am "Only build Windows"
+      conda smithy rerender -c auto
+      git commit --allow-empty -m "[skip ci]"
+      git push -f -u origin win
+
     displayName: Update and rerender phenix-feedstock
     continueOnError: true
     # condition: eq(variables['Build.Reason'], 'ResourceTrigger')
