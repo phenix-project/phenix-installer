@@ -5,13 +5,24 @@ version: VERSION
 company: Lawrence Berkeley National Laboratory
 license_file: LICENSE.txt
 
-initialize_by_default: false
-
 channels:
   - https://conda.anaconda.org/conda-forge
 
 environment: phenix
 
+# general options
+conclusion_file: ./gui/conclusion.txt
+conclusion_text: ""
+initialize_by_default: false
 installer_type: all
+welcome_image: ""
 
+# post installation
+post_install_desc: Running post installation steps
 post_install: ./scripts/post_install.sh
+
+# macOS pkg
+progress_notifications: true
+readme_file: ./gui/readme_macos.txt
+readme_text: ""
+reverse_domain_identifier: gov.lbl.cci

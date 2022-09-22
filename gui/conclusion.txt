@@ -1,0 +1,29 @@
+==========================================================================
+
+                      Phenix installation complete
+                      ----------------------------
+
+ You can begin using Phenix now by setting your environment with the
+ 'source' command:
+
+   csh users:
+     source <installation directory>/phenix_env.csh
+
+   bash (zsh) users:
+     source <installation directory>/phenix_env.sh
+
+   Windows users:
+     <installation directory>\phenix_env.bat
+
+ To use Phenix, go to a work directory and type:
+
+   phenix
+
+ On linux and macOS, you may wish to put the appopriate source statement
+ in your shell startup script (e.g. .cshrc or .bashrc or .zshrc). On
+ Windows, you can add a shortcut to the batch file to your Startup
+ folder.
+
+You have successfully installed Phenix.
+
+==========================================================================
