@@ -13,9 +13,9 @@ def update_version(filename, pkg_name, version):
   with open(filename, 'w') as f:
     for line in lines:
       if line.startswith('pkg_name'):
-        f.write(f'pkg_name: {pkg_name}-{version}')
+        f.write(f'pkg_name: {pkg_name}-{version}\n')
       elif line.startswith('version:'):
-        f.write(f'version: {version}')
+        f.write(f'version: {version}\n')
       else:
         f.write(line)
 
