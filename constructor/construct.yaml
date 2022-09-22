@@ -22,7 +22,7 @@ post_install_desc: Running post installation steps
 post_install: ./scripts/post_install.sh
 
 # macOS pkg
-progress_notifications: true
+# progress_notifications: true
 readme_file: ./gui/readme_macos.txt
 readme_text: ""
 reverse_domain_identifier: gov.lbl.cci
