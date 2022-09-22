@@ -274,12 +274,12 @@ jobs:
       mkdir "${TEMP_DIR}/conda-standalone"
       pushd "${TEMP_DIR}/conda-standalone"
       curl -L -O "https://repo.anaconda.com/pkgs/misc/conda-execs/conda-4.10.3-osx-arm64.exe"
-      CONDA_EXE="${PWD}/conda-4.10.3-osx-arm64.exe"
+      CONDA_STANDALONE="${PWD}/conda-4.10.3-osx-arm64.exe"
       popd
 
       source activate construct
       cd constructor
-      constructor . --conda-exe ${CONDA_EXE} --platform $(platform)
+      constructor . --conda-exe ${CONDA_STANDALONE} --platform $(platform)
       ls
     displayName: Create installer (cross-platform)
     condition: eq(variables['platform'], 'osx-arm64')
