@@ -5,6 +5,7 @@ echo "======================"
 pushd ${PREFIX}/lib
 ${PREFIX}/bin/libtbx.py_compile_all -i
 popd
+echo "done"
 
 # write phenix_env files
 echo ""
@@ -18,6 +19,7 @@ ${PREFIX}/bin/python ${SCRIPT_LOCATION} \
   --bin-dir bin \
   --version ${INSTALLER_VER} \
   --destination ${PREFIX}
+echo "done"
 
 # rebuild rotarama and cablam caches
 echo ""
@@ -25,5 +27,34 @@ echo "Rebuilding rotarama and cablam caches"
 echo "====================================="
 ${PREFIX}/bin/mmtbx.rebuild_rotarama_cache
 ${PREFIX}/bin/mmtbx.rebuild_cablam_cache
+echo "done"
+
+# print copy of conclusion.txt without Windows text
+echo "
+==========================================================================
+
+                      Phenix installation complete
+                      ----------------------------
+
+You can begin using Phenix now by setting your environment with the
+'source' command:
+
+  csh users:
+    source ${PREFIX}/phenix_env.csh
+
+  bash (zsh) users:
+    source ${PREFIX}/phenix_env.sh
+
+To use Phenix, go to a work directory and type:
+
+  phenix
+
+On linux and macOS, you may wish to put the appopriate source statement
+in your shell startup script (e.g. .cshrc or .bashrc or .zshrc).
+
+You have successfully installed Phenix.
+
+==========================================================================
+"
 
 echo ""
