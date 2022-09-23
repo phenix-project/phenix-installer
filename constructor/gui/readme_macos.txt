@@ -1,6 +1,6 @@
 
-                CHANGE LOG for PHENIX distribution
-                ==================================
+                Chaneglog for Phenix distribution
+                =================================
 
 1.20.1 (January 2022)
 =====================
