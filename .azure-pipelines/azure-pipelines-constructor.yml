@@ -253,6 +253,7 @@ jobs:
       pyver=`echo $(py_ver) | sed 's/\.//'`
 
       conda install -y --file phenix_py${pyver}_$(platform).txt
+      conda clean -y --all
 
     displayName: Create installer environment
 
