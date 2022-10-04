@@ -176,6 +176,20 @@ jobs:
       conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
     displayName: Set up upload environment
 
+  - script: |
+      set -xe
+
+      rm -fr $(Pipeline.Workspace)/conda*
+
+      conda clean -y --all
+
+      source activate construct
+      constructor --clean
+
+      df -h
+
+    displayName: Clean up
+
   # patch constructor to avoid check
   # - script: |
   #     set -xe
@@ -244,16 +258,9 @@ jobs:
 
   - script: |
       set -xe
-      ls
-      ls $(Pipeline.Workspace)
-
-      rm -fr $(Pipeline.Workspace)/conda*
 
       df -h
-      for d in `/bin/ls $(Pipeline.Workspace)`; do
-        du -sh $(Pipeline.Workspace)/$d
-      done
-    displayName: Clean up
+    displayName: Check disk space
 
   - script: |
       set -xe
@@ -262,6 +269,8 @@ jobs:
       cd constructor
       constructor .
       ls
+
+      df -h
     displayName: Create installer
     condition: ne(variables['platform'], 'osx-arm64')
 
@@ -281,6 +290,8 @@ jobs:
       cd constructor
       constructor . --conda-exe ${CONDA_STANDALONE} --platform $(platform)
       ls
+
+      df -h
     displayName: Create installer (cross-platform)
     condition: eq(variables['platform'], 'osx-arm64')
 
