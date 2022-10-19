@@ -163,11 +163,14 @@ jobs:
   # set up constructor environment
   - script: |
       set -xe
+      conda remove -n construct -y
       conda create -n construct -y -c conda-forge ctools/label/dev::constructor
     displayName: Set up constructor environment
+    retryCountOnTaskFailure: 3
 
   # set up Google Drive upload environment
   - script: |
+      conda remove -n upload -y
       conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
       source activate upload
       if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -175,6 +178,7 @@ jobs:
       fi
       conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
     displayName: Set up upload environment
+    retryCountOnTaskFailure: 3
 
   - script: |
       set -xe
@@ -243,6 +247,8 @@ jobs:
   - script: |
       set -xe
 
+      conda remove -n phenix -y
+
       cd $(Pipeline.Workspace)/$(platform)
       conda create -n phenix -y
       source activate phenix
@@ -256,6 +262,7 @@ jobs:
       conda clean -y --all
 
     displayName: Create installer environment
+    retryCountOnTaskFailure: 3
 
   - script: |
       set -xe
