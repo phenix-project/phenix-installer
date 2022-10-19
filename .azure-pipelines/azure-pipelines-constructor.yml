@@ -281,6 +281,7 @@ jobs:
       df -h
     displayName: Create installer
     condition: ne(variables['platform'], 'osx-arm64')
+    retryCountOnTaskFailure: 3
 
   - script: |
       set -xe
@@ -302,6 +303,7 @@ jobs:
       df -h
     displayName: Create installer (cross-platform)
     condition: eq(variables['platform'], 'osx-arm64')
+    retryCountOnTaskFailure: 3
 
   - script: |
       set -xe
