@@ -163,14 +163,14 @@ jobs:
   # set up constructor environment
   - script: |
       set -xe
-      conda remove -n construct -y
+      conda remove -n construct -y --all
       conda create -n construct -y -c conda-forge ctools/label/dev::constructor
     displayName: Set up constructor environment
     retryCountOnTaskFailure: 3
 
   # set up Google Drive upload environment
   - script: |
-      conda remove -n upload -y
+      conda remove -n upload -y --all
       conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
       source activate upload
       if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -247,7 +247,7 @@ jobs:
   - script: |
       set -xe
 
-      conda remove -n phenix -y
+      conda remove -n phenix -y --all
 
       cd $(Pipeline.Workspace)/$(platform)
       conda create -n phenix -y
