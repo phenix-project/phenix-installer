@@ -33,10 +33,9 @@ if __name__ == '__main__':
     folder_id=namespace.folder_id
   )
   folder_list = [namespace.folder_list]
+  files = []
+  if namespace.files is not None:
+    files = [namespace.files]
   if '/' in namespace.folder_list:
     folder_list = namespace.folder_list.split('/')
-  pi.upload(folder_list=folder_list, files=[namespace.files])
-  # pi = pydrive2_interface(
-  #   cred_file='/Users/bkpoon/Downloads/phenix-lbl-4f3f6ca7f212.json',
-  #   folder_id='1DVRkUc_nlS4i19zyI7OVdUcHcTI50YTz')
-  # pi.upload(folder_list=['test'], files=['cctbx.xfel-VERSION-MacOSX-arm64.sh'])
+  pi.upload(folder_list=folder_list, files=files)
