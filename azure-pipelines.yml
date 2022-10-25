@@ -247,6 +247,7 @@ jobs:
   # create folders for conda packages and installers
   - script: |
       set -xe
+      source activate upload
       for d in 3.7 3.8 3.9 3.10 linux-64 osx-64 osx-arm64 win64; do
         libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
           --credentials $(upload_key.secureFilePath) \
