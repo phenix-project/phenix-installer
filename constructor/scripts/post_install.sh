@@ -12,13 +12,18 @@ echo ""
 echo "Writing phenix_env files"
 echo "========================"
 SCRIPT_LOCATION=`${PREFIX}/bin/libtbx.find_in_repositories libtbx/auto_build/conda_build/write_env_files.py`
-
 ${PREFIX}/bin/python ${SCRIPT_LOCATION} \
   --program ${INSTALLER_NAME} \
   --prefix ${PREFIX} \
   --bin-dir bin \
   --version ${INSTALLER_VER} \
   --destination ${PREFIX}
+if [ -f "${PREFIX}/${INSTALLER_NAME}_env.sh" ]; then
+  echo "${PREFIX}/${INSTALLER_NAME}_env.sh exists"
+fi
+if [ -f "${PREFIX}/${INSTALLER_NAME}_env.csh" ]; then
+  echo "${PREFIX}/${INSTALLER_NAME}_env.csh exists"
+fi
 echo "done"
 
 # rebuild rotarama and cablam caches
@@ -27,6 +32,13 @@ echo "Rebuilding rotarama and cablam caches"
 echo "====================================="
 ${PREFIX}/bin/mmtbx.rebuild_rotarama_cache
 ${PREFIX}/bin/mmtbx.rebuild_cablam_cache
+echo "done"
+
+# build documentation
+echo ""
+echo "Building Phenix documentation"
+echo "============================="
+${PREFIX}/bin/phenix.rebuild_docs
 echo "done"
 
 # print copy of conclusion.txt without Windows text
