@@ -38,7 +38,7 @@ echo "done"
 echo ""
 echo "Building Phenix documentation"
 echo "============================="
-${PREFIX}/bin/phenix.rebuild_docs
+${PREFIX}/bin/phenix_html.rebuild_docs
 echo "done"
 
 # print copy of conclusion.txt without Windows text
