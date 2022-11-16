@@ -19,10 +19,10 @@ ${PREFIX}/bin/python ${SCRIPT_LOCATION} \
   --version ${INSTALLER_VER} \
   --destination ${PREFIX}
 if [ -f "${PREFIX}/${INSTALLER_NAME}_env.sh" ]; then
-  echo "${PREFIX}/${INSTALLER_NAME}_env.sh exists"
+  echo "${PREFIX}/${INSTALLER_NAME}_env.sh created"
 fi
 if [ -f "${PREFIX}/${INSTALLER_NAME}_env.csh" ]; then
-  echo "${PREFIX}/${INSTALLER_NAME}_env.csh exists"
+  echo "${PREFIX}/${INSTALLER_NAME}_env.csh created"
 fi
 echo "done"
 
