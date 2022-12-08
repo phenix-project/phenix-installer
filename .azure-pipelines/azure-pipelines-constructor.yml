@@ -210,7 +210,7 @@ jobs:
       pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
       preferTriggeringPipeline: true
       allowPartiallySucceededBuilds: true
-      allowFailedBuilds: true
+      allowFailedBuilds: false
       # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
       patterns: '**/*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
 
