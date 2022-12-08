@@ -9,6 +9,7 @@ resources:
   - pipeline: phenix_feedstock
     project: 'feedstock-builds'
     source: 'phenix-feedstock'
+    branch: 'main'
     trigger: true
 
 jobs:
