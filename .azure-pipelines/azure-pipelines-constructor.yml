@@ -16,6 +16,7 @@ jobs:
 - job: Construct_phenix_installer
 
   strategy:
+    maxParallel: 1
     matrix:
       linux_py37:
         vmImage: ubuntu-latest
