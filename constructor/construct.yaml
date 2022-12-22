@@ -15,6 +15,7 @@ conclusion_file: ./gui/conclusion.txt
 conclusion_text: ""
 initialize_by_default: false
 installer_type: all
+transmute_file_type: .conda
 welcome_image: ""
 
 # post installation
