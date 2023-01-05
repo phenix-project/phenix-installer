@@ -316,6 +316,9 @@ jobs:
         if [[ ${f} == *".sh" ]]; then
           mv ${f} ${f}ell
         fi
+      done
+
+      for f in `/bin/ls ./constructor/Phenix*`; do
         echo Uploading ${f}
         libtbx.python ./scripts/upload_installer.py \
           --credentials $(upload_key.secureFilePath) \
