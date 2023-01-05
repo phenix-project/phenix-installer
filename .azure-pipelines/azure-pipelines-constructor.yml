@@ -313,6 +313,9 @@ jobs:
       source activate upload
 
       for f in `/bin/ls ./constructor/Phenix*`; do
+        if [[ ${f} == *".sh" ]]; then
+          mv ${f} ${f}ell
+        fi
         echo Uploading ${f}
         libtbx.python ./scripts/upload_installer.py \
           --credentials $(upload_key.secureFilePath) \
