@@ -258,6 +258,7 @@ jobs:
           --folder "$(version)" \
           --subfolder "$(platform)" \
           --file ${f}
+        sleep 60
       done
     displayName: Upload conda package to Google Drive
     retryCountOnTaskFailure: 3
@@ -338,6 +339,7 @@ jobs:
           --folder "$(version)" \
           --subfolder "$(py_ver)" \
           --file ${f}
+        sleep 60
       done
 
     displayName: Upload installer to Google Drive
