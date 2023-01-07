@@ -149,6 +149,17 @@ jobs:
 
   - script: |
       set -xe
+
+      pwd
+      ls
+
+      cd $(Pipeline.Workspace)
+      pwd
+      ls
+    displayName: Debug information
+
+  - script: |
+      set -xe
       cd constructor
       python3 update_version.py --version $(version)
     displayName: Update version
