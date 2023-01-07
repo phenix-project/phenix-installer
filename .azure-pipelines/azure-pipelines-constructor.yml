@@ -240,7 +240,7 @@ jobs:
 
       for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/`; do
         echo Uploading ${f}
-        libtbx.python ./scripts/google_drive.py \
+        python ./scripts/google_drive.py \
           --credentials $(upload_key.secureFilePath) \
           --drive "Phenix Installers" \
           --folder "$(version)" \
@@ -319,7 +319,7 @@ jobs:
 
       for f in `/bin/ls ./constructor/Phenix*`; do
         echo Uploading ${f}
-        libtbx.python ./scripts/google_drive.py \
+        python ./scripts/google_drive.py \
           --credentials $(upload_key.secureFilePath) \
           --drive "Phenix Installers" \
           --folder "$(version)" \
