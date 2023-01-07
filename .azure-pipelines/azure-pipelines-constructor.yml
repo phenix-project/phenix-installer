@@ -238,6 +238,7 @@ jobs:
 
       source activate upload
 
+      cd $(Pipeline.Workspace)/$(platform)
       for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/`; do
         echo Uploading ${f}
         python ./scripts/google_drive.py \
@@ -245,7 +246,7 @@ jobs:
           --drive "Phenix Installers" \
           --folder "$(version)" \
           --subfolder "$(platform)" \
-          --file $(Pipeline.Workspace)/$(platform)/${f}
+          --file ${f}
       done
     displayName: Upload conda package to Google Drive
     retryCountOnTaskFailure: 3
@@ -317,7 +318,8 @@ jobs:
 
       source activate upload
 
-      for f in `/bin/ls ./constructor/Phenix*`; do
+      cd ./constructor
+      for f in `/bin/ls Phenix*`; do
         echo Uploading ${f}
         python ./scripts/google_drive.py \
           --credentials $(upload_key.secureFilePath) \
