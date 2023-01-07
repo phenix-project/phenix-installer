@@ -65,7 +65,7 @@ def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials
     print(f'An error occurred: {error}')
 
 # -----------------------------------------------------------------------------
-def upload_file(name=None, parent=None, driveId=None, chunksize=256*1024*1024, credentials=None, retries=5):
+def upload_file(name=None, parent=None, driveId=None, chunksize=2*1024*1024*1024, credentials=None, retries=5):
   if not os.path.exists(name):
     raise IOError('The "{}" file does not exist.'.format(name))
 
