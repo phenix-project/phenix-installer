@@ -172,12 +172,16 @@ jobs:
   # set up Google Drive upload environment
   - script: |
       conda remove -n upload -y --all
-      conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
-      source activate upload
-      if [[ "$OSTYPE" == "darwin"* ]]; then
-        conda install -y -c conda-forge python.app
-      fi
-      conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
+      conda create -n upload -y python=3.10
+      conda activate upload
+      pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+
+      # conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
+      # source activate upload
+      # if [[ "$OSTYPE" == "darwin"* ]]; then
+      #   conda install -y -c conda-forge python.app
+      # fi
+      # conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
     displayName: Set up upload environment
     retryCountOnTaskFailure: 3
 
@@ -236,11 +240,12 @@ jobs:
 
       for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/`; do
         echo Uploading ${f}
-        libtbx.python ./scripts/upload_installer.py \
+        libtbx.python ./scripts/google_drive.py \
           --credentials $(upload_key.secureFilePath) \
-          --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
-          --folder_list "$(version)/$(platform)" \
-          --files $(Pipeline.Workspace)/$(platform)/${f}
+          --drive "Phenix Installers" \
+          --folder "$(version)" \
+          --subfolder "$(platform)" \
+          --file $(Pipeline.Workspace)/$(platform)/${f}
       done
     displayName: Upload conda package to Google Drive
     retryCountOnTaskFailure: 3
@@ -313,18 +318,13 @@ jobs:
       source activate upload
 
       for f in `/bin/ls ./constructor/Phenix*`; do
-        if [[ ${f} == *".sh" ]]; then
-          mv ${f} ${f}ell
-        fi
-      done
-
-      for f in `/bin/ls ./constructor/Phenix*`; do
         echo Uploading ${f}
-        libtbx.python ./scripts/upload_installer.py \
+        libtbx.python ./scripts/google_drive.py \
           --credentials $(upload_key.secureFilePath) \
-          --folder_id 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q \
-          --folder_list "$(version)/$(py_ver)" \
-          --files ${f}
+          --drive "Phenix Installers" \
+          --folder "$(version)" \
+          --subfolder "$(py_ver)" \
+          --file ${f}
       done
 
     displayName: Upload installer to Google Drive
