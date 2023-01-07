@@ -173,7 +173,7 @@ jobs:
   - script: |
       conda remove -n upload -y --all
       conda create -n upload -y python=3.10
-      conda activate upload
+      source activate upload
       pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
 
       # conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
