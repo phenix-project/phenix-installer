@@ -191,7 +191,7 @@ def main():
   items = results.get('files', [])
   for item in items:
     print(item)
-    service.files().delete(fileId=item['id']).execute()
+    # service.files().delete(fileId=item['id']).execute()
 
 # =============================================================================
 if __name__ == '__main__':

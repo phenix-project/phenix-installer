@@ -241,7 +241,7 @@ jobs:
       cd $(Pipeline.Workspace)/$(platform)
       for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/`; do
         echo Uploading ${f}
-        python ./scripts/google_drive.py \
+        python $(Pipeline.Workspace)/scripts/google_drive.py \
           --credentials $(upload_key.secureFilePath) \
           --drive "Phenix Installers" \
           --folder "$(version)" \
@@ -321,7 +321,7 @@ jobs:
       cd ./constructor
       for f in `/bin/ls Phenix*`; do
         echo Uploading ${f}
-        python ./scripts/google_drive.py \
+        python $(Pipeline.Workspace)/scripts/google_drive.py \
           --credentials $(upload_key.secureFilePath) \
           --drive "Phenix Installers" \
           --folder "$(version)" \
