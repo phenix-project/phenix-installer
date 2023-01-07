@@ -11,6 +11,7 @@ https://developers.google.com/resources/api-libraries/documentation/drive/v3/pyt
 import argparse
 import os
 import sys
+import time
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -64,7 +65,7 @@ def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials
     print(f'An error occurred: {error}')
 
 # -----------------------------------------------------------------------------
-def upload_file(name=None, parent=None, driveId=None, chunksize=256*1024*1024, credentials=None):
+def upload_file(name=None, parent=None, driveId=None, chunksize=256*1024*1024, credentials=None, retries=5):
   if not os.path.exists(name):
     raise IOError('The "{}" file does not exist.'.format(name))
 
@@ -74,33 +75,37 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=256*1024*1024, c
                    'parents': parent,
                    'driveID': driveId}
 
-  try:
-    media = MediaFileUpload(
-      name,
-      mimetype='application/octet-stream',
-      chunksize=chunksize,
-      resumable=True)
-    service = build('drive', 'v3', credentials=credentials)
-    results = service.files().create(
-      body=file_metadata,
-      media_body=media,
-      supportsAllDrives=True,
-    ).execute()
-    new_file_id = results['id']
+  for retry in range(retries):
+    try:
+      media = MediaFileUpload(
+        name,
+        mimetype='application/octet-stream',
+        chunksize=chunksize,
+        resumable=True)
+      service = build('drive', 'v3', credentials=credentials)
+      results = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        supportsAllDrives=True,
+      ).execute()
+      new_file_id = results['id']
 
-    # parent defaults to "My Drive"
-    results = service.files().update(
-      fileId=new_file_id,
-      removeParents=my_drive_id,
-      addParents=parent,
-      fields='name, id, parents',
-      supportsAllDrives=True,
-    ).execute()
+      # parent defaults to "My Drive"
+      results = service.files().update(
+        fileId=new_file_id,
+        removeParents=my_drive_id,
+        addParents=parent,
+        fields='name, id, parents',
+        supportsAllDrives=True,
+      ).execute()
 
-    return new_file_id
+      return new_file_id
 
-  except HttpError as error:
-    print(f'An error occurred: {error}')
+    except Exception as error:
+      print(f'An error occurred: {error}')
+
+    # sleep for retry_attempt * 2 * 60 s
+    time.sleep(retry*120)
 
 # -----------------------------------------------------------------------------
 def main():
@@ -111,6 +116,7 @@ def main():
   parser.add_argument('--folder', help='Folder name for version')
   parser.add_argument('--subfolder', help='Subfolder in version folder')
   parser.add_argument('--file', help='File to upload')
+  parser.add_argument('--retries', type=int, default=5, help='Number of retries to upload')
 
   if len(sys.argv) == 1:
     parser.print_help()
@@ -161,7 +167,8 @@ def main():
     name=namespace.file,
     parent=subfolder_id,
     driveId=drive_id,
-    credentials=credentials)
+    credentials=credentials,
+    retries=namespace.retries)
 
   # verify
   service = build('drive', 'v3', credentials=credentials)
