@@ -147,17 +147,11 @@ jobs:
 
   # set up Google Drive upload environment
   - script: |
+      set -xe
       conda remove -n upload -y --all
       conda create -n upload -y python=3.10
       source activate upload
       pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
-
-      # conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
-      # source activate upload
-      # if [[ "$OSTYPE" == "darwin"* ]]; then
-      #   conda install -y -c conda-forge python.app
-      # fi
-      # conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
     displayName: Set up upload environment
     retryCountOnTaskFailure: 3
 
@@ -322,35 +316,33 @@ jobs:
   - script: |
       set -xe
 
-      dev=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
-      # dev=`python3 -c 'import time; print("1.20.1-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}"
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/${dev}/$(platform)"
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}"
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/${dev}/$(platform)"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/$(version)"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/$(version)/$(platform)"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)"
+      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)/$(platform)"
 
       cd constructor
       for f in `/bin/ls Phenix*`; do
         echo Copying ${f}
-        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/${f}
+        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/$(version)/${f}
       done
 
       for f in `/bin/ls Phenix*`; do
         echo Moving ${f}
-        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/${f} ${installer_dir}/${dev}/${f}"
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/$(version)/${f} ${installer_dir}/$(version)/${f}"
       done
 
       cd $(Pipeline.Workspace)/$(platform)
       for f in `/bin/ls Phenix*`; do
         echo Copying ${f}
-        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/${dev}/$(platform)/${f}
+        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/$(version)/$(platform)/${f}
       done
 
       for f in `/bin/ls Phenix*`; do
         echo Moving ${f}
-        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/${dev}/$(platform)/${f} ${installer_dir}/${dev}/$(platform)/${f}"
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/$(version)/$(platform)/${f} ${installer_dir}/$(version)/$(platform)/${f}"
       done
 
     displayName: Upload installer
