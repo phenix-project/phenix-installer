@@ -75,6 +75,7 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
                    'parents': parent,
                    'driveID': driveId}
 
+  service = build('drive', 'v3', credentials=credentials)
   new_file_id = None
   for retry in range(retries):
     try:
@@ -83,7 +84,6 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
         mimetype='application/octet-stream',
         chunksize=chunksize,
         resumable=True)
-      service = build('drive', 'v3', credentials=credentials)
       results = service.files().create(
         body=file_metadata,
         media_body=media,
@@ -93,6 +93,10 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
 
     except Exception as error:
       print(f'An error occurred (upload): {error}')
+
+    # exit for loop if file has been uploaded
+    if new_file_id is not None:
+      break
 
     # sleep for retry_attempt * 2 * 60 s
     print()
@@ -110,7 +114,6 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
   for retry in range(retries):
     try:
       # parent defaults to "My Drive"
-      service = build('drive', 'v3', credentials=credentials)
       results = service.files().update(
         fileId=new_file_id,
         removeParents=my_drive_id,
