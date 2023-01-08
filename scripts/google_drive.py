@@ -105,7 +105,12 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
       print(f'An error occurred: {error}')
 
     # sleep for retry_attempt * 2 * 60 s
-    time.sleep(retry*120)
+    print()
+    print('='*79)
+    print('Retry {} will start after {} seconds.'.format(retry + 1, (retry + 1)*120))
+    print('='*79)
+    print()
+    time.sleep((retry + 1)*120)
 
 # -----------------------------------------------------------------------------
 def main():
