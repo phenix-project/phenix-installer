@@ -75,6 +75,7 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
                    'parents': parent,
                    'driveID': driveId}
 
+  new_file_id = None
   for retry in range(retries):
     try:
       media = MediaFileUpload(
@@ -90,7 +91,26 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
       ).execute()
       new_file_id = results['id']
 
+    except Exception as error:
+      print(f'An error occurred (upload): {error}')
+
+    # sleep for retry_attempt * 2 * 60 s
+    print()
+    print('='*79)
+    print('Retry {} will start after {} seconds.'.format(retry + 1, (retry + 1)*120))
+    print('='*79)
+    print()
+    time.sleep((retry + 1)*120)
+
+  # stop if file was not uploaded
+  if new_file_id is None:
+    return None
+
+  # otherwise, move file to final location
+  for retry in range(retries):
+    try:
       # parent defaults to "My Drive"
+      service = build('drive', 'v3', credentials=credentials)
       results = service.files().update(
         fileId=new_file_id,
         removeParents=my_drive_id,
@@ -102,7 +122,7 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
       return new_file_id
 
     except Exception as error:
-      print(f'An error occurred: {error}')
+      print(f'An error occurred (move): {error}')
 
     # sleep for retry_attempt * 2 * 60 s
     print()
