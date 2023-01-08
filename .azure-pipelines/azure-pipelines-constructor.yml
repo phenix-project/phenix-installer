@@ -334,12 +334,12 @@ jobs:
       done
 
       cd $(Pipeline.Workspace)/$(platform)
-      for f in `/bin/ls Phenix*`; do
+      for f in `/bin/ls phenix*`; do
         echo Copying ${f}
         scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/$(version)/$(platform)/${f}
       done
 
-      for f in `/bin/ls Phenix*`; do
+      for f in `/bin/ls phenix*`; do
         echo Moving ${f}
         ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/$(version)/$(platform)/${f} ${installer_dir}/$(version)/$(platform)/${f}"
       done
