@@ -65,7 +65,7 @@ def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials
     print(f'An error occurred: {error}')
 
 # -----------------------------------------------------------------------------
-def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=None, retries=5):
+def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=None, retries=10):
   if not os.path.exists(name):
     raise IOError('The "{}" file does not exist.'.format(name))
 
@@ -121,7 +121,7 @@ def main():
   parser.add_argument('--folder', help='Folder name for version')
   parser.add_argument('--subfolder', help='Subfolder in version folder')
   parser.add_argument('--file', help='File to upload')
-  parser.add_argument('--retries', type=int, default=5, help='Number of retries to upload')
+  parser.add_argument('--retries', type=int, default=10, help='Number of retries to upload')
 
   if len(sys.argv) == 1:
     parser.print_help()
