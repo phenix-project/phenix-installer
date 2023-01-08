@@ -7,6 +7,18 @@ import os
 import sys
 
 def update_version(filename, pkg_name, version):
+  # check if version is a filename (e.g. conda package with version)
+  # version follows the Phenix format (e.g. dev-1234 or 1.23-4567)
+  # conda package naming does not allow hyphens (e.g. dev.1234 or 1.23.4567)
+  if os.path.isfile(version):
+    version = os.path.basename(version).split('-')[1]  # dev.1234 or 1.23.4567
+    split_version = version.split('.')
+    build_number = split_version[-1]  # 1234
+    if len(split_version) > 2:
+      version = '.'.join(split_version[:2])  # 1.23
+    else:
+      version = split_version[0]  # dev
+    version = '-'.join([version, build_number])  # dev-1234 or 1.23-4567
   assert os.path.isfile(filename)
   with open(filename, 'r') as f:
     lines = f.readlines()
@@ -18,6 +30,8 @@ def update_version(filename, pkg_name, version):
         f.write(f'version: {version}\n')
       else:
         f.write(line)
+
+  return version
 
 if __name__ == '__main__':
 
@@ -41,4 +55,6 @@ if __name__ == '__main__':
   namespace = parser.parse_args()
 
   # patch
-  update_version(namespace.filename, namespace.pkg_name, namespace.version)
+  version = update_version(namespace.filename, namespace.pkg_name, namespace.version)
+
+  print(version)

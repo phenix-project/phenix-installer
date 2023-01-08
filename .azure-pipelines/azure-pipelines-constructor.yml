@@ -115,36 +115,6 @@ jobs:
     inputs:
       secureFile: ssh.config
 
-  # set version
-  - powershell: |
-      $trimmed_month = $(month).TrimStart("0")
-      $trimmed_day = $(day).TrimStart("0")
-      Write-Host $trimmed_month
-      Write-Host $trimmed_day
-      Write-Host "##vso[task.setVariable variable=year]$(year)"
-      Write-Host "##vso[task.setVariable variable=month]$trimmed_month"
-      Write-Host "##vso[task.setVariable variable=day]$trimmed_day"
-      Write-Host $(year)
-      Write-Host $(month)
-      Write-Host $(day)
-    displayName: Set variables from date
-
-  - script: |
-      # version=$(year).$(month)a$(day)
-      version=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
-      echo "##vso[task.setVariable variable=version]$version"
-      echo $(version)
-    displayName: Set version
-
-  - script: |
-      set -xe
-      # release=`echo $(Build.SourceBranch) | sed 's/refs\/heads\/releases\///'`
-      release=`python3 -c 'import time; print("1.21rc1-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
-      echo "##vso[task.setVariable variable=version]$release"
-      echo $(version)
-    displayName: Override version for release branch
-    condition: startswith(variables['Build.SourceBranch'], 'refs/heads/releases/')
-
   # download sources
   - checkout: self
 
@@ -158,12 +128,6 @@ jobs:
       pwd
       ls
     displayName: Debug information
-
-  - script: |
-      set -xe
-      cd constructor
-      python3 update_version.py --version $(version)
-    displayName: Update version
 
   - bash: sudo chown -R $USER $CONDA
     displayName: Take ownership of conda installation
@@ -244,6 +208,14 @@ jobs:
       mkdir $(Pipeline.Workspace)/$(platform)
       mv phenix* $(Pipeline.Workspace)/$(platform)/
     displayName: Extract artifact
+
+  - script: |
+      set -xe
+      cd constructor
+      version=`python3 update_version.py --version $(Pipeline.Workspace)/$(platform)/phenix*`
+      echo "##vso[task.setVariable variable=version]$version"
+      echo $(version)
+    displayName: Set and update version
 
   - script: |
       set -xe
