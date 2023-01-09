@@ -153,7 +153,7 @@ jobs:
         tmp/phenix-installer-$(version)-source
       rm -fr build tmp modules
       cd ./dist/$(version)
-      cp -a phenix-installer-$(version)-source.tar.gz $(Pipeline.Workspace)
+      # cp -a phenix-installer-$(version)-source.tar.gz $(Pipeline.Workspace)
       tar -xf phenix-installer-$(version)-source.tar.gz
       export XZ_OPT=-9
       tar -Jcf phenix-installer-$(version)-source.tar.xz phenix-installer-$(version)-source
@@ -166,11 +166,25 @@ jobs:
         -in phenix-installer-$(version)-source.tar.xz \
         -out phenix.enc \
         -pass env:TARBALL_PASSWORD
+      tar -jcf phenix-installer-$(version)-source.tar.bz2 phenix-installer-$(version)-source
+      openssl enc \
+        -aes-256-cbc \
+        -salt \
+        -md sha256 \
+        -iter 100000 \
+        -pbkdf2 \
+        -in phenix-installer-$(version)-source.tar.bz2 \
+        -out phenix_win.enc \
+        -pass env:TARBALL_PASSWORD
     displayName: Build source tarball
 
   # publish complete source tarball as artifact
   - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.enc
     artifact: phenix
+    continueOnError: true
+
+  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix_win.enc
+    artifact: phenix_win
     continueOnError: true
 
   # upload full source tarball to Google Drive
@@ -186,7 +200,20 @@ jobs:
         --folder_id $(folder_id) \
         --folder_list $(version) \
         --files $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-source.tar.xz
-    displayName: Upload full source tarball to Google Drive
+    displayName: Upload full source tarball (xz) to Google Drive
+    continueOnError: true
+
+  - script: |
+      set -xe
+
+      source activate upload
+
+      libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+        --credentials $(upload_key.secureFilePath) \
+        --folder_id $(folder_id) \
+        --folder_list $(version) \
+        --files $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-source.tar.bz2
+    displayName: Upload full source tarball (bz2) to Google Drive
     continueOnError: true
 
   # build reduced source tarball without chem_data
