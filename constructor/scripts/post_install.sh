@@ -41,6 +41,19 @@ echo "============================="
 ${PREFIX}/bin/phenix_html.rebuild_docs
 echo "done"
 
+# build .app on macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo ""
+  echo "Creating macOS phenix.app"
+  echo "========================="
+  ${PREFIX}/bin/libtbx.create_mac_app \
+    phenix \
+    --app_name=${INSTALLER_NAME}-${INSTALLER_VER} \
+    --dest=${PREFIX} \
+    --alias_build
+  echo "done"
+fi
+
 # print copy of conclusion.txt without Windows text
 echo "
 ==========================================================================
@@ -63,6 +76,9 @@ To use Phenix, go to a work directory and type:
 
 On linux and macOS, you may wish to put the appopriate source statement
 in your shell startup script (e.g. .cshrc or .bashrc or .zshrc).
+
+On macOS, you can also start Phenix by using the app bundle in the
+${PREFIX} directory.
 
 You have successfully installed Phenix.
 
