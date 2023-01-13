@@ -174,13 +174,16 @@ def main():
     raise RuntimeError('The "{}" folder could not be found.'.format(namespace.folder))
 
   # check subfolder
-  subfolder_id = get_folder_id(
-    name=namespace.subfolder,
-    parent=version_folder_id,
-    driveId=drive_id,
-    credentials=credentials)
-  if subfolder_id is None:
-    raise RuntimeError('The "{}" subfolder could not be found.'.format(namespace.subfolder))
+  if namespace.subfolder is not None:
+    subfolder_id = get_folder_id(
+      name=namespace.subfolder,
+      parent=version_folder_id,
+      driveId=drive_id,
+      credentials=credentials)
+    if subfolder_id is None:
+      raise RuntimeError('The "{}" subfolder could not be found.'.format(namespace.subfolder))
+  else:
+    subfolder_id = version_folder_id
 
   # id summary
   print('ID Summary')

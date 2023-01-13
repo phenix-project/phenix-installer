@@ -219,11 +219,11 @@ jobs:
 
       source activate upload
       sleep 300
-      libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+      python $(Pipeline.Workspace)/phenix-installer/scripts/google_drive.py \
         --credentials $(upload_key.secureFilePath) \
-        --folder_id $(folder_id) \
-        --folder_list $(version) \
-        --files $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-source.tar.bz2
+        --drive "Phenix Installers" \
+        --folder "$(version)" \
+        --file $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-source.tar.bz2
     displayName: Upload full source tarball (bz2) to Google Drive
     continueOnError: true
 
