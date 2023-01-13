@@ -218,7 +218,7 @@ jobs:
       set -xe
 
       source activate upload
-
+      sleep 300
       libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
         --credentials $(upload_key.secureFilePath) \
         --folder_id $(folder_id) \
@@ -290,12 +290,15 @@ jobs:
   # create folders for conda packages and installers
   - script: |
       set -xe
+
       source activate upload
+      sleep 300
       for d in 3.7 3.8 3.9 3.10 linux-64 osx-64 osx-arm64 win64; do
         libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
           --credentials $(upload_key.secureFilePath) \
           --folder_id $(folder_id) \
           --folder_list "$(version)/${d}"
+        sleep 10
       done
   displayName: Create folders for conda packages and installers
   continueOnError: true
