@@ -190,7 +190,8 @@ def main():
   print('==========')
   for name, id in zip([namespace.drive, namespace.folder, namespace.subfolder],
                       [drive_id, version_folder_id, subfolder_id]):
-    print('{:>20}: {}'.format(name, id))
+    if name is not None and id is not None:
+      print('{:>20}: {}'.format(name, id))
   print()
 
   # upload file to subfolder
