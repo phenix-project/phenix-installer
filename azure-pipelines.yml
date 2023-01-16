@@ -189,6 +189,24 @@ jobs:
         -pass env:TARBALL_PASSWORD
     displayName: Build source tarball
 
+  # create folders for conda packages and installers
+  - script: |
+      set -xe
+
+      conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
+      source activate upload
+      conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
+
+      for d in 3.7 3.8 3.9 3.10 linux-64 osx-64 osx-arm64 win64; do
+        libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+          --credentials $(upload_key.secureFilePath) \
+          --folder_id $(folder_id) \
+          --folder_list "$(version)/${d}"
+        sleep 10
+      done
+  displayName: Create folders for conda packages and installers
+  continueOnError: true
+
   # publish complete source tarball as artifact
   - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.enc
     artifact: phenix
@@ -202,9 +220,7 @@ jobs:
   - script: |
       set -xe
 
-      conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.74 tabulate tqdm
       source activate upload
-      conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
 
       libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
         --credentials $(upload_key.secureFilePath) \
@@ -226,79 +242,3 @@ jobs:
         --file $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-source.tar.bz2
     displayName: Upload full source tarball (bz2) to Google Drive
     continueOnError: true
-
-  # build reduced source tarball without chem_data
-  # - script: |
-  #     set -xe
-  #     cd $(Pipeline.Workspace)/dist/$(version)
-  #     rm phenix.enc
-  #     mv $(Pipeline.Workspace)/phenix-installer-$(version)-source.tar.gz .
-  #     tar -xf phenix-installer-$(version)-source.tar.gz
-  #     rm phenix-installer-$(version)-source.tar.gz
-  #     mv ./phenix-installer-$(version)-source/modules/chem_data $(Pipeline.Workspace)
-  #     export XZ_OPT=-9
-  #     tar -Jcf phenix-installer-$(version)-source.tar.xz phenix-installer-$(version)-source
-  #     openssl enc \
-  #       -aes-256-cbc \
-  #       -salt \
-  #       -md sha256 \
-  #       -iter 100000 \
-  #       -pbkdf2 \
-  #       -in phenix-installer-$(version)-source.tar.xz \
-  #       -out phenix.enc \
-  #       -pass env:TARBALL_PASSWORD
-  #     mv phenix-installer-$(version)-source.tar.xz phenix-installer-$(version)-reduced-source.tar.xz
-  #   displayName: Build reduced tarball
-
-  # publish reduced source tarball as artifact
-  # - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.enc
-  #   artifact: phenix_reduced
-  #   continueOnError: true
-
-  # publish chem_data directory as artifact
-  # - publish: $(Pipeline.Workspace)/chem_data
-  #   artifact: chem_data
-  #   continueOnError: true
-
-  # upload reduced source tarball to Google Drive
-  # - script: |
-  #     set -xe
-  #     source activate upload
-  #     libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
-  #       --credentials $(upload_key.secureFilePath) \
-  #       --folder_id $(folder_id) \
-  #       --folder_list $(version) \
-  #       --files $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-reduced-source.tar.xz
-  #   displayName: Upload reduced source tarball to Google Drive
-  #   continueOnError: true
-
-  # upload chem_data tarball to Google Drive
-  # - script: |
-  #     set -xe
-  #     cd $(Pipeline.Workspace)
-  #     export XZ_OPT=-9
-  #     tar -Jcf chem_data.tar.xz ./chem_data
-  #     source activate upload
-  #     libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
-  #       --credentials $(upload_key.secureFilePath) \
-  #       --folder_id $(folder_id) \
-  #       --folder_list $(version) \
-  #       --files $(Pipeline.Workspace)/chem_data.tar.xz
-  #   displayName: Upload chem_data tarball to Google Drive
-  #   continueOnError: true
-
-  # create folders for conda packages and installers
-  - script: |
-      set -xe
-
-      source activate upload
-      sleep 300
-      for d in 3.7 3.8 3.9 3.10 linux-64 osx-64 osx-arm64 win64; do
-        libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
-          --credentials $(upload_key.secureFilePath) \
-          --folder_id $(folder_id) \
-          --folder_list "$(version)/${d}"
-        sleep 10
-      done
-  displayName: Create folders for conda packages and installers
-  continueOnError: true
