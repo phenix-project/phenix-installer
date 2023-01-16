@@ -204,8 +204,8 @@ jobs:
           --folder_list "$(version)/${d}"
         sleep 10
       done
-  displayName: Create folders for conda packages and installers
-  continueOnError: true
+    displayName: Create folders for conda packages and installers
+    continueOnError: true
 
   # publish complete source tarball as artifact
   - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.enc
