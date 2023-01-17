@@ -95,7 +95,7 @@ jobs:
 
       git commit -am "Update for $(version)"
 
-      conda create -n smithy -c conda-forge -y conda-smithy
+      conda create -n smithy -c conda-forge -y conda-smithy python=3.10
       source activate smithy
 
       conda smithy rerender -c auto
