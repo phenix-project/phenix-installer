@@ -95,10 +95,10 @@ jobs:
 
       git commit -am "Update for $(version)"
 
-      conda create -n smithy -c conda-forge -y conda-smithy python=3.10
+      conda create -n smithy -c conda-forge -y conda-smithy
       source activate smithy
 
-      conda smithy rerender -c auto
+      # conda smithy rerender -c auto
 
       # for f in `/bin/ls .ci_support/osx_64*python3.7*.yaml`; do
       #   sed -i s/"\- '14'"/"\- '13'"/g $f
