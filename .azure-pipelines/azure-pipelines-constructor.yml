@@ -294,27 +294,6 @@ jobs:
   - script: |
       set -xe
 
-      source activate upload
-
-      cd ./constructor
-      for f in `/bin/ls Phenix*`; do
-        echo Uploading ${f}
-        python $(Build.Repository.LocalPath)/scripts/google_drive.py \
-          --credentials $(upload_key.secureFilePath) \
-          --drive "Phenix Installers" \
-          --folder "$(version)" \
-          --subfolder "$(py_ver)" \
-          --file ${f}
-        sleep 60
-      done
-
-    displayName: Upload installer to Google Drive
-    retryCountOnTaskFailure: 3
-    continueOnError: true
-
-  - script: |
-      set -xe
-
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
       ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/$(version)"
@@ -347,4 +326,25 @@ jobs:
     displayName: Upload installer
     condition: or(eq(variables['py_ver'], '3.7'),
                   and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'osx-arm64')))
+    continueOnError: true
+
+  - script: |
+      set -xe
+
+      source activate upload
+
+      cd ./constructor
+      for f in `/bin/ls Phenix*`; do
+        echo Uploading ${f}
+        python $(Build.Repository.LocalPath)/scripts/google_drive.py \
+          --credentials $(upload_key.secureFilePath) \
+          --drive "Phenix Installers" \
+          --folder "$(version)" \
+          --subfolder "$(py_ver)" \
+          --file ${f}
+        sleep 60
+      done
+
+    displayName: Upload installer to Google Drive
+    retryCountOnTaskFailure: 3
     continueOnError: true
