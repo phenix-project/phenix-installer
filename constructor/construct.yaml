@@ -13,6 +13,8 @@ environment: phenix
 # general options
 conclusion_file: ./gui/conclusion.txt
 conclusion_text: ""
+exclude:  # [unix]
+  - readline  # [unix]
 initialize_by_default: false
 installer_type: all
 transmute_file_type: .conda
