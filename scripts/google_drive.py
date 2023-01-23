@@ -101,7 +101,7 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
     # sleep for retry_attempt * 2 * 60 s
     print()
     print('='*79)
-    print('Retry {} will start after {} seconds.'.format(retry + 1, (retry + 1)*120))
+    print(f'Retry {retry + 1} will start after {(retry + 1)*120} seconds.')
     print(time.asctime())
     print('='*79)
     print()
@@ -131,7 +131,7 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
     # sleep for retry_attempt * 2 * 60 s
     print()
     print('='*79)
-    print('Retry {} will start after {} seconds.'.format(retry + 1, (retry + 1)*120))
+    print(f'Retry {retry + 1} will start after {(retry + 1)*120} seconds.')
     print(time.asctime())
     print('='*79)
     print()
@@ -141,12 +141,13 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
 def main():
 
   parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-  parser.add_argument('--credentials', help='JSON credentials for service account')
-  parser.add_argument('--drive', help='Google Drive name')
+  parser.add_argument('--credentials', help='JSON credentials for service account', required=True)
+  parser.add_argument('--drive', help='Google Drive name', required=True)
   parser.add_argument('--folder', help='Folder name for version')
   parser.add_argument('--subfolder', help='Subfolder in version folder')
   parser.add_argument('--file', help='File to upload')
   parser.add_argument('--retries', type=int, default=20, help='Number of retries to upload')
+  parser.add_argument('--cleanup', action='store_true', help='Clean up "My Drive"')
 
   if len(sys.argv) == 1:
     parser.print_help()
@@ -165,6 +166,26 @@ def main():
   drive_id = get_drive_id(name=namespace.drive, credentials=credentials)
   if drive_id is None:
     raise RuntimeError('The "{}" drive could not be found.'.format(namespace.drive))
+
+  # clean up "My Drive" of service account
+  if namespace.cleanup:
+    service = build('drive', 'v3', credentials=credentials)
+    results = service.files().list(
+      pageSize=50,
+      q="'{}' in parents".format(my_drive_id),
+      fields='nextPageToken, files(id, name, parents)',
+      includeItemsFromAllDrives=True,
+      supportsAllDrives=True,
+      corpora='drive',
+      driveId=drive_id
+    ).execute()
+    items = results.get('files', [])
+    print(f'Cleaning up {len(items)} items')
+    for item in items:
+      print(item)
+      service.files().delete(fileId=item['id']).execute()
+    print()
+    return 0
 
   # check folder (version)
   version_folder_id = get_folder_id(
@@ -193,7 +214,7 @@ def main():
   for name, id in zip([namespace.drive, namespace.folder, namespace.subfolder],
                       [drive_id, version_folder_id, subfolder_id]):
     if name is not None and id is not None:
-      print('{:>20}: {}'.format(name, id))
+      print(f'{name:>20}: {id}')
   print()
 
   # upload file to subfolder
@@ -216,23 +237,8 @@ def main():
   print('Uploaded file')
   print('=============')
   for key in ['name', 'id', 'parents', 'size', 'md5Checksum']:
-    print('{:>20}: {}'.format(key, metadata[key]))
+    print(f'{key:>20}: {metadata[key]}')
   print()
-
-  # clean up "My Drive" of service account
-  results = service.files().list(
-    pageSize=50,
-    q="'{}' in parents".format(my_drive_id),
-    fields='nextPageToken, files(id, name, parents)',
-    includeItemsFromAllDrives=True,
-    supportsAllDrives=True,
-    corpora='drive',
-    driveId=drive_id
-  ).execute()
-  items = results.get('files', [])
-  for item in items:
-    print(item)
-    # service.files().delete(fileId=item['id']).execute()
 
 # =============================================================================
 if __name__ == '__main__':
