@@ -12,340 +12,370 @@ resources:
     branch: 'main'
     trigger: true
 
-jobs:
-- job: Construct_phenix_installer
+stages:
+- stage: Build
 
-  strategy:
-    maxParallel: 5
-    matrix:
-      linux_py37:
-        vmImage: ubuntu-latest
-        artifact_platform: linux_64
-        platform: linux-64
-        py_ver: 3.7
-        np_ver: 1.20
-      linux_py38:
-        vmImage: ubuntu-latest
-        artifact_platform: linux_64
-        platform: linux-64
-        py_ver: 3.8
-        np_ver: 1.20
-      linux_py39:
-        vmImage: ubuntu-latest
-        artifact_platform: linux_64
-        platform: linux-64
-        py_ver: 3.9
-        np_ver: 1.20
-      linux_py310:
-        vmImage: ubuntu-latest
-        artifact_platform: linux_64
-        platform: linux-64
-        py_ver: 3.10
-        np_ver: 1.21
-      macOS_py37:
-        vmImage: macOS-latest
-        artifact_platform: osx_64
-        platform: osx-64
-        py_ver: 3.7
-        np_ver: 1.20
-      macOS_py38:
-        vmImage: macOS-latest
-        artifact_platform: osx_64
-        platform: osx-64
-        py_ver: 3.8
-        np_ver: 1.20
-      macOS_py39:
-        vmImage: macOS-latest
-        artifact_platform: osx_64
-        platform: osx-64
-        py_ver: 3.9
-        np_ver: 1.20
-      macOS_py310:
-        vmImage: macOS-latest
-        artifact_platform: osx_64
-        platform: osx-64
-        py_ver: 3.10
-        np_ver: 1.21
-      macOS_arm64_py38:
-        vmImage: macOS-latest
-        artifact_platform: osx_arm64
-        platform: osx-arm64
-        py_ver: 3.8
-        np_ver: 1.20
-      macOS_arm64_py39:
-        vmImage: macOS-latest
-        artifact_platform: osx_arm64
-        platform: osx-arm64
-        py_ver: 3.9
-        np_ver: 1.20
-      macOS_arm64_py310:
-        vmImage: macOS-latest
-        artifact_platform: osx_arm64
-        platform: osx-arm64
-        py_ver: 3.10
-        np_ver: 1.21
+  jobs:
+  - job: Construct_phenix_installer
 
-  pool:
-    vmImage: $(vmImage)
-  timeoutInMinutes: 360
+    strategy:
+      maxParallel: 4
+      matrix:
+        linux_py37:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
+          py_ver: 3.7
+          np_ver: 1.20
+        linux_py38:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
+          py_ver: 3.8
+          np_ver: 1.20
+        linux_py39:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
+          py_ver: 3.9
+          np_ver: 1.20
+        linux_py310:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
+          py_ver: 3.10
+          np_ver: 1.21
+        macOS_py37:
+          vmImage: macOS-latest
+          artifact_platform: osx_64
+          platform: osx-64
+          py_ver: 3.7
+          np_ver: 1.20
+        macOS_py38:
+          vmImage: macOS-latest
+          artifact_platform: osx_64
+          platform: osx-64
+          py_ver: 3.8
+          np_ver: 1.20
+        macOS_py39:
+          vmImage: macOS-latest
+          artifact_platform: osx_64
+          platform: osx-64
+          py_ver: 3.9
+          np_ver: 1.20
+        macOS_py310:
+          vmImage: macOS-latest
+          artifact_platform: osx_64
+          platform: osx-64
+          py_ver: 3.10
+          np_ver: 1.21
+        macOS_arm64_py38:
+          vmImage: macOS-latest
+          artifact_platform: osx_arm64
+          platform: osx-arm64
+          py_ver: 3.8
+          np_ver: 1.20
+        macOS_arm64_py39:
+          vmImage: macOS-latest
+          artifact_platform: osx_arm64
+          platform: osx-arm64
+          py_ver: 3.9
+          np_ver: 1.20
+        macOS_arm64_py310:
+          vmImage: macOS-latest
+          artifact_platform: osx_arm64
+          platform: osx-arm64
+          py_ver: 3.10
+          np_ver: 1.21
 
-  # variables for version
-  variables:
-    year: $(Get-Date -Format yyyy)
-    month: $(Get-Date -Format MM)
-    day: $(Get-Date -Format dd)
-    version: $(year).$(month)a$(day)
+    pool:
+      vmImage: $(vmImage)
+    timeoutInMinutes: 360
 
-  steps:
+    # variables for version
+    variables:
+      year: $(Get-Date -Format yyyy)
+      month: $(Get-Date -Format MM)
+      day: $(Get-Date -Format dd)
+      version: $(year).$(month)a$(day)
 
-  - task: InstallSSHKey@0
-    inputs:
-      knownHostsEntry: cci.lbl.gov,131.243.194.153 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnPOtqyYASs6hc3fsmUQn92ovSozJsMsJyrMWjppUERX1tD4Fh0D7YaNhLvYpKi5mYVREo+tsKoOatCcqKGHCONWpzx7JHXUzfIBsy6nCeygRyyW4yuyoCuYFvOYLkaM4PrN/7XaZEnp1ux6/ZcbRxBDNK4f42svJUV39OX33tRuQWpP+O85paJr1ePHVz6U2n14a+3fRN3DBMti1dJuKOThU4djYEBQimx54pnW71eYORN2oUz+N/4RHAcomtxZpcUMl3Qadw8hD4s1XM6fzJ0Que7KefnnrPOgAEtZxKl9j09aaE70Oh+ie5Y6ckwddJ/4qZB5m2tBaEi3xuy0TSQ==
-      sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA7XgVgdU9GmZuo5yVyW/htrAuxe7ypuq7IowWwfUC0WZw9SPzQ8kOGj63plF3ytx/qpgvUlS1AiywO20rZ83gHmRdAiuvt9laH09KlWEUhIhAQTzesqBG5aUT0MKo01yxijoRl5HC8w/MdOanc0h01e6IxnZvgG0N30RB1i4xVPCtR/VBmXSp4R0T+Q/gJjfQssuBxHVMrrute4V3uUHek58FL2QgUB0+zq6ipETjuCJxTSyYVAFtCYDPYs+0lAYYkWrXALCr9kX9s22jYtkyv5kNw6mEW8nhtA7GbTdJLv4M6/WYtcvQV8TDcNCfltOfl81U3gcZ9zhQDKGVoNaJEw== buildbot@cci.lbl.gov
-      sshKeySecureFile: id_rsa
-    displayName: Download SSH key
+    steps:
 
-  - task: DownloadSecureFile@1
-    name: upload_key
-    inputs:
-      secureFile: phenix-lbl-04e6cb0d1bf7.json
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: cci.lbl.gov,131.243.194.153 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnPOtqyYASs6hc3fsmUQn92ovSozJsMsJyrMWjppUERX1tD4Fh0D7YaNhLvYpKi5mYVREo+tsKoOatCcqKGHCONWpzx7JHXUzfIBsy6nCeygRyyW4yuyoCuYFvOYLkaM4PrN/7XaZEnp1ux6/ZcbRxBDNK4f42svJUV39OX33tRuQWpP+O85paJr1ePHVz6U2n14a+3fRN3DBMti1dJuKOThU4djYEBQimx54pnW71eYORN2oUz+N/4RHAcomtxZpcUMl3Qadw8hD4s1XM6fzJ0Que7KefnnrPOgAEtZxKl9j09aaE70Oh+ie5Y6ckwddJ/4qZB5m2tBaEi3xuy0TSQ==
+        sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA7XgVgdU9GmZuo5yVyW/htrAuxe7ypuq7IowWwfUC0WZw9SPzQ8kOGj63plF3ytx/qpgvUlS1AiywO20rZ83gHmRdAiuvt9laH09KlWEUhIhAQTzesqBG5aUT0MKo01yxijoRl5HC8w/MdOanc0h01e6IxnZvgG0N30RB1i4xVPCtR/VBmXSp4R0T+Q/gJjfQssuBxHVMrrute4V3uUHek58FL2QgUB0+zq6ipETjuCJxTSyYVAFtCYDPYs+0lAYYkWrXALCr9kX9s22jYtkyv5kNw6mEW8nhtA7GbTdJLv4M6/WYtcvQV8TDcNCfltOfl81U3gcZ9zhQDKGVoNaJEw== buildbot@cci.lbl.gov
+        sshKeySecureFile: id_rsa
+      displayName: Download SSH key
 
-  - task: DownloadSecureFile@1
-    name: ssh_config
-    inputs:
-      secureFile: ssh.config
+    - task: DownloadSecureFile@1
+      name: upload_key
+      inputs:
+        secureFile: phenix-lbl-04e6cb0d1bf7.json
 
-  # download sources
-  - checkout: self
+    - task: DownloadSecureFile@1
+      name: ssh_config
+      inputs:
+        secureFile: ssh.config
 
-  - script: |
-      set -xe
+    # download sources
+    - checkout: self
 
-      pwd
-      ls
+    - script: |
+        set -xe
 
-      cd $(Pipeline.Workspace)
-      pwd
-      ls
-    displayName: Debug information
+        pwd
+        ls
 
-  - bash: sudo chown -R $USER $CONDA
-    displayName: Take ownership of conda installation
+        cd $(Pipeline.Workspace)
+        pwd
+        ls
+      displayName: Debug information
 
-  # add conda to path
-  # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
-  - bash: echo "##vso[task.prependpath]$CONDA/bin"
-    displayName: Add conda to PATH
+    - bash: sudo chown -R $USER $CONDA
+      displayName: Take ownership of conda installation
 
-  # set up constructor environment
-  - script: |
-      set -xe
-      conda remove -n construct -y --all
-      conda create -n construct -y -c conda-forge ctools/label/dev::constructor
-    displayName: Set up constructor environment
-    retryCountOnTaskFailure: 3
+    # add conda to path
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
+    - bash: echo "##vso[task.prependpath]$CONDA/bin"
+      displayName: Add conda to PATH
 
-  # set up Google Drive upload environment
-  - script: |
-      set -xe
-      conda remove -n upload -y --all
-      conda create -n upload -y python=3.10
-      source activate upload
-      pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
-    displayName: Set up upload environment
-    retryCountOnTaskFailure: 3
+    # set up constructor environment
+    - script: |
+        set -xe
+        conda remove -n construct -y --all
+        conda create -n construct -y -c conda-forge ctools/label/dev::constructor
+      displayName: Set up constructor environment
+      retryCountOnTaskFailure: 3
 
-  - script: |
-      set -xe
+    # set up Google Drive upload environment
+    - script: |
+        set -xe
+        conda remove -n upload -y --all
+        conda create -n upload -y python=3.10
+        source activate upload
+        pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+      displayName: Set up upload environment
+      retryCountOnTaskFailure: 3
 
-      rm -fr $(Pipeline.Workspace)/conda*
+    - script: |
+        set -xe
 
-      conda clean -y --all
+        rm -fr $(Pipeline.Workspace)/conda*
 
-      source activate construct
-      constructor --clean
+        conda clean -y --all
 
-      df -h
+        source activate construct
+        constructor --clean
 
-    displayName: Clean up
+        df -h
 
-  # patch constructor to avoid check
-  # - script: |
-  #     set -xe
-  #     cd constructor
-  #     python3 patch_fcp.py --site-packages ${CONDA}/envs/construct/lib/python3.9/site-packages
-  #   displayName: Patch constructor
+      displayName: Clean up
 
-  # download latest phenix conda package
-  - task: DownloadPipelineArtifact@2
-    inputs:
-      source: 'specific'
-      project: '$(resources.pipeline.phenix_feedstock.projectID)'
-      pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
-      preferTriggeringPipeline: true
-      allowPartiallySucceededBuilds: true
-      allowFailedBuilds: false
-      # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-      patterns: '**/*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+    # patch constructor to avoid check
+    # - script: |
+    #     set -xe
+    #     cd constructor
+    #     python3 patch_fcp.py --site-packages ${CONDA}/envs/construct/lib/python3.9/site-packages
+    #   displayName: Patch constructor
 
-  - script: |
-      set -xe
+    # download latest phenix conda package
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: 'specific'
+        project: '$(resources.pipeline.phenix_feedstock.projectID)'
+        pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
+        preferTriggeringPipeline: true
+        allowPartiallySucceededBuilds: true
+        allowFailedBuilds: false
+        # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
+        patterns: '**/*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
 
-      cd $(Pipeline.Workspace)/conda_artifacts*
-      unzip phenix-feedstock*.zip
+    - script: |
+        set -xe
 
-      if [ -d build_artifacts ]; then
-        cd build_artifacts
-      fi
-      cd $(platform)
+        cd $(Pipeline.Workspace)/conda_artifacts*
+        unzip phenix-feedstock*.zip
 
-      mkdir $(Pipeline.Workspace)/$(platform)
-      mv phenix* $(Pipeline.Workspace)/$(platform)/
-    displayName: Extract artifact
+        if [ -d build_artifacts ]; then
+          cd build_artifacts
+        fi
+        cd $(platform)
 
-  - script: |
-      set -xe
-      cd constructor
-      version=`python3 update_version.py --version $(Pipeline.Workspace)/$(platform)/phenix*`
-      echo "##vso[task.setVariable variable=version]$version"
-      echo $(version)
-    displayName: Set and update version
+        mkdir $(Pipeline.Workspace)/$(platform)
+        mv phenix* $(Pipeline.Workspace)/$(platform)/
+      displayName: Extract artifact
 
-  - script: |
-      set -xe
+    - script: |
+        set -xe
+        cd constructor
+        version=`python3 update_version.py --version $(Pipeline.Workspace)/$(platform)/phenix*`
+        echo "##vso[task.setVariable variable=version]$version"
+        echo $(version)
+      displayName: Set and update version
 
-      source activate upload
+    - script: |
+        set -xe
 
-      cd $(Pipeline.Workspace)/$(platform)
-      for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/`; do
-        echo Uploading ${f}
+        source activate upload
+
+        cd $(Pipeline.Workspace)/$(platform)
+        for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/`; do
+          echo Uploading ${f}
+          python $(Build.Repository.LocalPath)/scripts/google_drive.py \
+            --credentials $(upload_key.secureFilePath) \
+            --drive "Phenix Installers" \
+            --folder "$(version)" \
+            --subfolder "$(platform)" \
+            --file ${f}
+          sleep 60
+        done
+      displayName: Upload conda package to Google Drive
+      retryCountOnTaskFailure: 3
+      continueOnError: true
+
+    - script: |
+        set -xe
+
+        conda remove -n phenix -y --all
+
+        cd $(Pipeline.Workspace)/$(platform)
+        conda create -n phenix -y
+        source activate phenix
+        conda install -y phenix*
+
+        cd ${CONDA_PREFIX}/share/phenix/conda_envs
+
+        pyver=`echo $(py_ver) | sed 's/\.//'`
+
+        conda install -y --file phenix_py${pyver}_$(platform).txt
+        conda clean -y --all
+
+      displayName: Create installer environment
+      retryCountOnTaskFailure: 3
+
+    - script: |
+        set -xe
+
+        df -h
+      displayName: Check disk space
+
+    - script: |
+        set -xe
+
+        source activate construct
+        cd constructor
+        constructor .
+        ls
+
+        df -h
+      displayName: Create installer
+      condition: ne(variables['platform'], 'osx-arm64')
+      retryCountOnTaskFailure: 3
+
+    - script: |
+        set -xe
+
+        # cross-platform constructor
+        # https://github.com/conda-forge/miniforge/blob/main/scripts/build.sh
+        TEMP_DIR=$(mktemp -d)
+        mkdir "${TEMP_DIR}/conda-standalone"
+        pushd "${TEMP_DIR}/conda-standalone"
+        curl -L -O "https://repo.anaconda.com/pkgs/misc/conda-execs/conda-4.10.3-osx-arm64.exe"
+        CONDA_STANDALONE="${PWD}/conda-4.10.3-osx-arm64.exe"
+        popd
+
+        source activate construct
+        cd constructor
+        constructor . --conda-exe ${CONDA_STANDALONE} --platform $(platform)
+        ls
+
+        df -h
+      displayName: Create installer (cross-platform)
+      condition: eq(variables['platform'], 'osx-arm64')
+      retryCountOnTaskFailure: 3
+
+    - script: |
+        set -xe
+
+        installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/$(version)"
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/$(version)/$(platform)"
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)"
+        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)/$(platform)"
+
+        cd constructor
+        for f in `/bin/ls Phenix*`; do
+          echo Copying ${f}
+          scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/$(version)/${f}
+        done
+
+        for f in `/bin/ls Phenix*`; do
+          echo Moving ${f}
+          ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/$(version)/${f} ${installer_dir}/$(version)/${f}"
+        done
+
+        cd $(Pipeline.Workspace)/$(platform)
+        for f in `/bin/ls phenix*`; do
+          echo Copying ${f}
+          scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/$(version)/$(platform)/${f}
+        done
+
+        for f in `/bin/ls phenix*`; do
+          echo Moving ${f}
+          ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/$(version)/$(platform)/${f} ${installer_dir}/$(version)/$(platform)/${f}"
+        done
+
+      displayName: Upload installer
+      condition: or(eq(variables['py_ver'], '3.7'),
+                    and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'osx-arm64')))
+      continueOnError: true
+
+    - script: |
+        set -xe
+
+        source activate upload
+
+        cd ./constructor
+        for f in `/bin/ls Phenix*`; do
+          echo Uploading ${f}
+          python $(Build.Repository.LocalPath)/scripts/google_drive.py \
+            --credentials $(upload_key.secureFilePath) \
+            --drive "Phenix Installers" \
+            --folder "$(version)" \
+            --subfolder "$(py_ver)" \
+            --file ${f}
+          sleep 60
+        done
+
+      displayName: Upload installer to Google Drive
+      retryCountOnTaskFailure: 3
+      continueOnError: true
+
+- stage: Clean
+
+  jobs:
+  - job: Clean_my_drive
+
+    steps:
+
+    # set up Google Drive upload environment
+    - script: |
+        set -xe
+        conda remove -n upload -y --all
+        conda create -n upload -y python=3.10
+        source activate upload
+        pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+      displayName: Set up upload environment
+      retryCountOnTaskFailure: 3
+
+    - script: |
+        set -xe
+
+        source activate upload
+
         python $(Build.Repository.LocalPath)/scripts/google_drive.py \
           --credentials $(upload_key.secureFilePath) \
           --drive "Phenix Installers" \
-          --folder "$(version)" \
-          --subfolder "$(platform)" \
-          --file ${f}
-        sleep 60
-      done
-    displayName: Upload conda package to Google Drive
-    retryCountOnTaskFailure: 3
-    continueOnError: true
-
-  - script: |
-      set -xe
-
-      conda remove -n phenix -y --all
-
-      cd $(Pipeline.Workspace)/$(platform)
-      conda create -n phenix -y
-      source activate phenix
-      conda install -y phenix*
-
-      cd ${CONDA_PREFIX}/share/phenix/conda_envs
-
-      pyver=`echo $(py_ver) | sed 's/\.//'`
-
-      conda install -y --file phenix_py${pyver}_$(platform).txt
-      conda clean -y --all
-
-    displayName: Create installer environment
-    retryCountOnTaskFailure: 3
-
-  - script: |
-      set -xe
-
-      df -h
-    displayName: Check disk space
-
-  - script: |
-      set -xe
-
-      source activate construct
-      cd constructor
-      constructor .
-      ls
-
-      df -h
-    displayName: Create installer
-    condition: ne(variables['platform'], 'osx-arm64')
-    retryCountOnTaskFailure: 3
-
-  - script: |
-      set -xe
-
-      # cross-platform constructor
-      # https://github.com/conda-forge/miniforge/blob/main/scripts/build.sh
-      TEMP_DIR=$(mktemp -d)
-      mkdir "${TEMP_DIR}/conda-standalone"
-      pushd "${TEMP_DIR}/conda-standalone"
-      curl -L -O "https://repo.anaconda.com/pkgs/misc/conda-execs/conda-4.10.3-osx-arm64.exe"
-      CONDA_STANDALONE="${PWD}/conda-4.10.3-osx-arm64.exe"
-      popd
-
-      source activate construct
-      cd constructor
-      constructor . --conda-exe ${CONDA_STANDALONE} --platform $(platform)
-      ls
-
-      df -h
-    displayName: Create installer (cross-platform)
-    condition: eq(variables['platform'], 'osx-arm64')
-    retryCountOnTaskFailure: 3
-
-  - script: |
-      set -xe
-
-      installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
-
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/$(version)"
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/$(version)/$(platform)"
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)"
-      ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)/$(platform)"
-
-      cd constructor
-      for f in `/bin/ls Phenix*`; do
-        echo Copying ${f}
-        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/$(version)/${f}
-      done
-
-      for f in `/bin/ls Phenix*`; do
-        echo Moving ${f}
-        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/$(version)/${f} ${installer_dir}/$(version)/${f}"
-      done
-
-      cd $(Pipeline.Workspace)/$(platform)
-      for f in `/bin/ls phenix*`; do
-        echo Copying ${f}
-        scp -F $(ssh_config.secureFilePath) ${f} builder@cci.lbl.gov:${installer_dir}/staging/$(version)/$(platform)/${f}
-      done
-
-      for f in `/bin/ls phenix*`; do
-        echo Moving ${f}
-        ssh -F $(ssh_config.secureFilePath) builder@cci.lbl.gov "mv -f ${installer_dir}/staging/$(version)/$(platform)/${f} ${installer_dir}/$(version)/$(platform)/${f}"
-      done
-
-    displayName: Upload installer
-    condition: or(eq(variables['py_ver'], '3.7'),
-                  and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'osx-arm64')))
-    continueOnError: true
-
-  - script: |
-      set -xe
-
-      source activate upload
-
-      cd ./constructor
-      for f in `/bin/ls Phenix*`; do
-        echo Uploading ${f}
-        python $(Build.Repository.LocalPath)/scripts/google_drive.py \
-          --credentials $(upload_key.secureFilePath) \
-          --drive "Phenix Installers" \
-          --folder "$(version)" \
-          --subfolder "$(py_ver)" \
-          --file ${f}
-        sleep 60
-      done
-
-    displayName: Upload installer to Google Drive
-    retryCountOnTaskFailure: 3
-    continueOnError: true
+          --cleanup
