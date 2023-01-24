@@ -360,6 +360,23 @@ stages:
 
     steps:
 
+    # download sources
+    - checkout: self
+
+    - script: |
+        set -xe
+
+        pwd
+        ls
+
+        cd $(Pipeline.Workspace)
+        pwd
+        ls
+      displayName: Debug information
+
+    - bash: sudo chown -R $USER $CONDA
+      displayName: Take ownership of conda installation
+
     # set up Google Drive upload environment
     - script: |
         set -xe
