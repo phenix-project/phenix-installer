@@ -385,6 +385,11 @@ stages:
     - bash: sudo chown -R $USER $CONDA
       displayName: Take ownership of conda installation
 
+    # add conda to path
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
+    - bash: echo "##vso[task.prependpath]$CONDA/bin"
+      displayName: Add conda to PATH
+
     # set up Google Drive upload environment
     - script: |
         set -xe
