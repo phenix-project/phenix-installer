@@ -257,6 +257,14 @@ stages:
     - script: |
         set -xe
 
+        source activate phenix
+
+        cp ${CONDA_PREFIX}/share/phenix/CHANGES ./constructor/gui/readme_macos.txt
+      displayName: Update Changelog
+
+    - script: |
+        set -xe
+
         df -h
       displayName: Check disk space
 
