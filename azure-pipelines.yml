@@ -119,26 +119,29 @@ jobs:
       set -xe
       export SVN_SSH="ssh -F $(ssh_config.secureFilePath)"
       cd $(Pipeline.Workspace)
-      python bootstrap.py hot update --builder=phenix_voyager --use-conda --python 37 --cciuser=builder
+      python bootstrap.py hot update \
+        --builder=phenix_release \
+        --use-conda \
+        --python 37 \
+        --cciuser=builder
     displayName: Download remaining sources
 
   - script: |
       set -xe
-      cd $(Pipeline.Workspace)/modules
-      for module in dials dxtbx xia2; do
-        cd ${module}
-        git checkout dials-3.8
-        cd ..
-      done
-
-    displayName: Switch to dials-3.8 branches for DIALS modules
+      cd $(Pipeline.Workspace)/modules/cctbx_project
+      git revert --no-edit 27582271c88757549cf9e320ca1b754c20de15b5
+    displayName: Revert std::shared_ptr for DIALS 3.8
 
   # base and build
   - script: |
       set -xe
       cd $(Pipeline.Workspace)
       export CCTBX_SKIP_CHEMDATA_CACHE_REBUILD=1
-      python bootstrap.py base build --builder=phenix_voyager --use-conda --python 37 --nproc=4
+      python bootstrap.py base build \
+        --builder=phenix_release \
+        --use-conda \
+        --python 37 \
+        --nproc=4
     displayName: Configure and Build
 
   # remove symoblic link for Windows
