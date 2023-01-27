@@ -257,6 +257,19 @@ stages:
     - script: |
         set -xe
 
+        installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+
+        source activate phenix
+        cd ${CONDA_PREFIX}/share/cctbx
+        mkdir -p rest
+        scp -F $(ssh_config.secureFilePath) builder@anaconda.lbl.gov:${installer_dir}/rest/token .
+        scp -F $(ssh_config.secureFilePath) builder@anaconda.lbl.gov:${installer_dir}/rest/url .
+
+      displayName: Copy token and url
+
+    - script: |
+        set -xe
+
         source activate phenix
 
         cp ${CONDA_PREFIX}/share/phenix/CHANGES ./constructor/gui/readme_macos.txt
