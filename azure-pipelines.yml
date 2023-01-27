@@ -129,10 +129,9 @@ jobs:
   - script: |
       set -xe
 
+      cd $(Pipeline.Workspace)/modules/cctbx_project
       git config user.name "Do Not Merge"
       git config user.email "do_not@mer.ge"
-
-      cd $(Pipeline.Workspace)/modules/cctbx_project
       git revert --no-edit 27582271c88757549cf9e320ca1b754c20de15b5
     displayName: Revert std::shared_ptr for DIALS 3.8
 
