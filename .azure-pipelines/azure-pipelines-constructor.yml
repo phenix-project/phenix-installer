@@ -262,8 +262,8 @@ stages:
         source activate phenix
         cd ${CONDA_PREFIX}/share/cctbx
         mkdir -p rest
-        scp -F $(ssh_config.secureFilePath) builder@anaconda.lbl.gov:${installer_dir}/rest/token .
-        scp -F $(ssh_config.secureFilePath) builder@anaconda.lbl.gov:${installer_dir}/rest/url .
+        scp -o StrictHostKeyChecking=No -F $(ssh_config.secureFilePath) builder@anaconda.lbl.gov:${installer_dir}/rest/token .
+        scp -o StrictHostKeyChecking=No -F $(ssh_config.secureFilePath) builder@anaconda.lbl.gov:${installer_dir}/rest/url .
 
       displayName: Copy token and url
 
