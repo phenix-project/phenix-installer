@@ -381,6 +381,11 @@ stages:
 
     steps:
 
+    - task: DownloadSecureFile@1
+      name: upload_key
+      inputs:
+        secureFile: phenix-lbl-04e6cb0d1bf7.json
+
     # download sources
     - checkout: self
 
@@ -422,3 +427,4 @@ stages:
           --credentials $(upload_key.secureFilePath) \
           --drive "Phenix Installers" \
           --cleanup
+      displayName: Clean up drive
