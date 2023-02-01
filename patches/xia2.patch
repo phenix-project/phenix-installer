@@ -47,3 +47,18 @@ index eb92bfde..13b67717 100644
              deduplicated.add(s)
          elif filenames in hdf5_sweeps:
              # Bias in favour of using _master.h5 in place of .nxs, because of XDS
+diff --git a/src/xia2/XIA2Version.py b/src/xia2/XIA2Version.py
+index dba4a178..1182f416 100644
+--- a/src/xia2/XIA2Version.py
++++ b/src/xia2/XIA2Version.py
+@@ -1,7 +1,8 @@
+ from __future__ import annotations
+ 
+-from importlib import metadata
++# from importlib import metadata
+ 
+-VersionNumber = metadata.version("xia2")
++# VersionNumber = metadata.version("xia2")
++VersionNumber = '3.13.0'
+ Version = f"XIA2 {VersionNumber}"
+ Directory = f"xia2-{VersionNumber}"
