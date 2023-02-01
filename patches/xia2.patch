@@ -1,0 +1,28 @@
+diff --git a/setup.py b/setup.py
+index 487b3dab..3a4e5946 100644
+--- a/setup.py
++++ b/setup.py
+@@ -106,7 +106,8 @@ def get_version() -> str:
+     if "dev" not in __version_tag__:
+         return __version_tag__
+     # If we're in a git repository, then use "git describe"
+-    if (git_ver := get_git_revision()) is not None:
++    git_ver = get_git_revision()
++    if git_ver is not None:
+         return git_ver
+     # If all else fails, return our development tag as-is
+     return __version_tag__
+diff --git a/src/xia2/Applications/xia2setup.py b/src/xia2/Applications/xia2setup.py
+index eb92bfde..13b67717 100644
+--- a/src/xia2/Applications/xia2setup.py
++++ b/src/xia2/Applications/xia2setup.py
+@@ -290,7 +290,8 @@ def _filter_aliased_hdf5_sweeps(sweeps: list[str]) -> set[str]:
+     hdf5_sweeps: dict[frozenset[str], str] = {}
+ 
+     for s in sweeps:
+-        if not is_hdf5_name(s) or not (filenames := _linked_hdf5_data_files(s)):
++        filenames = _linked_hdf5_data_files(s)
++        if not is_hdf5_name(s) or not filenames:
+             deduplicated.add(s)
+         elif filenames in hdf5_sweeps:
+             # Bias in favour of using _master.h5 in place of .nxs, because of XDS
