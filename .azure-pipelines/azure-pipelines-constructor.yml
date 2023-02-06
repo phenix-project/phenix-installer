@@ -143,7 +143,7 @@ stages:
     # install mamba
     - script: |
         set -xe
-        conda install -n base -y mamba
+        conda install -n base -y -c conda-forge mamba
 
       displayName: Install mamba
       retryCountOnTaskFailure: 3
