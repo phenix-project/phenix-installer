@@ -140,6 +140,14 @@ stages:
     - bash: echo "##vso[task.prependpath]$CONDA/bin"
       displayName: Add conda to PATH
 
+    # install mamba
+    - script: |
+        set -xe
+        conda install -n base -y mamba
+
+      displayName: Install mamba
+      retryCountOnTaskFailure: 3
+
     # set up constructor environment
     - script: |
         set -xe
