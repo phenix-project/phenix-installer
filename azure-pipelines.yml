@@ -209,9 +209,9 @@ jobs:
   - script: |
       set -xe
 
-      conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.78 tabulate tqdm
+      conda create -n upload -y -c conda-forge python=3.9 pydrive2 tabulate tqdm
       source activate upload
-      mamba install -y -c xfel -c conda-forge --no-deps --freeze-installed cctbx.xfel
+      mamba install -y -c xfel -c conda-forge --no-deps --freeze-installed boost boost-cpp numpy cctbx.xfel
 
       for d in 3.7 3.8 3.9 3.10 linux-64 osx-64 osx-arm64 win64; do
         libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
