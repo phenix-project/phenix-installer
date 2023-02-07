@@ -143,6 +143,7 @@ stages:
     # install mamba
     - script: |
         set -xe
+        conda update -n base -y -c conda-forge --all
         conda install -n base -y -c conda-forge mamba
 
       displayName: Install mamba
