@@ -138,10 +138,14 @@ jobs:
       git config user.name "Do Not Merge"
       git config user.email "do_not@mer.ge"
       git revert --no-edit c51410c50f77045663aec9da21faa28689191c1a
+      git apply $(Pipeline.Workspace)/phenix-installer/patches/dials.patch
+
+      cd $(Pipeline.Workspace)/modules/dxtbx
+      git apply $(Pipeline.Workspace)/phenix-installer/patches/dxtbx.patch
 
       cd $(Pipeline.Workspace)/modules/xia2
       git apply $(Pipeline.Workspace)/phenix-installer/patches/xia2.patch
-    displayName: Switch to DIALS 3.13 and revert walrus operator
+    displayName: Switch to DIALS 3.13 and patch for Python 3.7
 
   # base and build
   - script: |
