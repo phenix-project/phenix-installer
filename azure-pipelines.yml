@@ -99,6 +99,15 @@ jobs:
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: Add conda to PATH
 
+  # install mamba
+  - script: |
+      set -xe
+      conda update -n base -y -c conda-forge --all
+      conda install -n base -y -c conda-forge mamba
+
+    displayName: Install mamba
+    retryCountOnTaskFailure: 3
+
   # download support scripts
   - checkout: self
     path: ./phenix-installer
@@ -202,7 +211,7 @@ jobs:
 
       conda create -n upload -y -c conda-forge python=3.9 pydrive2 boost=1.78 tabulate tqdm
       source activate upload
-      conda install -y -c xfel -c conda-forge --no-deps cctbx.xfel
+      mamba install -y -c xfel -c conda-forge --no-deps --freeze-installed cctbx.xfel
 
       for d in 3.7 3.8 3.9 3.10 linux-64 osx-64 osx-arm64 win64; do
         libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
