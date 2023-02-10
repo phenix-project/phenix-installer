@@ -176,6 +176,17 @@ jobs:
       cp splash-refine-1.3.png splash-refine.png
     displayName: Remove symoblic link to image
 
+  - script: |
+      set -xe
+
+      cd $(Pipeline.Workspace)
+      mkdir -p rest
+      cd rest
+      scp -F $(ssh_config.secureFilePath) builder@cci.lbl.gov:${installer_dir}/rest/token .
+      scp -F $(ssh_config.secureFilePath) builder@cci.lbl.gov:${installer_dir}/rest/url .
+
+    displayName: Copy token and url
+
   # build source tarball
   # build/bin/libtbx.create_installer --version $(version) --install_script modules/cctbx_project/libtbx/auto_build/plus_installer.py --dist_dir dist/$(version) tmp/cctbx-$(version)
   - script: |
@@ -192,6 +203,7 @@ jobs:
       rm -fr build tmp modules
       cd ./dist/$(version)
       tar -xf phenix-installer-$(version)-source.tar.gz
+      cp -a $(Pipeline.Workspace)/rest phenix-installer-$(version)-source
       export XZ_OPT=-9
       tar -Jcf phenix-installer-$(version)-source.tar.xz phenix-installer-$(version)-source
       openssl enc \
