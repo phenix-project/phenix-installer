@@ -179,6 +179,8 @@ jobs:
   - script: |
       set -xe
 
+      installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+
       cd $(Pipeline.Workspace)
       mkdir -p rest
       cd rest
