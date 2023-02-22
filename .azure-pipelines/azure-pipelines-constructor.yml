@@ -213,6 +213,8 @@ stages:
 
         mkdir $(Pipeline.Workspace)/$(platform)
         mv phenix* $(Pipeline.Workspace)/$(platform)/
+
+        rm -fr $(Pipeline.Workspace)/conda_artifacts*
       displayName: Extract artifact
 
     - script: |
