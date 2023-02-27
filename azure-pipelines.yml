@@ -176,6 +176,7 @@ jobs:
       cp splash-refine-1.3.png splash-refine.png
     displayName: Remove symoblic link to image
 
+  # copy REST credentials
   - script: |
       set -xe
 
@@ -188,6 +189,13 @@ jobs:
       scp -F $(ssh_config.secureFilePath) builder@cci.lbl.gov:${installer_dir}/rest/url .
 
     displayName: Copy token and url
+
+  # update version in Dockerfile
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/modules/phenix
+      sed -i 's/ARG PHENIX_VERSION.*/ARG PHENIX_VERSION=$(version)/' Dockerfile
+    displayName: Update version in Dockerfile
 
   # build source tarball
   # build/bin/libtbx.create_installer --version $(version) --install_script modules/cctbx_project/libtbx/auto_build/plus_installer.py --dist_dir dist/$(version) tmp/cctbx-$(version)
