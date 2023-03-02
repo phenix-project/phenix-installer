@@ -13,7 +13,7 @@ resources:
 jobs:
 - job: Build_dev_installer
   pool:
-    vmImage: ubuntu-latest
+    vmImage: ubuntu-20.04
   timeoutInMinutes: 360
 
   container:
