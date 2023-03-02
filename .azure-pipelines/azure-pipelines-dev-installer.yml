@@ -49,19 +49,12 @@ jobs:
       allowFailedBuilds: false
       artifactName: phenix
 
+  # install dependencies
   - script: |
       set -xe
-      cd $(Pipeline.Workspace)
-      ls
-
-  - script: |
-      set -xe
-      yum update
-      yum install -y \
-        diffutils \
-        gcc \
-        gcc-c++ \
-        glibc-langpack-en \
+      sudo yum update
+      sudo yum groupinstall -y 'Development Tools'
+      sudo yum install -y \
         mesa-libGLU-devel \
         mesa-libGL-devel \
         openssh \
