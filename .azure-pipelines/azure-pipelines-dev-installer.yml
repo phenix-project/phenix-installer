@@ -53,7 +53,15 @@ jobs:
         openssh \
         openssl \
         tcsh \
+        wget
     displayName: Install dependencies
+
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+      bash Miniforge3-Linux-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
+    displayName: Install conda
 
   # download source tarball
   - task: DownloadPipelineArtifact@2
@@ -69,6 +77,7 @@ jobs:
   # decrypt and extract tarball
   - script: |
       set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
       cd $(Pipeline.Workspace)
       openssl enc -d \
         -aes-256-cbc \
