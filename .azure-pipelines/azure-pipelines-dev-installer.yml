@@ -60,6 +60,7 @@ jobs:
       cd $(Pipeline.Workspace)
       wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
       bash Miniforge3-Linux-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
+      rm -f Miniforge3-Linux-x86_64.sh
     displayName: Install conda
 
   # download source tarball
@@ -96,8 +97,39 @@ jobs:
 
   - script: |
       set -xe
-      pwd
-      ls
-      ls $(Pipeline.Workspace)
-      ls $(Pipeline.Workspace)/phenix
-    displayName: debug
+      df -h
+    displayName: Check disk space
+
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      cd $(Pipeline.Workspace)/phenix
+      ln -s ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
+      python bootstrap.py base build --builder=phenix --nproc=4
+    displayName: Build Phenix
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
+
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix
+      version=`cat VERSION | xargs`
+      ./build/bin/libtbx.create_installer \
+        --binary \
+        --version ${version} \
+        --install_script modules/phenix/phenix/installer/phenix_installer.py \
+        --license modules/phenix/LICENSE.txt \
+        --readme modules/phenix/CHANGES \
+        --readme modules/phenix/phenix/installer/README \
+        --readme modules/phenix/phenix/installer/SOURCES \
+        --dist_dir dist/${version} \
+        tmp/phenix-installer-${version}-intel-linux-x86_64
+    displayName: Create binary installer
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
