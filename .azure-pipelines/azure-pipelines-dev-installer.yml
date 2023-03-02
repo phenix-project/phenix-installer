@@ -77,7 +77,7 @@ jobs:
   # decrypt and extract tarball
   - script: |
       set -xe
-      which openssl
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
       openssl version
     displayName: debug
 
