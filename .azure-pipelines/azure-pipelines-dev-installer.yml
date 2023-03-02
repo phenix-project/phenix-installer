@@ -51,6 +51,7 @@ jobs:
         mesa-libGLU-devel \
         mesa-libGL-devel \
         openssh \
+        openssl \
         tcsh \
     displayName: Install dependencies
 
