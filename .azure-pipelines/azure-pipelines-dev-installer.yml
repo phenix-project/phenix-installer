@@ -85,7 +85,7 @@ jobs:
         -md sha256 \
         -iter 100000 \
         -pbkdf2 \
-        -in ${SRC_DIR}/phenix.enc \
+        -in phenix.enc \
         -out phenix.tgz \
         -pass env:TARBALL_PASSWORD
       rm -f phenix.enc
