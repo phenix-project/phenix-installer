@@ -22,6 +22,19 @@ jobs:
 
   steps:
 
+  - script: |
+      set -xe
+      yum update
+      yum install -y \
+        diffutils \
+        gcc \
+        gcc-c++ \
+        glibc-langpack-en \
+        mesa-libGLU-devel \
+        mesa-libGL-devel \
+        openssh \
+        tcsh \
+
   # secrets for LBL
   - task: InstallSSHKey@0
     inputs:
