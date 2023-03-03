@@ -20,13 +20,22 @@ jobs:
     image: centos:7
     options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
+  # variables for Google Drive folder and installer name
+  variables:
+  - name: folder_id
+    value: 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q
+  - name: installer_name
+    value: TBD
+  - name: version
+    value: TBD
+
   steps:
 
   # secrets for LBL
-  - task: DownloadSecureFile@1
-    name: ssh_key
-    inputs:
-      secureFile: id_rsa
+  # - task: DownloadSecureFile@1
+  #   name: ssh_key
+  #   inputs:
+  #     secureFile: id_rsa
 
   - task: DownloadSecureFile@1
     name: upload_key
@@ -63,6 +72,10 @@ jobs:
       rm -f Miniforge3-Linux-x86_64.sh
     displayName: Install conda
 
+  # download support scripts
+  - checkout: self
+    path: ./support
+
   # download source tarball
   - task: DownloadPipelineArtifact@2
     inputs:
@@ -89,10 +102,15 @@ jobs:
         -in phenix.enc \
         -out phenix.tgz \
         -pass env:TARBALL_PASSWORD
+      ls
       rm -f phenix.enc
+      ls
       tar -xf phenix.tgz
+      ls
       rm -f phenix.tgz
+      ls
       mv phenix* phenix
+      ls
     displayName: Extract tarball
 
   - script: |
@@ -100,6 +118,26 @@ jobs:
       df -h
     displayName: Check disk space
 
+  - script: |
+      cd $(Pipeline.Workspace)/phenix
+      version=`cat VERSION | xargs`
+      echo "##vso[task.setVariable variable=version]$version"
+      echo $(version)
+    displayName: Set version
+
+  - script: |
+      installer_name=phenix-installer-$(version)-intel-linux-x86_64
+      echo "##vso[task.setVariable variable=installer_name]$installer_name"
+      echo $(installer_name)
+    displayName: Set installer_name
+
+  - script: |
+      set -xe
+      echo $(version)
+      echo $(installer_name)
+    displayName: Check version and installer_name
+
+  # build
   - script: |
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
@@ -113,23 +151,69 @@ jobs:
       df -h
     displayName: Check disk space
 
+  # create installer
   - script: |
       set -xe
       cd $(Pipeline.Workspace)/phenix
-      version=`cat VERSION | xargs`
       ./build/bin/libtbx.create_installer \
         --binary \
-        --version ${version} \
+        --version $(version) \
         --install_script modules/phenix/phenix/installer/phenix_installer.py \
         --license modules/phenix/LICENSE.txt \
         --readme modules/phenix/CHANGES \
         --readme modules/phenix/phenix/installer/README \
         --readme modules/phenix/phenix/installer/SOURCES \
-        --dist_dir dist/${version} \
-        tmp/phenix-installer-${version}-intel-linux-x86_64
+        --dist_dir dist/$(version) \
+        tmp/$(installer_name)
     displayName: Create binary installer
+
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      cd $(Pipeline.Workspace)/phenix
+      rm -fr dist
+      cd tmp
+      export XZ_OPT=-9
+      tar -Jcf $(installer_name).tar.xz $(installer_name)
+    displayName: Recompress with xz
 
   - script: |
       set -xe
       df -h
     displayName: Check disk space
+
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda clean -y --all
+    displayName: Clean up
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
+
+  # set up Google Drive upload environment
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda remove -n upload -y --all
+      conda create -n upload -y python=3.10
+      conda activate upload
+      pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+    displayName: Set up upload environment
+    retryCountOnTaskFailure: 3
+
+  # upload to Google Drive
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda activate upload
+
+      python $(Pipeline.Workspace)/support/scripts/upload_installer.py \
+        --credentials $(upload_key.secureFilePath) \
+        --folder_id $(folder_id) \
+        --folder_list $(version) \
+        --files $(Pipeline.Workspace)/phenix/tmp/$(installer_name).tar.xz
+    displayName: Upload full development build tarball (xz) to Google Drive
+    continueOnError: true
