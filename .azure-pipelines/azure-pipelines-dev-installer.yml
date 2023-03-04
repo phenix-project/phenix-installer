@@ -210,10 +210,10 @@ jobs:
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
       conda activate upload
 
-      python $(Pipeline.Workspace)/support/scripts/upload_installer.py \
+      python $(Build.Repository.LocalPath)/scripts/google_drive.py \
         --credentials $(upload_key.secureFilePath) \
-        --folder_id $(folder_id) \
-        --folder_list $(version) \
-        --files $(Pipeline.Workspace)/phenix/tmp/$(installer_name).tar.xz
+        --drive "Phenix Installers" \
+        --folder "$(version)" \
+        --file $(Pipeline.Workspace)/phenix/tmp/$(installer_name).tar.xz
     displayName: Upload full development build tarball (xz) to Google Drive
     continueOnError: true
