@@ -32,10 +32,10 @@ jobs:
   steps:
 
   # secrets for LBL
-  # - task: DownloadSecureFile@1
-  #   name: ssh_key
-  #   inputs:
-  #     secureFile: id_rsa
+  - task: DownloadSecureFile@1
+    name: ssh_key
+    inputs:
+      secureFile: id_rsa
 
   - task: DownloadSecureFile@1
     name: upload_key
@@ -137,6 +137,15 @@ jobs:
       echo $(installer_name)
     displayName: Check version and installer_name
 
+  # test copy
+  - script: |
+      set -xe
+      installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+      scp -F $(ssh_config.secureFilePath) -i $$(ssh_key.secureFilePath) \
+        ./modules/cctbx_project/libtbx/auto_build/bootstrap.py \
+        ${installer_dir}/$(version)/bootstrap.py
+    displayName: test copy
+
   # build
   - script: |
       set -xe
@@ -203,6 +212,15 @@ jobs:
       pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
     displayName: Set up upload environment
     retryCountOnTaskFailure: 3
+
+  # upload to LBL
+  - script: |
+      set -xe
+      installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+      scp -F $(ssh_config.secureFilePath) -i $$(ssh_key.secureFilePath) \
+        $(Pipeline.Workspace)/phenix/tmp/$(installer_name).tar.xz \
+        ${installer_dir}/$(version)/$(installer_name).tar.xz
+    displayName: test copy
 
   # upload to Google Drive
   - script: |
