@@ -140,6 +140,7 @@ jobs:
   # test copy
   - script: |
       set -xe
+      chmod go-rwx $(ssh_key.secureFilePath)
       eval `ssh-agent -s`
       ssh-add $(ssh_key.secureFilePath)
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
@@ -218,6 +219,7 @@ jobs:
   # upload to LBL
   - script: |
       set -xe
+      chmod go-rwx $(ssh_key.secureFilePath)
       eval `ssh-agent -s`
       ssh-add $(ssh_key.secureFilePath)
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
