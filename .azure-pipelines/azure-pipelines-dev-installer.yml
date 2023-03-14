@@ -140,8 +140,10 @@ jobs:
   # test copy
   - script: |
       set -xe
+      eval `ssh-agent -s`
+      ssh-add $(ssh_key.secureFilePath)
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
-      scp -vvv -F $(ssh_config.secureFilePath) -i $(ssh_key.secureFilePath) \
+      scp -vvv -F $(ssh_config.secureFilePath) \
         $(Pipeline.Workspace)/phenix/modules/cctbx_project/libtbx/auto_build/bootstrap.py \
         builder@cci.lbl.gov:${installer_dir}/$(version)/
     displayName: test copy
@@ -216,8 +218,10 @@ jobs:
   # upload to LBL
   - script: |
       set -xe
+      eval `ssh-agent -s`
+      ssh-add $(ssh_key.secureFilePath)
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
-      scp -F $(ssh_config.secureFilePath) -i $(ssh_key.secureFilePath) \
+      scp -F $(ssh_config.secureFilePath) \
         $(Pipeline.Workspace)/phenix/tmp/$(installer_name).tar.xz \
         builder@cci.lbl.gov:${installer_dir}/$(version)/
     displayName: Upload full development build tarball (xz) to Berkeley
