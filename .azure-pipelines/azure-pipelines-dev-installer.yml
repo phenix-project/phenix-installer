@@ -141,9 +141,9 @@ jobs:
   - script: |
       set -xe
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
-      scp -F $(ssh_config.secureFilePath) -i $$(ssh_key.secureFilePath) \
-        $(Pipeline.Workspace)/phenix/modules/cctbx_project/libtbx/auto_build/ \
-        ${installer_dir}/$(version)/bootstrap.py
+      scp -vvv -F $(ssh_config.secureFilePath) -i $$(ssh_key.secureFilePath) \
+        $(Pipeline.Workspace)/phenix/modules/cctbx_project/libtbx/auto_build/bootstrap.py \
+        ${installer_dir}/$(version)/
     displayName: test copy
 
   # build
