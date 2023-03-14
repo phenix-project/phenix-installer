@@ -220,7 +220,7 @@ jobs:
       scp -F $(ssh_config.secureFilePath) -i $$(ssh_key.secureFilePath) \
         $(Pipeline.Workspace)/phenix/tmp/$(installer_name).tar.xz \
         ${installer_dir}/$(version)/$(installer_name).tar.xz
-    displayName: test copy
+    displayName: Upload full development build tarball (xz) to Berkeley
 
   # upload to Google Drive
   - script: |
