@@ -311,13 +311,9 @@ stages:
         set -xe
 
         # cross-platform constructor
-        # https://github.com/conda-forge/miniforge/blob/main/scripts/build.sh
         TEMP_DIR=$(mktemp -d)
-        mkdir "${TEMP_DIR}/conda-standalone"
-        pushd "${TEMP_DIR}/conda-standalone"
-        curl -L -O "https://repo.anaconda.com/pkgs/misc/conda-execs/conda-4.10.3-osx-arm64.exe"
-        CONDA_STANDALONE="${PWD}/conda-4.10.3-osx-arm64.exe"
-        popd
+        CONDA_SUBDIR=$(platform) conda create -p ${TEMP_DIR} -y -c defaults conda-standalone
+        CONDA_STANDALONE=${TEMP_DIR}/standalone_conda/conda.exe
 
         source activate construct
         cd constructor
