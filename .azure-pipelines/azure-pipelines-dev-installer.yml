@@ -146,7 +146,7 @@ jobs:
   #     installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
   #     scp -vvv -F $(ssh_config.secureFilePath) -o StrictHostKeyChecking=no \
   #       $(Pipeline.Workspace)/phenix/modules/cctbx_project/libtbx/auto_build/bootstrap.py \
-  #       builder@cci.lbl.gov:${installer_dir}/$(version)/
+  #       builder@boa.lbl.gov:${installer_dir}/$(version)/
   #   displayName: test copy
 
   # build
@@ -225,7 +225,7 @@ jobs:
       installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
       scp -F $(ssh_config.secureFilePath) -o StrictHostKeyChecking=no \
         $(Pipeline.Workspace)/phenix/tmp/$(installer_name).tar.xz \
-        builder@cci.lbl.gov:${installer_dir}/$(version)/
+        builder@boa.lbl.gov:${installer_dir}/$(version)/
     displayName: Upload full development build tarball (xz) to Berkeley
 
   # upload to Google Drive

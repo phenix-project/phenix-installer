@@ -186,8 +186,8 @@ jobs:
       cd $(Pipeline.Workspace)
       mkdir -p rest
       cd rest
-      scp -F $(ssh_config.secureFilePath) builder@cci.lbl.gov:${installer_dir}/rest/token .
-      scp -F $(ssh_config.secureFilePath) builder@cci.lbl.gov:${installer_dir}/rest/url .
+      scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/token .
+      scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/url .
 
     displayName: Copy token and url
 
