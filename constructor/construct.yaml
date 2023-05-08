@@ -1,6 +1,8 @@
+{% set name = "phenix" %}
+{% set version = "REPLACEME" %}
+
 name: Phenix
-pkg_name: PKG_NAME
-version: VERSION
+version: {{ version }}
 
 company: Lawrence Berkeley National Lab
 license_file: LICENSE.txt
@@ -13,6 +15,8 @@ environment: phenix
 # general options
 conclusion_file: ./gui/conclusion.txt  # [unix]
 conclusion_text: ""
+default_prefix: "${HOME}/{{ name }}-{{ version }}"  # [unix]
+default_prefix: "%USERPROFILE%\\{{ name }}-{{ version }}"  # [win]
 exclude:  # [unix]
   - readline  # [unix]
 initialize_by_default: false
@@ -23,13 +27,17 @@ welcome_image: ""
 # post installation
 post_install_desc: Running post installation steps
 post_install: ./scripts/post_install.sh  # [unix]
+post_install: ./scripts/post_install.bat  # [win]
 
 # macOS pkg
 # progress_notifications: true
+pkg_name: Phenix-{{ version }}
 readme_file: ./gui/readme_macos.txt
 readme_text: ""
 reverse_domain_identifier: gov.lbl.cci
 
 # Windows
+default_prefix_all_users: "%ALLUSERSPROFILE%\\{{ name }}-{{ version }}"  # [win]
+default_prefix_domain_user: "%LOCALAPPDATA%\\{{ name }}-{{ version }}"  # [win]
 register_python: false
 register_python_default: false
