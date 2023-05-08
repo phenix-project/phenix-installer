@@ -2,7 +2,7 @@ name: Phenix
 pkg_name: PKG_NAME
 version: VERSION
 
-company: Lawrence Berkeley National Laboratory
+company: Lawrence Berkeley National Lab
 license_file: LICENSE.txt
 
 channels:
@@ -11,7 +11,7 @@ channels:
 environment: phenix
 
 # general options
-conclusion_file: ./gui/conclusion.txt
+conclusion_file: ./gui/conclusion.txt  # [unix]
 conclusion_text: ""
 exclude:  # [unix]
   - readline  # [unix]
@@ -22,10 +22,14 @@ welcome_image: ""
 
 # post installation
 post_install_desc: Running post installation steps
-post_install: ./scripts/post_install.sh
+post_install: ./scripts/post_install.sh  # [unix]
 
 # macOS pkg
 # progress_notifications: true
 readme_file: ./gui/readme_macos.txt
 readme_text: ""
 reverse_domain_identifier: gov.lbl.cci
+
+# Windows
+register_python: false
+register_python_default: false
