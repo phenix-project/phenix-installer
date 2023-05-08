@@ -24,10 +24,10 @@ def update_version(filename, pkg_name, version):
     lines = f.readlines()
   with open(filename, 'w') as f:
     for line in lines:
-      if line.startswith('pkg_name'):
+      if line.startswith('pkg_name') and pkg_name is not None:
         f.write(f'pkg_name: {pkg_name}-{version}\n')
-      elif line.startswith('version:'):
-        f.write(f'version: {version}\n')
+      elif 'REPLACEME' in line:
+        f.write(line.replace('REPLACEME', version))
       else:
         f.write(line)
 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
   parser.add_argument('--filename', default='construct.yaml', type=str,
     help='The file to be patched')
-  parser.add_argument('--pkg-name', default='phenix', type=str,
+  parser.add_argument('--pkg-name', default=None, type=str,
     help='The package name (the version will be appended to this)')
   parser.add_argument('--version', default=default_version, type=str,
     help='The version')
