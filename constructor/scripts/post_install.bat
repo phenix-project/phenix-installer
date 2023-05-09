@@ -5,8 +5,8 @@ REM compile Python files
 echo ""
 echo "Compiling Python files"
 echo "======================"
-pushd ${PREFIX}\lib
-${PREFIX}\bin\libtbx.py_compile_all -i
+pushd %PREFIX%\lib
+call %PREFIX%\Library\bin\libtbx.py_compile_all.bat -i
 popd
 echo "done"
 
@@ -14,29 +14,30 @@ REM write phenix_env files
 echo ""
 echo "Writing phenix_env files"
 echo "========================"
-SCRIPT_LOCATION=`${PREFIX}\bin\libtbx.find_in_repositories libtbx\auto_build\conda_build\write_env_files.py`
-${PREFIX}\bin\python ${SCRIPT_LOCATION} ^
-  --program ${INSTALLER_NAME} ^
-  --prefix ${PREFIX} ^
+set SCRIPT_LOCATION=%PREFIX%\Lib\site-packages\libtbx\auto_build\conda_build\write_env_files.py
+%PREFIX%\python.exe %SCRIPT_LOCATION% ^
+  --program %INSTALLER_NAME% ^
+  --prefix %PREFIX% ^
   --bin-dir Library\bin ^
-  --version ${INSTALLER_VER} ^
-  --destination ${PREFIX}
-if exist "${PREFIX}/${INSTALLER_NAME}_env.bat" echo "${PREFIX}/${INSTALLER_NAME}_env.bat created"
+  --version %INSTALLER_VER% ^
+  --destination %PREFIX%
+if exist "%PREFIX%\\%INSTALLER_NAME%_env.bat" echo "%PREFIX%\\%INSTALLER_NAME%.bat created"
 echo "done"
 
 REM rebuild rotarama and cablam caches
 echo ""
 echo "Rebuilding rotarama and cablam caches"
 echo "====================================="
-${PREFIX}/bin/mmtbx.rebuild_rotarama_cache
-${PREFIX}/bin/mmtbx.rebuild_cablam_cache
+call %PREFIX%\Library\bin\mmtbx.rebuild_rotarama_cache.bat
+call %PREFIX%\Library\bin\mmtbx.rebuild_cablam_cache.bat
 echo "done"
 
 REM build documentation
 echo ""
 echo "Building Phenix documentation"
 echo "============================="
-${PREFIX}/bin/phenix_html.rebuild_docs
+set PYTHONIOENCODING="utf8"
+call %PREFIX%\Library\bin\phenix_html.rebuild_docs.bat
 echo "done"
 
 REM print copy of conclusion.txt without unix text
