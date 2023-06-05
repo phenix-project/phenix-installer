@@ -47,7 +47,7 @@ def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials
     service = build('drive', 'v3', credentials=credentials)
     results = service.files().list(
       pageSize=pageSize,
-      q="'{}' in parents".format(parent),
+      q=f"'{parent}' in parents",
       fields='nextPageToken, files(id, name, parents)',
       includeItemsFromAllDrives=True,
       supportsAllDrives=True,
@@ -67,7 +67,7 @@ def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials
 # -----------------------------------------------------------------------------
 def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=None, retries=20):
   if not os.path.exists(name):
-    raise IOError('The "{}" file does not exist.'.format(name))
+    raise IOError(f'The "{name}" file does not exist.')
 
   name = os.path.basename(name)
 
@@ -160,19 +160,19 @@ def main():
   if os.path.exists(namespace.credentials):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(namespace.credentials)
   else:
-    raise IOError('The credentials file, {}, cannot be read.'.format(namespace.credentials))
+    raise IOError(f'The credentials file, {namespace.credentials}, cannot be read.')
 
   # check drive
   drive_id = get_drive_id(name=namespace.drive, credentials=credentials)
   if drive_id is None:
-    raise RuntimeError('The "{}" drive could not be found.'.format(namespace.drive))
+    raise RuntimeError(f'The "{namespace.drive}" drive could not be found.')
 
   # clean up "My Drive" of service account
   if namespace.cleanup:
     service = build('drive', 'v3', credentials=credentials)
     results = service.files().list(
       pageSize=50,
-      q="'{}' in parents".format(my_drive_id),
+      q=f"'{my_drive_id}' in parents",
       fields='nextPageToken, files(id, name, parents)',
       includeItemsFromAllDrives=True,
       supportsAllDrives=True,
@@ -194,7 +194,7 @@ def main():
     driveId=drive_id,
     credentials=credentials)
   if version_folder_id is None:
-    raise RuntimeError('The "{}" folder could not be found.'.format(namespace.folder))
+    raise RuntimeError(f'The "{namespace.folder}" folder could not be found.')
 
   # check subfolder
   if namespace.subfolder is not None:
@@ -204,7 +204,7 @@ def main():
       driveId=drive_id,
       credentials=credentials)
     if subfolder_id is None:
-      raise RuntimeError('The "{}" subfolder could not be found.'.format(namespace.subfolder))
+      raise RuntimeError(f'The "{namespace.subfolder}" subfolder could not be found.')
   else:
     subfolder_id = version_folder_id
 
