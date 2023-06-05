@@ -208,6 +208,15 @@ def main():
   else:
     subfolder_id = version_folder_id
 
+  # check file
+  new_file_id = None
+  if namespace.file is not None:
+    new_file_id = get_folder_id(
+      name=namespace.file,
+      parent=subfolder_id,
+      driveId=drive_id,
+      credentials=credentials)
+
   # id summary
   print('ID Summary')
   print('==========')
@@ -217,13 +226,17 @@ def main():
       print(f'{name:>20}: {id}')
   print()
 
-  # upload file to subfolder
-  new_file_id = upload_file(
-    name=namespace.file,
-    parent=subfolder_id,
-    driveId=drive_id,
-    credentials=credentials,
-    retries=namespace.retries)
+  # upload file to subfolder if it does not already exist
+  if new_file_id is None:
+    new_file_id = upload_file(
+      name=namespace.file,
+      parent=subfolder_id,
+      driveId=drive_id,
+      credentials=credentials,
+      retries=namespace.retries)
+  else:
+    print(f'{namespace.file} was not uploaded because it already exists.')
+    print()
 
   # verify
   service = build('drive', 'v3', credentials=credentials)
