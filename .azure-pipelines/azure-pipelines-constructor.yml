@@ -270,19 +270,6 @@ stages:
     - script: |
         set -xe
 
-        installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
-
-        source activate phenix
-        cd ${CONDA_PREFIX}/share/cctbx
-        mkdir -p rest
-        scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/token .
-        scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/url .
-
-      displayName: Copy token and url
-
-    - script: |
-        set -xe
-
         source activate phenix
 
         cp ${CONDA_PREFIX}/share/phenix/CHANGES ./constructor/gui/readme_macos.txt
@@ -331,9 +318,7 @@ stages:
         installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
         ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p ${installer_dir}/$(version)"
-        ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p ${installer_dir}/$(version)/$(platform)"
         ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)"
-        ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)/$(platform)"
 
         cd constructor
         for f in `/bin/ls Phenix*`; do
@@ -344,17 +329,6 @@ stages:
         for f in `/bin/ls Phenix*`; do
           echo Moving ${f}
           ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mv -f ${installer_dir}/staging/$(version)/${f} ${installer_dir}/$(version)/${f}"
-        done
-
-        cd $(Pipeline.Workspace)/$(platform)
-        for f in `/bin/ls phenix*`; do
-          echo Copying ${f}
-          scp -F $(ssh_config.secureFilePath) ${f} builder@boa.lbl.gov:${installer_dir}/staging/$(version)/$(platform)/${f}
-        done
-
-        for f in `/bin/ls phenix*`; do
-          echo Moving ${f}
-          ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mv -f ${installer_dir}/staging/$(version)/$(platform)/${f} ${installer_dir}/$(version)/$(platform)/${f}"
         done
 
       displayName: Upload installer
