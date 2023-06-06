@@ -56,11 +56,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo ""
   echo "Creating macOS phenix.app"
   echo "========================="
+  pushd ${PREFIX}
   ${PREFIX}/bin/libtbx.create_mac_app \
     phenix \
     --app_name=${INSTALLER_NAME}-${INSTALLER_VER} \
     --dest=${PREFIX} \
     --alias_build
+  popd
   echo "done"
 fi
 
