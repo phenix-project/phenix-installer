@@ -182,13 +182,6 @@ stages:
 
       displayName: Clean up
 
-    # patch constructor to avoid check
-    # - script: |
-    #     set -xe
-    #     cd constructor
-    #     python3 patch_fcp.py --site-packages ${CONDA}/envs/construct/lib/python3.9/site-packages
-    #   displayName: Patch constructor
-
     # download latest phenix conda package
     - task: DownloadPipelineArtifact@2
       inputs:
