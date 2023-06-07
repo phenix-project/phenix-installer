@@ -47,6 +47,9 @@ jobs:
     inputs:
       secureFile: ssh.config
 
+  # download support scripts
+  - checkout: self
+
   # clean up linux image
   - script: |
       sudo $(Build.Repository.LocalPath)/scripts/clean_linux.sh
@@ -77,10 +80,6 @@ jobs:
       bash Miniforge3-Linux-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
       rm -f Miniforge3-Linux-x86_64.sh
     displayName: Install conda
-
-  # download support scripts
-  - checkout: self
-    path: ./support
 
   # download source tarball
   - task: DownloadPipelineArtifact@2

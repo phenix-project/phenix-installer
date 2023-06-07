@@ -118,14 +118,14 @@ stages:
       inputs:
         secureFile: ssh.config
 
+    # download sources
+    - checkout: self
+
     # clean up linux image
     - script: |
         sudo $(Build.Repository.LocalPath)/scripts/clean_linux.sh
       displayName: Clean up linux image
       condition: eq(variables['platform'], 'linux-64')
-
-    # download sources
-    - checkout: self
 
     - script: |
         set -xe
