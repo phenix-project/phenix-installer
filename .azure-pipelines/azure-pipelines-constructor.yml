@@ -118,6 +118,12 @@ stages:
       inputs:
         secureFile: ssh.config
 
+    # clean up linux image
+    - script: |
+        sudo $(Build.Repository.LocalPath)/scripts/clean_linux.sh
+      displayName: Clean up linux image
+      condition: eq(variables['platform'], 'linux-64')
+
     # download sources
     - checkout: self
 
@@ -167,22 +173,6 @@ stages:
         pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
       displayName: Set up upload environment
       retryCountOnTaskFailure: 3
-
-    - script: |
-        set -xe
-
-        sudo rm -fr ${ANDROID_HOME}
-
-        sudo rm -fr ${JAVA_HOME_8_X64}
-        sudo rm -fr ${JAVA_HOME_11_X64}
-        sudo rm -fr ${JAVA_HOME_17_X64}
-
-        sudo rm -fr ${CHROMEWEBDRIVER}
-        sudo rm -fr ${EDGEWEBDRIVER}
-        sudo rm -fr ${GECKOWEBDRIVER}
-
-      displayName: Clean up linux image
-      condition: eq(variables['platform'], 'linux-64')
 
     - script: |
         set -xe
