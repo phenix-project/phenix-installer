@@ -171,6 +171,22 @@ stages:
     - script: |
         set -xe
 
+        sudo rm -fr ${ANDROID_HOME}
+
+        sudo rm -fr ${JAVA_HOME_8_X64}
+        sudo rm -fr ${JAVA_HOME_11_X64}
+        sudo rm -fr ${JAVA_HOME_17_X64}
+
+        sudo rm -fr ${CHROMEWEBDRIVER}
+        sudo rm -fr ${EDGEWEBDRIVER}
+        sudo rm -fr ${GECKOWEBDRIVER}
+
+      displayName: Clean up linux image
+      condition: eq(variables['platform'], 'linux-64')
+
+    - script: |
+        set -xe
+
         rm -fr $(Pipeline.Workspace)/conda*
 
         conda clean -y --all
