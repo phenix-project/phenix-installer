@@ -57,9 +57,13 @@ jobs:
     inputs:
       secureFile: ssh.config
 
+  # download support scripts
+  - checkout: self
+    path: ./phenix-installer
+
   # clean up linux image
   - script: |
-      sudo $(Build.Repository.LocalPath)/scripts/clean_linux.sh
+      sudo $(Pipeline.Workspace)/phenix-installer/scripts/clean_linux.sh
     displayName: Clean up linux image
 
   # ubuntu setup
@@ -113,10 +117,6 @@ jobs:
 
     displayName: Install mamba
     retryCountOnTaskFailure: 3
-
-  # download support scripts
-  - checkout: self
-    path: ./phenix-installer
 
   # link bootstrap.py
   - script: |
