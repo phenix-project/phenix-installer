@@ -101,24 +101,9 @@ jobs:
 
       conda smithy rerender -c auto
 
-      # for f in `/bin/ls .ci_support/osx_64*python3.7*.yaml`; do
-      #   sed -i s/"\- '14'"/"\- '13'"/g $f
-      # done
-
-      # git commit -am "Switch back to version 13 of clang and clangxx for Python 3.7 on osx-64"
-
       git remote set-url origin git@github.com:phenix-project/phenix-feedstock.git
 
       git push -u origin main
-
-      # windows branch
-      git checkout win
-      git reset --hard origin/main
-      sed -i s/"true  # \[win\]"/"true  # \[not win\]"/g ./recipe/meta.yaml
-      git commit -am "Only build Windows"
-      conda smithy rerender -c auto
-      git commit --allow-empty -m "[skip ci]"
-      git push -f -u origin win
 
     displayName: Update and rerender phenix-feedstock
     continueOnError: true
