@@ -476,14 +476,14 @@ stages:
 
     - script: |
         call activate upload
-
+        echo $(version)
         for /R $(Pipeline.Workspace)\$(platform) %%F in (*.conda) do (
           echo "Uploading %%F"
           python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
             --credentials $(upload_key.secureFilePath) ^
             --drive "Phenix Installers" ^
-            --folder "$(version)" ^
-            --subfolder "$(platform)" ^
+            --folder $(version) ^
+            --subfolder $(platform) ^
             --file %%F
           timeout /t 60
         )
