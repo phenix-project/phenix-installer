@@ -451,15 +451,19 @@ stages:
         cd $(Pipeline.Workspace)\conda_artifacts*
         unzip phenix-feedstock*.zip
 
-        cd build_artifacts
         cd $(platform)
 
         mkdir $(Pipeline.Workspace)\$(platform)
-        for /R %%F in (phenix*) do (
+        for /R %%F in (*.conda) do (
           move %%F $(Pipeline.Workspace)\$(platform)\
         )
 
-        rmdir /S /Q $(Pipeline.Workspace)\conda_artifacts*
+        cd $(Pipeline.Workspace)
+        dir
+        for /D %%D in (conda_artifacts*) do (
+          rmdir /S /Q %%D
+        )
+        dir
       displayName: Extract artifact
 
     - script: |
