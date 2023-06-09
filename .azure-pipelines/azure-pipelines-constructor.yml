@@ -466,10 +466,10 @@ stages:
         dir
       displayName: Extract artifact
 
-    - script: |
+    - bash: |
+        set -xe
         cd constructor
-        python3 update_version.py --version $(Pipeline.Workspace)/$(platform)/phenix* > version.txt
-        set /p version=<version.txt
+        version=`python3 update_version.py --version windows`
         echo "##vso[task.setVariable variable=version]$version"
         echo $(version)
       displayName: Set and update version
