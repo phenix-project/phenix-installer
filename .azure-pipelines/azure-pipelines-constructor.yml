@@ -13,6 +13,7 @@ resources:
     trigger: true
 
 stages:
+# =============================================================================
 - stage: Build
 
   jobs:
@@ -92,12 +93,9 @@ stages:
       vmImage: $(vmImage)
     timeoutInMinutes: 360
 
-    # variables for version
+    # variable for version
     variables:
-      year: $(Get-Date -Format yyyy)
-      month: $(Get-Date -Format MM)
-      day: $(Get-Date -Format dd)
-      version: $(year).$(month)a$(day)
+      version: 1234
 
     steps:
 
@@ -356,6 +354,203 @@ stages:
       retryCountOnTaskFailure: 3
       continueOnError: true
 
+# =============================================================================
+- stage: Build_win
+  condition: succeededOrFailed()
+
+  jobs:
+  - job: Construct_phenix_win_installer
+
+    strategy:
+      matrix:
+        win_py37:
+          vmImage: windows-latest
+          platform: Windows
+          py_ver: 3.7
+          pyver: 37
+          np_ver: 1.20
+        win_py38:
+          vmImage: windows-latest
+          platform: Windows
+          py_ver: 3.8
+          pyver: 38
+          np_ver: 1.20
+        win_py39:
+          vmImage: windows-latest
+          platform: Windows
+          py_ver: 3.9
+          pyver: 39
+          np_ver: 1.20
+        win_py310:
+          vmImage: windows-latest
+          platform: Windows
+          py_ver: 3.10
+          pyver: 310
+          np_ver: 1.21
+
+    pool:
+      vmImage: $(vmImage)
+    timeoutInMinutes: 360
+
+    # variable for version
+    variables:
+      version: 1234
+
+    steps:
+
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: boa.lbl.gov ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnPOtqyYASs6hc3fsmUQn92ovSozJsMsJyrMWjppUERX1tD4Fh0D7YaNhLvYpKi5mYVREo+tsKoOatCcqKGHCONWpzx7JHXUzfIBsy6nCeygRyyW4yuyoCuYFvOYLkaM4PrN/7XaZEnp1ux6/ZcbRxBDNK4f42svJUV39OX33tRuQWpP+O85paJr1ePHVz6U2n14a+3fRN3DBMti1dJuKOThU4djYEBQimx54pnW71eYORN2oUz+N/4RHAcomtxZpcUMl3Qadw8hD4s1XM6fzJ0Que7KefnnrPOgAEtZxKl9j09aaE70Oh+ie5Y6ckwddJ/4qZB5m2tBaEi3xuy0TSQ==
+        sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA7XgVgdU9GmZuo5yVyW/htrAuxe7ypuq7IowWwfUC0WZw9SPzQ8kOGj63plF3ytx/qpgvUlS1AiywO20rZ83gHmRdAiuvt9laH09KlWEUhIhAQTzesqBG5aUT0MKo01yxijoRl5HC8w/MdOanc0h01e6IxnZvgG0N30RB1i4xVPCtR/VBmXSp4R0T+Q/gJjfQssuBxHVMrrute4V3uUHek58FL2QgUB0+zq6ipETjuCJxTSyYVAFtCYDPYs+0lAYYkWrXALCr9kX9s22jYtkyv5kNw6mEW8nhtA7GbTdJLv4M6/WYtcvQV8TDcNCfltOfl81U3gcZ9zhQDKGVoNaJEw== buildbot@cci.lbl.gov
+        sshKeySecureFile: id_rsa
+      displayName: Download SSH key
+
+    - task: DownloadSecureFile@1
+      name: upload_key
+      inputs:
+        secureFile: phenix-lbl-04e6cb0d1bf7.json
+
+    # download sources
+    - checkout: self
+
+    # add conda to path
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=windows#add-conda-to-your-system-path
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      displayName: Add conda to PATH
+
+    # set up constructor environment
+    - script: |
+        conda remove -n construct -y --all
+        conda create -n construct -y -c conda-forge constructor jinja2
+      displayName: Set up constructor environment
+      retryCountOnTaskFailure: 3
+
+    # set up Google Drive upload environment
+    - script: |
+        conda remove -n upload -y --all
+        conda create -n upload -y python=3.10
+        call activate upload
+        pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+      displayName: Set up upload environment
+      retryCountOnTaskFailure: 3
+
+    # download latest phenix conda package
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: 'specific'
+        project: '$(resources.pipeline.phenix_feedstock.projectID)'
+        pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
+        preferTriggeringPipeline: true
+        allowPartiallySucceededBuilds: true
+        allowFailedBuilds: false
+        # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
+        patterns: '**/*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+
+    - script: |
+        cd $(Pipeline.Workspace)\conda_artifacts*
+        unzip phenix-feedstock*.zip
+
+        cd build_artifacts
+        cd $(platform)
+
+        mkdir $(Pipeline.Workspace)\$(platform)
+        for /R %%F in (phenix*) do (
+          move %%F $(Pipeline.Workspace)\$(platform)\
+        )
+
+        rmdir /S /Q $(Pipeline.Workspace)\conda_artifacts*
+      displayName: Extract artifact
+
+    - script: |
+        cd constructor
+        python3 update_version.py --version $(Pipeline.Workspace)/$(platform)/phenix* > version.txt
+        set /p version=<version.txt
+        echo "##vso[task.setVariable variable=version]$version"
+        echo $(version)
+      displayName: Set and update version
+
+    - script: |
+        call activate upload
+
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (*.conda) do (
+          echo "Uploading %%F"
+          python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
+            --credentials $(upload_key.secureFilePath) ^
+            --drive "Phenix Installers" ^
+            --folder "$(version)" ^
+            --subfolder "$(platform)" ^
+            --file %%F
+          timeout /t 60
+        )
+      displayName: Upload conda package to Google Drive
+      retryCountOnTaskFailure: 3
+      continueOnError: true
+
+    - script: |
+        conda remove -n phenix -y --all
+
+        cd $(Pipeline.Workspace)\$(platform)
+        conda create -n phenix -y
+        call activate phenix
+        conda install -y phenix*
+
+        cd ${CONDA_PREFIX}\share\phenix\conda_envs
+
+        conda install -y --file phenix_py$(pyver)_$(platform).txt
+        mamba install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
+        conda clean -y --all
+
+      displayName: Create installer environment
+      retryCountOnTaskFailure: 3
+
+    - script: |
+        call activate construct
+        cd constructor
+        constructor .
+        dir
+      displayName: Create installer
+
+    - script: |
+        set installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+
+        ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p %installer_dir%/$(version)"
+        ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p %installer_dir%/staging/$(version)"
+
+        cd constructor
+        for /R %%F in (Phenix*) do (
+          echo Copying %%F
+          scp -F $(ssh_config.secureFilePath) %%F "builder@boa.lbl.gov:%installer_dir%/staging/$(version)/%%F"
+        )
+
+        for /R %%F in (Phenix*) do (
+          echo Moving %%F
+          ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mv -f %installer_dir%/staging/$(version)/%%F %installer_dir%/$(version)/%%F"
+        )
+
+      displayName: Upload installer
+      condition: eq(variables['py_ver'], '3.7')
+      continueOnError: true
+
+    - script: |
+        call activate upload
+
+        cd constructor
+        for /R %%F in (Phenix*) do (
+          echo Uploading %%F
+          python $(Build.Repository.LocalPath)/scripts/google_drive.py \
+            --credentials $(upload_key.secureFilePath) \
+            --drive "Phenix Installers" \
+            --folder "$(version)" \
+            --subfolder "$(py_ver)" \
+            --file %%F
+          timeout /t 60
+        )
+
+      displayName: Upload installer to Google Drive
+      retryCountOnTaskFailure: 3
+      continueOnError: true
+
+# =============================================================================
 - stage: Clean
   condition: succeededOrFailed()
 
