@@ -365,7 +365,8 @@ stages:
       matrix:
         win_py37:
           vmImage: windows-latest
-          platform: Windows
+          artifact_platform: win_64
+          platform: win-64
           py_ver: 3.7
           pyver: 37
           np_ver: 1.20
