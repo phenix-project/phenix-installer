@@ -357,6 +357,7 @@ stages:
       continueOnError: true
 
 - stage: Clean
+  condition: succeededOrFailed()
 
   jobs:
   - job: Clean_my_drive
