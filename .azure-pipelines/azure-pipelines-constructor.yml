@@ -467,7 +467,6 @@ stages:
       displayName: Extract artifact
 
     - bash: |
-        set -xe
         cd constructor
         version=`python3 update_version.py --version windows`
         echo "##vso[task.setVariable variable=version]$version"
