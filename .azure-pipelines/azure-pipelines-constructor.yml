@@ -476,6 +476,7 @@ stages:
     - script: |
         call activate upload
         echo $(version)
+        cd $(Pipeline.Workspace)\$(platform)
         for /R $(Pipeline.Workspace)\$(platform) %%F in (*.conda) do (
           echo "Uploading %%F"
           python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
@@ -494,15 +495,18 @@ stages:
         conda remove -n phenix -y --all
 
         cd $(Pipeline.Workspace)\$(platform)
-        conda create -n phenix -y
-        call activate phenix
-        conda install -y phenix*
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (*.conda) do (
+          conda create -n phenix -y
+          call activate phenix
+          conda install -y %%F
 
-        cd ${CONDA_PREFIX}\share\phenix\conda_envs
+          cd %CONDA_PREFIX%\share\phenix\conda_envs
 
-        conda install -y --file phenix_py$(pyver)_$(platform).txt
-        mamba install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
-        conda clean -y --all
+          conda install -y --file phenix_py$(pyver)_$(platform).txt
+          mamba install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
+          mamba install -y --no-deps --freeze-installed menuinst
+          conda clean -y --all
+        )
 
       displayName: Create installer environment
       retryCountOnTaskFailure: 3
