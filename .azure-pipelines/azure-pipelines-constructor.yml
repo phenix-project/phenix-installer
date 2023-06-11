@@ -485,7 +485,6 @@ stages:
             --folder $(version) ^
             --subfolder $(platform) ^
             --file %%F
-          timeout /t 60
         )
       displayName: Upload conda package to Google Drive
       retryCountOnTaskFailure: 3
@@ -551,7 +550,6 @@ stages:
             --folder "$(version)" \
             --subfolder "$(py_ver)" \
             --file %%F
-          timeout /t 60
         )
 
       displayName: Upload installer to Google Drive
