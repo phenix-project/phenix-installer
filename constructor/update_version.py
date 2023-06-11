@@ -28,7 +28,7 @@ def update_version(filename, pkg_name, version):
     contents = os.listdir(search_dir)
     for f in contents:
       f = os.path.join(search_dir, f)
-      if os.path.isfile(f) and (f.endswith('conda') or f.endswith('bz2')):
+      if os.path.isfile(f) and (f.endswith('conda') or f.endswith('tar.bz2')):
         version = get_version_from_file(f)
         break
   assert os.path.isfile(filename)

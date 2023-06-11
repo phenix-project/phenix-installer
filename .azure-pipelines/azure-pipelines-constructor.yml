@@ -110,11 +110,13 @@ stages:
       name: upload_key
       inputs:
         secureFile: phenix-lbl-04e6cb0d1bf7.json
+      displayName: Download Google Drive credentials
 
     - task: DownloadSecureFile@1
       name: ssh_config
       inputs:
         secureFile: ssh.config
+      displayName: Download SSH config
 
     # download sources
     - checkout: self
@@ -410,6 +412,19 @@ stages:
       name: upload_key
       inputs:
         secureFile: phenix-lbl-04e6cb0d1bf7.json
+      displayName: Download Google Drive credentials
+
+    - task: DownloadSecureFile@1
+      name: ssh_config
+      inputs:
+        secureFile: ssh.config
+      displayName: Download SSH config
+
+    - task: DownloadSecureFile@1
+      name: nsis_zip
+      inputs:
+        secureFile: nsis-binary-7336-1.zip
+      displayName: Download nsisbi
 
     # download sources
     - checkout: self
@@ -419,12 +434,29 @@ stages:
     - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
       displayName: Add conda to PATH
 
+    # install mamba
+    - script: |
+        conda update -n base conda
+        conda install -n base conda-libmamba-solver
+        conda config --set solver libmamba
+        conda install -n base -y conda-build
+      displayName: Install mamba
+      retryCountOnTaskFailure: 3
+
     # set up constructor environment
     - script: |
         conda remove -n construct -y --all
         conda create -n construct -y -c conda-forge constructor jinja2
       displayName: Set up constructor environment
       retryCountOnTaskFailure: 3
+
+    # replace nsis with nsisbi
+    - script: |
+        unzip $(nsis_zip.secureFilePath)
+        xcopy /S /Y /F nsis-binary-7336-1\* C:\Miniconda\envs\construct\NSIS
+        dir nsis-binary-7336-1
+        dir C:\Miniconda\envs\construct\NSIS
+      displayName: Replace NSIS in constructor environment
 
     # set up Google Drive upload environment
     - script: |
@@ -464,13 +496,18 @@ stages:
           rmdir /S /Q %%D
         )
         dir
+
+        cd $(Pipeline.Workspace)
+        conda index .
+        dir
       displayName: Extract artifact
 
     - bash: |
         cd constructor
         version=`python3 update_version.py --version windows`
-        echo "##vso[task.setVariable variable=version]$version"
+        echo ${version}
         echo $(version)
+        echo "##vso[task.setVariable variable=version]$version"
       displayName: Set and update version
 
     - script: |
@@ -496,14 +533,11 @@ stages:
         cd $(Pipeline.Workspace)\$(platform)
         for /R $(Pipeline.Workspace)\$(platform) %%F in (*.conda) do (
           conda create -n phenix -y
-          call activate phenix
-          conda install -y %%F
+          conda install -n phenix -y %%F
 
-          cd %CONDA_PREFIX%\share\phenix\conda_envs
-
-          conda install -y --file phenix_py$(pyver)_$(platform).txt
-          mamba install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
-          mamba install -y --no-deps --freeze-installed menuinst
+          conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
+          conda install -n phenix -y -c cctbx202211 --override-channels --no-deps --freeze-installed gemmi nxmx
+          conda install -n phenix -y -c conda-forge --override-channels --no-deps --freeze-installed menuinst
           conda clean -y --all
         )
 
@@ -511,6 +545,7 @@ stages:
       retryCountOnTaskFailure: 3
 
     - script: |
+        conda config --set solver classic
         call activate construct
         cd constructor
         constructor .
@@ -535,7 +570,7 @@ stages:
         )
 
       displayName: Upload installer
-      condition: eq(variables['py_ver'], '3.7')
+      condition: and(eq(variables['py_ver'], '3.7'), succeeded())
       continueOnError: true
 
     - script: |

@@ -43,6 +43,8 @@ def get_drive_id(name=None, credentials=None):
 
 # -----------------------------------------------------------------------------
 def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials=None):
+  if os.path.isfile(name):
+    name = os.path.basename(name)
   try:
     service = build('drive', 'v3', credentials=credentials)
     results = service.files().list(
