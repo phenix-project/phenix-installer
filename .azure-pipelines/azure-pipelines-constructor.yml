@@ -358,7 +358,7 @@ stages:
 
 # =============================================================================
 - stage: Build_win
-  condition: succeededOrFailed()
+  dependsOn: []
 
   jobs:
   - job: Construct_phenix_win_installer
@@ -596,6 +596,7 @@ stages:
 
 # =============================================================================
 - stage: Clean
+  dependsOn: [Build, Build_win]
   condition: succeededOrFailed()
 
   jobs:
