@@ -552,26 +552,26 @@ stages:
         dir
       displayName: Create installer
 
-    - script: |
-        set installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+    # - script: |
+    #     set installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
 
-        ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p %installer_dir%/$(version)"
-        ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p %installer_dir%/staging/$(version)"
+    #     ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p %installer_dir%/$(version)"
+    #     ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p %installer_dir%/staging/$(version)"
 
-        cd constructor
-        for /R %%F in (Phenix*) do (
-          echo Copying %%F
-          scp -F $(ssh_config.secureFilePath) %%F "builder@boa.lbl.gov:%installer_dir%/staging/$(version)/%%F"
-        )
+    #     cd constructor
+    #     for /R %%F in (Phenix*) do (
+    #       echo Copying %%F
+    #       scp -F $(ssh_config.secureFilePath) %%F "builder@boa.lbl.gov:%installer_dir%/staging/$(version)/%%F"
+    #     )
 
-        for /R %%F in (Phenix*) do (
-          echo Moving %%F
-          ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mv -f %installer_dir%/staging/$(version)/%%F %installer_dir%/$(version)/%%F"
-        )
+    #     for /R %%F in (Phenix*) do (
+    #       echo Moving %%F
+    #       ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mv -f %installer_dir%/staging/$(version)/%%F %installer_dir%/$(version)/%%F"
+    #     )
 
-      displayName: Upload installer
-      condition: and(eq(variables['py_ver'], '3.7'), succeeded())
-      continueOnError: true
+    #   displayName: Upload installer
+    #   condition: and(eq(variables['py_ver'], '3.7'), succeeded())
+    #   continueOnError: true
 
     - script: |
         call activate upload
@@ -579,11 +579,11 @@ stages:
         cd constructor
         for /R %%F in (Phenix*) do (
           echo Uploading %%F
-          python $(Build.Repository.LocalPath)/scripts/google_drive.py \
-            --credentials $(upload_key.secureFilePath) \
-            --drive "Phenix Installers" \
-            --folder "$(version)" \
-            --subfolder "$(py_ver)" \
+          python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
+            --credentials $(upload_key.secureFilePath) ^
+            --drive "Phenix Installers" ^
+            --folder $(version) ^
+            --subfolder $(py_ver) ^
             --file %%F
         )
 
