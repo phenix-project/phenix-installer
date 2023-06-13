@@ -374,19 +374,22 @@ stages:
           np_ver: 1.20
         win_py38:
           vmImage: windows-latest
-          platform: Windows
+          artifact_platform: win_64
+          platform: win-64
           py_ver: 3.8
           pyver: 38
           np_ver: 1.20
         win_py39:
           vmImage: windows-latest
-          platform: Windows
+          artifact_platform: win_64
+          platform: win-64
           py_ver: 3.9
           pyver: 39
           np_ver: 1.20
         win_py310:
           vmImage: windows-latest
-          platform: Windows
+          artifact_platform: win_64
+          platform: win-64
           py_ver: 3.10
           pyver: 310
           np_ver: 1.21
