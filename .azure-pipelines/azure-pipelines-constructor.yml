@@ -14,7 +14,7 @@ resources:
 
 stages:
 # =============================================================================
-- stage: Build
+- stage: linux_macOS
 
   jobs:
   - job: Construct_phenix_installer
@@ -357,7 +357,7 @@ stages:
       continueOnError: true
 
 # =============================================================================
-- stage: Build_win
+- stage: win
   dependsOn: []
 
   jobs:
@@ -596,7 +596,7 @@ stages:
 
 # =============================================================================
 - stage: Clean
-  dependsOn: [Build, Build_win]
+  dependsOn: [linux_macOS, win]
   condition: succeededOrFailed()
 
   jobs:
