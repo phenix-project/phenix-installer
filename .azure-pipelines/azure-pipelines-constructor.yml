@@ -219,6 +219,24 @@ stages:
 
     - script: |
         set -xe
+
+        source activate construct
+
+        cd $(Pipeline.Workspace)/$(platform)
+        for f in `/bin/ls phenix*.tar.bz2`; do
+          echo Converting ${f} to .conda format
+          cph transmute \
+            --zstd-compression-level 22 \
+            --zstd-compression-threads 4 \
+            ${f} \
+            .conda
+          rm -f ${f}
+        done
+        ls
+      displayName: Convert tar.bz2 to .conda
+
+    - script: |
+        set -xe
         cd constructor
         version=`python3 update_version.py --version $(Pipeline.Workspace)/$(platform)/phenix*`
         echo "##vso[task.setVariable variable=version]$version"
@@ -504,6 +522,22 @@ stages:
         conda index .
         dir
       displayName: Extract artifact
+
+    - script: |
+        call activate construct
+
+        cd $(Pipeline.Workspace)\$(platform)
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (*.tar.bz2) do (
+          echo "Converting %%F to .conda format"
+          cph transmute ^
+            --zstd-compression-level 22 ^
+            --zstd-compression-threads 4 ^
+            %%F ^
+            .conda
+          del /S /Q ${f}
+        )
+        dir
+      displayName: Convert tar.bz2 to .conda
 
     - bash: |
         cd constructor
