@@ -530,10 +530,9 @@ stages:
           echo "Converting %%F to .conda format"
           cph transmute ^
             --zstd-compression-level 22 ^
-            --zstd-compression-threads 4 ^
             %%F ^
             .conda
-          del /S /Q ${f}
+          del /S /Q %%F
         )
         dir
       displayName: Convert tar.bz2 to .conda
