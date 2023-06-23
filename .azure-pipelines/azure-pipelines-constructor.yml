@@ -507,7 +507,7 @@ stages:
         cd $(platform)
 
         mkdir $(Pipeline.Workspace)\$(platform)
-        for /R %%F in (*.conda) do (
+        for /R %%F in (phenix*) do (
           move %%F $(Pipeline.Workspace)\$(platform)\
         )
 
