@@ -549,7 +549,7 @@ stages:
         call activate upload
         echo $(version)
         cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*) do (
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*tar.bz2) do (
           echo "Uploading %%F"
           python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
             --credentials $(upload_key.secureFilePath) ^
@@ -566,7 +566,7 @@ stages:
         conda remove -n phenix -y --all
 
         cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*) do (
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*tar.bz2) do (
           conda create -n phenix -y
           conda install -n phenix -y %%F
 
