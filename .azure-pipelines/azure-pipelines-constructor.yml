@@ -528,7 +528,7 @@ stages:
         cd $(Pipeline.Workspace)\$(platform)
         for /R $(Pipeline.Workspace)\$(platform) %%F in (*.tar.bz2) do (
           echo "Converting %%F to .conda format"
-          cph transmute ^
+          call cph transmute ^
             --zstd-compression-level 22 ^
             %%F ^
             .conda
