@@ -227,7 +227,6 @@ stages:
           echo Converting ${f} to .conda format
           cph transmute \
             --zstd-compression-level 22 \
-            --zstd-compression-threads 4 \
             ${f} \
             .conda
           rm -f ${f}
