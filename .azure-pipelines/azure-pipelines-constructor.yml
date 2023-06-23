@@ -20,7 +20,7 @@ stages:
   - job: Construct_phenix_installer
 
     strategy:
-      maxParallel: 4
+      maxParallel: 6
       matrix:
         linux_py37:
           vmImage: ubuntu-latest
