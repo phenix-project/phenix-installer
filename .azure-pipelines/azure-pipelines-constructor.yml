@@ -522,20 +522,20 @@ stages:
         dir
       displayName: Extract artifact
 
-    - script: |
-        call activate construct
+    # - script: |
+    #     call activate construct
 
-        cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (*.tar.bz2) do (
-          echo "Converting %%F to .conda format"
-          call cph transmute ^
-            --zstd-compression-level 22 ^
-            %%F ^
-            .conda
-          del /S /Q %%F
-        )
-        dir
-      displayName: Convert tar.bz2 to .conda
+    #     cd $(Pipeline.Workspace)\$(platform)
+    #     for /R $(Pipeline.Workspace)\$(platform) %%F in (*.tar.bz2) do (
+    #       echo "Converting %%F to .conda format"
+    #       call cph transmute ^
+    #         --zstd-compression-level 22 ^
+    #         %%F ^
+    #         .conda
+    #       del /S /Q %%F
+    #     )
+    #     dir
+    #   displayName: Convert tar.bz2 to .conda
 
     - bash: |
         cd constructor
@@ -549,7 +549,7 @@ stages:
         call activate upload
         echo $(version)
         cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (*.conda) do (
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*) do (
           echo "Uploading %%F"
           python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
             --credentials $(upload_key.secureFilePath) ^
@@ -566,7 +566,7 @@ stages:
         conda remove -n phenix -y --all
 
         cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (*.conda) do (
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*) do (
           conda create -n phenix -y
           conda install -n phenix -y %%F
 
@@ -601,6 +601,23 @@ stages:
             --file %%F
         )
       displayName: Upload installer to Google Drive
+      retryCountOnTaskFailure: 3
+      continueOnError: true
+
+    - script: |
+        call activate upload
+        echo $(version)
+        cd %USERPROFILE%\.conda\constructor\win-64
+        for /R %USERPROFILE%\.conda\constructor\win-64 %%F in (phenix*conda) do (
+          echo "Uploading %%F"
+          python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
+            --credentials $(upload_key.secureFilePath) ^
+            --drive "Phenix Installers" ^
+            --folder $(version) ^
+            --subfolder $(platform) ^
+            --file %%F
+        )
+      displayName: Upload conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
 
