@@ -608,6 +608,8 @@ stages:
     - script: |
         call activate upload
         echo $(version)
+        conda info
+        conda info --envs
         cd %USERPROFILE%\.conda\constructor\win-64
         for /R %USERPROFILE%\.conda\constructor\win-64 %%F in (phenix*conda) do (
           echo "Uploading %%F"
