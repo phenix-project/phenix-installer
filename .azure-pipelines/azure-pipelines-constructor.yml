@@ -516,10 +516,6 @@ stages:
           rmdir /S /Q %%D
         )
         dir
-
-        cd $(Pipeline.Workspace)
-        conda index .
-        dir
       displayName: Extract artifact
 
     - script: |
@@ -536,6 +532,13 @@ stages:
         )
         dir
       displayName: Convert tar.bz2 to .conda
+
+    - script: |
+        call activate construct
+        cd $(Pipeline.Workspace)
+        conda index .
+        dir
+      displayName: Index file channel
 
     - bash: |
         cd constructor
