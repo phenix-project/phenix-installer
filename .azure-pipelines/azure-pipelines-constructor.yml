@@ -553,7 +553,7 @@ stages:
         call activate upload
         echo $(version)
         cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*tar.bz2) do (
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda, phenix*tar.bz2) do (
           echo "Uploading %%F"
           python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
             --credentials $(upload_key.secureFilePath) ^
@@ -570,7 +570,7 @@ stages:
         conda remove -n phenix -y --all
 
         cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*tar.bz2) do (
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda, phenix*tar.bz2) do (
           conda create -n phenix -y
           conda install -n phenix -y %%F
 
@@ -606,25 +606,6 @@ stages:
             --file %%F
         )
       displayName: Upload installer to Google Drive
-      retryCountOnTaskFailure: 3
-      continueOnError: true
-
-    - script: |
-        call activate upload
-        echo $(version)
-        conda info
-        conda info --envs
-        cd %USERPROFILE%\.conda\constructor\win-64
-        for /R %USERPROFILE%\.conda\constructor\win-64 %%F in (phenix*conda) do (
-          echo "Uploading %%F"
-          python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
-            --credentials $(upload_key.secureFilePath) ^
-            --drive "Phenix Installers" ^
-            --folder $(version) ^
-            --subfolder $(platform) ^
-            --file %%F
-        )
-      displayName: Upload conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
 
