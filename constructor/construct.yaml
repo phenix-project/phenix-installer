@@ -21,7 +21,7 @@ exclude:  # [unix]
   - readline  # [unix]
 initialize_by_default: false
 installer_type: all
-# transmute_file_type: .conda
+transmute_file_type: .conda
 welcome_image: ""
 
 # post installation
