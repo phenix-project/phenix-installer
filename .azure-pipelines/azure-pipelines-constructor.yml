@@ -519,6 +519,7 @@ stages:
       displayName: Extract artifact
 
     - script: |
+        echo on
         call activate construct
 
         cd $(Pipeline.Workspace)\$(platform)
