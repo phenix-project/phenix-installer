@@ -522,6 +522,8 @@ stages:
         echo on
         call activate construct
 
+        cph --help
+
         cd $(Pipeline.Workspace)\$(platform)
         for /R $(Pipeline.Workspace)\$(platform) %%F in (*.tar.bz2) do (
           echo "Converting %%F to .conda format"
