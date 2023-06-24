@@ -522,20 +522,20 @@ stages:
         dir
       displayName: Extract artifact
 
-    # - script: |
-    #     call activate construct
+    - script: |
+        call activate construct
 
-    #     cd $(Pipeline.Workspace)\$(platform)
-    #     for /R $(Pipeline.Workspace)\$(platform) %%F in (*.tar.bz2) do (
-    #       echo "Converting %%F to .conda format"
-    #       call cph transmute ^
-    #         --zstd-compression-level 22 ^
-    #         %%F ^
-    #         .conda
-    #       del /S /Q %%F
-    #     )
-    #     dir
-    #   displayName: Convert tar.bz2 to .conda
+        cd $(Pipeline.Workspace)\$(platform)
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (*.tar.bz2) do (
+          echo "Converting %%F to .conda format"
+          python C:\Miniconda\envs\construct\Scripts\cph-script.py transmute ^
+            --zstd-compression-level 22 ^
+            %%F ^
+            .conda
+          del /S /Q %%F
+        )
+        dir
+      displayName: Convert tar.bz2 to .conda
 
     - bash: |
         cd constructor
