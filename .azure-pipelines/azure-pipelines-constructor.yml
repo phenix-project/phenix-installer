@@ -198,7 +198,7 @@ stages:
         allowPartiallySucceededBuilds: true
         allowFailedBuilds: false
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        patterns: '**/conda_artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
 
     - script: |
         set -xe
@@ -497,7 +497,7 @@ stages:
         allowPartiallySucceededBuilds: true
         allowFailedBuilds: false
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        patterns: '**/*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
 
     - script: |
         cd $(Pipeline.Workspace)\conda_artifacts*
