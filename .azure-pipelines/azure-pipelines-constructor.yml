@@ -203,16 +203,24 @@ stages:
     - script: |
         set -xe
 
-        cd $(Pipeline.Workspace)/conda_artifacts*
-        unzip phenix-feedstock*.zip
-
-        if [ -d build_artifacts ]; then
-          cd build_artifacts
-        fi
-        cd $(platform)
-
         mkdir $(Pipeline.Workspace)/$(platform)
-        mv phenix* $(Pipeline.Workspace)/$(platform)/
+
+        cd $(Pipeline.Workspace)
+        ls
+
+        for d in conda_artifacts*/; do
+          cd $(Pipeline.Workspace)/${d}
+          unzip phenix-feedstock*.zip
+
+          if [ -d build_artifacts ]; then
+            cd build_artifacts
+          fi
+          cd $(platform)
+
+          for f in `/bin/ls phenix* 2> /dev/null`; do
+            mv ${f} $(Pipeline.Workspace)/$(platform)/
+          done
+        done
 
         rm -fr $(Pipeline.Workspace)/conda_artifacts*
       displayName: Extract artifact
@@ -500,21 +508,28 @@ stages:
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
 
     - script: |
-        cd $(Pipeline.Workspace)\conda_artifacts*
-        unzip phenix-feedstock*.zip
-
-        cd $(platform)
-
         mkdir $(Pipeline.Workspace)\$(platform)
-        for /R %%F in (phenix*) do (
-          move %%F $(Pipeline.Workspace)\$(platform)\
-        )
 
         cd $(Pipeline.Workspace)
         dir
+
         for /D %%D in (conda_artifacts*) do (
+          cd %%D
+          unzip phenix-feedstock*.zip
+
+          cd $(platform)
+
+          for /R %%F in (phenix*) do (
+            move %%F $(Pipeline.Workspace)\$(platform)\
+          )
+
+          cd ..
+          dir
+
           rmdir /S /Q %%D
         )
+
+        cd $(Pipeline.Workspace)
         dir
       displayName: Extract artifact
 
