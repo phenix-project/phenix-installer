@@ -149,9 +149,9 @@ stages:
     # install mamba
     - script: |
         set -xe
-        conda update -n base -y -c conda-forge --all
-        conda install -n base -y -c conda-forge mamba
-
+        conda update -n base conda
+        conda install -n base conda-libmamba-solver
+        conda config --set solver libmamba
       displayName: Install mamba
       retryCountOnTaskFailure: 3
 
@@ -285,7 +285,7 @@ stages:
         pyver=`echo $(py_ver) | sed 's/\.//'`
 
         conda install -y --file phenix_py${pyver}_$(platform).txt
-        mamba install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
+        conda install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
         conda clean -y --all
 
       displayName: Create installer environment
