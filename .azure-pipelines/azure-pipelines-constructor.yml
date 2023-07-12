@@ -149,8 +149,8 @@ stages:
     # install mamba
     - script: |
         set -xe
-        conda update -n base conda
-        conda install -n base conda-libmamba-solver
+        conda update -n base -y conda
+        conda install -n base -y conda-libmamba-solver
         conda config --set solver libmamba
       displayName: Install mamba
       retryCountOnTaskFailure: 3

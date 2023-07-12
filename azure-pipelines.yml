@@ -112,9 +112,9 @@ jobs:
   # install mamba
   - script: |
       set -xe
-      conda update -n base -y -c conda-forge --all
-      conda install -n base -y -c conda-forge mamba
-
+      conda update -n base -y conda
+      conda install -n base -y conda-libmamba-solver
+      conda config --set solver libmamba
     displayName: Install mamba
     retryCountOnTaskFailure: 3
 
