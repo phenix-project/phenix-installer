@@ -152,6 +152,7 @@ stages:
         conda update -n base -y conda
         conda install -n base -y conda-libmamba-solver
         conda config --set solver libmamba
+        conda install -n base -y conda-build
       displayName: Install mamba
       retryCountOnTaskFailure: 3
 
@@ -243,6 +244,13 @@ stages:
         done
         ls
       displayName: Convert tar.bz2 to .conda
+
+    - script: |
+        set -xe
+        cd $(Pipeline.Workspace)
+        conda index .
+        ls
+      displayName: Index file channel
 
     - script: |
         set -xe
@@ -545,7 +553,6 @@ stages:
       displayName: Convert tar.bz2 to .conda
 
     - script: |
-        call activate construct
         cd $(Pipeline.Workspace)
         conda index .
         dir
