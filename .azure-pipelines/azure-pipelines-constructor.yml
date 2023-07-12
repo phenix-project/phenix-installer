@@ -309,35 +309,29 @@ stages:
       displayName: Check disk space
 
     - script: |
-        set -xe
+      set -xe
 
-        source activate construct
-        cd constructor
-        constructor .
-        ls
-
-        df -h
-      displayName: Create installer
-      condition: ne(variables['platform'], 'osx-arm64')
-      retryCountOnTaskFailure: 3
-
-    - script: |
-        set -xe
-
-        # cross-platform constructor
+      # cross-platform constructor
+      if [[ "$(platform)" == *"arm64" ]]; then
         TEMP_DIR=$(mktemp -d)
         CONDA_SUBDIR=$(platform) conda create -p ${TEMP_DIR} -y -c defaults conda-standalone
         CONDA_STANDALONE=${TEMP_DIR}/standalone_conda/conda.exe
+      fi
 
-        source activate construct
-        cd constructor
-        constructor . --conda-exe ${CONDA_STANDALONE} --platform $(platform)
-        ls
+      conda config --set solver classic
+      source activate construct
+      cd constructor
 
-        df -h
-      displayName: Create installer (cross-platform)
-      condition: eq(variables['platform'], 'osx-arm64')
-      retryCountOnTaskFailure: 3
+      if [[ "$(platform)" == *"arm64" ]]; then
+        constructor . --conda-exe ${CONDA_STANDALONE} --platform osx-arm64
+      else
+        constructor .
+      fi
+
+      ls
+      df -h
+    displayName: Create installer
+    retryCountOnTaskFailure: 3
 
     - script: |
         set -xe
