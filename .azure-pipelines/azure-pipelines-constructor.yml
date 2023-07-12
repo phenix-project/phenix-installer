@@ -181,8 +181,10 @@ stages:
 
         conda clean -y --all
 
+        conda config --set solver classic
         source activate construct
         constructor --clean
+        conda config --set solver libmamba
 
         df -h
 
@@ -288,6 +290,7 @@ stages:
         conda install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
         conda clean -y --all
 
+        conda config --set solver classic
       displayName: Create installer environment
       retryCountOnTaskFailure: 3
 
