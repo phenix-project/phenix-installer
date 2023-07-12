@@ -266,7 +266,7 @@ stages:
         source activate upload
 
         cd $(Pipeline.Workspace)/$(platform)
-        for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/`; do
+        for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/*.conda`; do
           echo Uploading ${f}
           python $(Build.Repository.LocalPath)/scripts/google_drive.py \
             --credentials $(upload_key.secureFilePath) \
@@ -288,7 +288,7 @@ stages:
         cd $(Pipeline.Workspace)/$(platform)
         conda create -n phenix -y
         source activate phenix
-        conda install -y phenix*
+        conda install -y phenix*.conda
 
         cd ${CONDA_PREFIX}/share/phenix/conda_envs
 
