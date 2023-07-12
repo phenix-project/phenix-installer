@@ -330,8 +330,8 @@ stages:
 
         ls
         df -h
-    displayName: Create installer
-    retryCountOnTaskFailure: 3
+      displayName: Create installer
+      retryCountOnTaskFailure: 3
 
     - script: |
         set -xe
