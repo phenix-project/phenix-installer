@@ -239,7 +239,7 @@ jobs:
       conda remove -n upload -y --all
       conda create -n upload -y -c conda-forge python=3.9 pydrive2 tabulate tqdm
       source activate upload
-      mamba install -y -c xfel -c conda-forge --no-deps --freeze-installed boost boost-cpp numpy cctbx.xfel
+      conda install -y -c xfel -c conda-forge --no-deps --freeze-installed boost boost-cpp numpy cctbx.xfel
     displayName: Set up upload environment
     retryCountOnTaskFailure: 3
 
