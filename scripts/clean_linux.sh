@@ -15,7 +15,7 @@ for d in \
         ; do
   sudo rsync --stats -a --delete /opt/empty_dir/ $d || true
 done
-sudo aptitude purge -y -f firefox \
+sudo apt-get purge -y -f firefox \
                           google-chrome-stable \
                           microsoft-edge-stable
 sudo apt-get autoremove -y >& /dev/null
