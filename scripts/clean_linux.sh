@@ -9,6 +9,7 @@ for d in \
         /usr/lib/jvm \
         /usr/local/.ghcup \
         /usr/local/android \
+        /usr/local/lib/android \
         /usr/local/powershell \
         /usr/share/dotnet \
         /usr/share/swift \
