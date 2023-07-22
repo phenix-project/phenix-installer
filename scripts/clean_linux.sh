@@ -13,12 +13,12 @@ for d in \
         /usr/share/dotnet \
         /usr/share/swift \
         ; do
-  sudo rsync --stats -a --delete /opt/empty_dir/ $d || true
+  time sudo rsync --stats -a --delete /opt/empty_dir/ $d || true
 done
-sudo apt-get purge -y -f firefox \
+time sudo apt-get purge -y -f firefox \
                           google-chrome-stable \
                           microsoft-edge-stable
-sudo apt-get autoremove -y >& /dev/null
-sudo apt-get autoclean -y >& /dev/null
-sudo docker image prune --all --force
+time sudo apt-get autoremove -y >& /dev/null
+time sudo apt-get autoclean -y >& /dev/null
+time sudo docker image prune --all --force
 df -h
