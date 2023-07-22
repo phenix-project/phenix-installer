@@ -2,12 +2,23 @@
 
 set -xe
 
-rm -fr ${ANDROID_HOME}
-
-rm -fr ${JAVA_HOME_8_X64}
-rm -fr ${JAVA_HOME_11_X64}
-rm -fr ${JAVA_HOME_17_X64}
-
-rm -fr ${CHROMEWEBDRIVER}
-rm -fr ${EDGEWEBDRIVER}
-rm -fr ${GECKOWEBDRIVER}
+sudo mkdir -p /opt/empty_dir || true
+for d in \
+        /opt/ghc \
+        /opt/hostedtoolcache \
+        /usr/lib/jvm \
+        /usr/local/.ghcup \
+        /usr/local/android \
+        /usr/local/powershell \
+        /usr/share/dotnet \
+        /usr/share/swift \
+        ; do
+  sudo rsync --stats -a --delete /opt/empty_dir/ $d || true
+done
+sudo aptitude purge -y -f firefox \
+                          google-chrome-stable \
+                          microsoft-edge-stable
+sudo apt-get autoremove -y >& /dev/null
+sudo apt-get autoclean -y >& /dev/null
+sudo docker image prune --all --force
+df -h
