@@ -2,6 +2,21 @@
 
 # set -xe
 
+for d in \
+        /opt/ghc \
+        /opt/hostedtoolcache \
+        /usr/lib/jvm \
+        /usr/local/.ghcup \
+        /usr/local/lib/android \
+        /usr/local/share/powershell \
+        /usr/share/dotnet \
+        /usr/share/swift \
+        ; do
+  echo $d
+  du -sh $d
+  echo
+done
+
 sudo mkdir -p /opt/empty_dir || true
 for d in \
         /opt/ghc \
