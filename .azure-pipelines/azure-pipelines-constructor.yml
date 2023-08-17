@@ -363,29 +363,41 @@ stages:
       retryCountOnTaskFailure: 3
       continueOnError: true
 
-    - script: |
-        set -xe
-
-        installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
-
-        ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p ${installer_dir}/$(version)"
-        ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)"
-
-        cd constructor
-        for f in `/bin/ls Phenix*`; do
-          echo Copying ${f}
-          scp -F $(ssh_config.secureFilePath) ${f} builder@boa.lbl.gov:${installer_dir}/staging/$(version)/${f}
-        done
-
-        for f in `/bin/ls Phenix*`; do
-          echo Moving ${f}
-          ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mv -f ${installer_dir}/staging/$(version)/${f} ${installer_dir}/$(version)/${f}"
-        done
-
+    - task: CopyFilesOverSSH@0
+      inputs:
+        sshEndpoint: anaconda
+        sourceFolder: $(Build.Repository.LocalPath)/constructor
+        contents: Phenix*.exe
+        targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
+        overwrite: false
       displayName: Upload installer
       condition: or(eq(variables['py_ver'], '3.7'),
                     and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'osx-arm64')))
       continueOnError: true
+
+    # - script: |
+    #     set -xe
+
+    #     installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+
+    #     ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p ${installer_dir}/$(version)"
+    #     ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p ${installer_dir}/staging/$(version)"
+
+    #     cd constructor
+    #     for f in `/bin/ls Phenix*`; do
+    #       echo Copying ${f}
+    #       scp -F $(ssh_config.secureFilePath) ${f} builder@boa.lbl.gov:${installer_dir}/staging/$(version)/${f}
+    #     done
+
+    #     for f in `/bin/ls Phenix*`; do
+    #       echo Moving ${f}
+    #       ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mv -f ${installer_dir}/staging/$(version)/${f} ${installer_dir}/$(version)/${f}"
+    #     done
+
+    #   displayName: Upload installer
+    #   condition: or(eq(variables['py_ver'], '3.7'),
+    #                 and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'osx-arm64')))
+    #   continueOnError: true
 
 # =============================================================================
 - stage: win
@@ -627,25 +639,16 @@ stages:
       retryCountOnTaskFailure: 3
       continueOnError: true
 
-    # - script: |
-    #     set installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
-
-    #     ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p %installer_dir%/$(version)"
-    #     ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mkdir -p %installer_dir%/staging/$(version)"
-
-    #     cd constructor
-    #     for /R %%F in (Phenix*) do (
-    #       echo Copying %%F
-    #       scp -F $(ssh_config.secureFilePath) %%F "builder@boa.lbl.gov:%installer_dir%/staging/$(version)/%%F"
-    #     )
-
-    #     for /R %%F in (Phenix*) do (
-    #       echo Moving %%F
-    #       ssh -F $(ssh_config.secureFilePath) builder@boa.lbl.gov "mv -f %installer_dir%/staging/$(version)/%%F %installer_dir%/$(version)/%%F"
-    #     )
-    #   displayName: Upload installer
-    #   condition: and(eq(variables['py_ver'], '3.7'), succeeded())
-    #   continueOnError: true
+    - task: CopyFilesOverSSH@0
+      inputs:
+        sshEndpoint: anaconda
+        sourceFolder: $(Build.Repository.LocalPath)/constructor
+        contents: Phenix*.exe
+        targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
+        overwrite: false
+      displayName: Upload installer
+      condition: and(eq(variables['py_ver'], '3.7'), succeeded())
+      continueOnError: true
 
 # =============================================================================
 - stage: Clean
