@@ -22,6 +22,8 @@ set SCRIPT_LOCATION=%PREFIX%\Lib\site-packages\libtbx\auto_build\conda_build\wri
   --version %INSTALLER_VER% ^
   --destination %PREFIX%
 if exist "%PREFIX%\\%INSTALLER_NAME%_env.bat" echo "%PREFIX%\\%INSTALLER_NAME%.bat created"
+if exist "%PREFIX%\\%INSTALLER_NAME%_env.bat" copy "%PREFIX%\\%INSTALLER_NAME%.bat" "%PREFIX%\\%INSTALLER_NAME%.sh"
+if exist "%PREFIX%\\%INSTALLER_NAME%_env.sh" echo "%PREFIX%\\%INSTALLER_NAME%.sh created"
 echo "done"
 
 REM rebuild rotarama and cablam caches
