@@ -296,7 +296,9 @@ stages:
         pyver=`echo $(py_ver) | sed 's/\.//'`
 
         conda install -y --file phenix_py${pyver}_$(platform).txt
-        conda install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
+        if [[ "$(platform)" != *"arm64" ]]; then
+          conda install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
+        fi
         conda clean -y --all
 
         conda config --set solver classic
