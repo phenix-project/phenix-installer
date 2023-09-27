@@ -17,6 +17,17 @@ if [[ "$INSTALLER_PLAT" == "osx-arm64" ]]; then
   echo "done"
 fi
 
+# create custom bin directory
+echo ""
+echo "Creating phenix_bin directory"
+echo "============================="
+SCRIPT_LOCATION=`${PREFIX}/bin/libtbx.find_in_repositories libtbx/auto_build/conda_build/create_custom_bin.py`
+${PREFIX}/bin/python ${SCRIPT_LOCATION} \
+  --prefix ${PREFIX} \
+  --custom_bin ${INSTALLER_NAME}_bin \
+  --packages phenix dials dxtbx
+echo "done"
+
 # write phenix_env files
 echo ""
 echo "Writing phenix_env files"
@@ -25,7 +36,7 @@ SCRIPT_LOCATION=`${PREFIX}/bin/libtbx.find_in_repositories libtbx/auto_build/con
 ${PREFIX}/bin/python ${SCRIPT_LOCATION} \
   --program ${INSTALLER_NAME} \
   --prefix ${PREFIX} \
-  --bin-dir bin \
+  --bin-dir ${INSTALLER_NAME}_bin \
   --version ${INSTALLER_VER} \
   --destination ${PREFIX}
 if [ -f "${PREFIX}/${INSTALLER_NAME}_env.sh" ]; then

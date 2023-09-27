@@ -10,6 +10,17 @@ call %PREFIX%\Library\bin\libtbx.py_compile_all.bat -i
 popd
 echo "done"
 
+REM create custom bin directory
+echo ""
+echo "Creating phenix_bin directory"
+echo "============================="
+set SCRIPT_LOCATION=%PREFIX%\Lib\site-packages\libtbx\auto_build\conda_build\create_custom_bin.py
+%PREFIX%\python.exe %SCRIPT_LOCATION% ^
+  --prefix %PREFIX% ^
+  --custom_bin %INSTALLER_NAME%_bin ^
+  --packages phenix dials dxtbx
+echo "done"
+
 REM write phenix_env files
 echo ""
 echo "Writing phenix_env files"
@@ -18,7 +29,7 @@ set SCRIPT_LOCATION=%PREFIX%\Lib\site-packages\libtbx\auto_build\conda_build\wri
 %PREFIX%\python.exe %SCRIPT_LOCATION% ^
   --program %INSTALLER_NAME% ^
   --prefix %PREFIX% ^
-  --bin-dir Library\bin ^
+  --bin-dir %INSTALLER_NAME%_bin ^
   --version %INSTALLER_VER% ^
   --destination %PREFIX%
 if exist "%PREFIX%\\%INSTALLER_NAME%_env.bat" echo "%PREFIX%\\%INSTALLER_NAME%.bat created"
