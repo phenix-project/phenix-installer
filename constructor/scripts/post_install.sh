@@ -24,7 +24,7 @@ echo "============================="
 SCRIPT_LOCATION=`${PREFIX}/bin/libtbx.find_in_repositories libtbx/auto_build/conda_build/create_custom_bin.py`
 ${PREFIX}/bin/python ${SCRIPT_LOCATION} \
   --prefix ${PREFIX} \
-  --custom_bin ${INSTALLER_NAME}_bin \
+  --custom_bin phenix_bin \
   --packages phenix dials dxtbx
 echo "done"
 
@@ -36,7 +36,7 @@ SCRIPT_LOCATION=`${PREFIX}/bin/libtbx.find_in_repositories libtbx/auto_build/con
 ${PREFIX}/bin/python ${SCRIPT_LOCATION} \
   --program ${INSTALLER_NAME} \
   --prefix ${PREFIX} \
-  --bin-dir ${INSTALLER_NAME}_bin \
+  --bin-dir phenix_bin \
   --version ${INSTALLER_VER} \
   --destination ${PREFIX}
 if [ -f "${PREFIX}/${INSTALLER_NAME}_env.sh" ]; then
