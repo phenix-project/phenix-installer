@@ -149,8 +149,7 @@ stages:
     # install mamba
     - script: |
         set -xe
-        conda update -n base -y conda
-        conda install -n base -y conda-libmamba-solver
+        conda install -n base -y conda=23.7 conda-libmamba-solver=23.7
         conda config --set solver libmamba
         conda install -n base -y conda-build
       displayName: Install mamba
@@ -460,8 +459,7 @@ stages:
 
     # install mamba
     - script: |
-        conda update -n base conda
-        conda install -n base conda-libmamba-solver
+        conda install -n base conda=23.7 conda-libmamba-solver=23.7
         conda config --set solver libmamba
         conda install -n base -y conda-build
       displayName: Install mamba
