@@ -143,6 +143,7 @@ jobs:
 
   - script: |
       set -xe
+      cd $(Pipeline.Workspace)
       cd modules/chem_data/geostd
       git checkout releases/1.21
     displayName: Switch to release branch of geostd
