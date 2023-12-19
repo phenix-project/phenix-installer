@@ -10,7 +10,10 @@ resources:
     project: 'feedstock-builds'
     source: 'phenix-feedstock'
     branch: 'main'
-    trigger: true
+    trigger:
+      branches:
+        include:
+          - main
 
 stages:
 # =============================================================================
