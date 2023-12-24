@@ -143,13 +143,6 @@ jobs:
 
   - script: |
       set -xe
-      cd $(Pipeline.Workspace)
-      cd modules/chem_data/geostd
-      git checkout releases/1.21
-    displayName: Switch to release branch of geostd
-
-  - script: |
-      set -xe
 
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
