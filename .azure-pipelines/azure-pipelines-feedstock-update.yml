@@ -85,6 +85,9 @@ jobs:
       git config user.name "Billy K. Poon"
       git config user.email "bkpoon@lbl.gov"
 
+      git remote set-url origin git@github.com:phenix-project/phenix-feedstock.git
+
+      # update main branch
       git checkout main
 
       python ./recipe/update_meta.py \
@@ -101,8 +104,19 @@ jobs:
 
       conda smithy rerender -c auto
 
-      git remote set-url origin git@github.com:phenix-project/phenix-feedstock.git
+      # update chem_data branch
+      git checkout chem_data_base
+      git rebase main
+      git push -f -u origin chem_data_base
 
+      git checkout chem_data
+      git reset --hard chem_data_base
+      conda smithy rerender -c auto
+
+      # start chem_data build first
+      git push -f -u origin chem_data
+
+      # then start phenix builds
       git push -u origin main
 
     displayName: Update and rerender phenix-feedstock
