@@ -202,6 +202,7 @@ stages:
         preferTriggeringPipeline: true
         allowPartiallySucceededBuilds: true
         allowFailedBuilds: false
+        branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
 
@@ -501,6 +502,7 @@ stages:
         preferTriggeringPipeline: true
         allowPartiallySucceededBuilds: true
         allowFailedBuilds: false
+        branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
 
