@@ -202,9 +202,25 @@ stages:
         preferTriggeringPipeline: true
         allowPartiallySucceededBuilds: true
         allowFailedBuilds: false
+        buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+      displayName: Download Phenix package
+
+    # download latest chem_data package
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: 'specific'
+        project: '$(resources.pipeline.phenix_feedstock.projectID)'
+        pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
+        preferTriggeringPipeline: true
+        allowPartiallySucceededBuilds: true
+        allowFailedBuilds: false
+        buildVersionToDownload: 'latestFromBranch'
+        branchName: 'refs/heads/chem_data'
+        patterns: '**/*artifacts*linux*'
+      displayName: Download chem_data package
 
     - script: |
         set -xe
@@ -502,9 +518,25 @@ stages:
         preferTriggeringPipeline: true
         allowPartiallySucceededBuilds: true
         allowFailedBuilds: false
+        buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+      displayName: Download Phenix package
+
+    # download latest chem_data package
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: 'specific'
+        project: '$(resources.pipeline.phenix_feedstock.projectID)'
+        pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
+        preferTriggeringPipeline: true
+        allowPartiallySucceededBuilds: true
+        allowFailedBuilds: false
+        buildVersionToDownload: 'latestFromBranch'
+        branchName: 'refs/heads/chem_data'
+        patterns: '**/*artifacts*linux*'
+      displayName: Download chem_data package
 
     - script: |
         mkdir $(Pipeline.Workspace)\$(platform)
