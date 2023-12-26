@@ -226,6 +226,7 @@ stages:
         set -xe
 
         mkdir $(Pipeline.Workspace)/$(platform)
+        mkdir $(Pipeline.Workspace)/noarch
 
         cd $(Pipeline.Workspace)
         ls
@@ -237,33 +238,25 @@ stages:
           if [ -d build_artifacts ]; then
             cd build_artifacts
           fi
-          cd $(platform)
 
+          cd $(platform)
           for f in `/bin/ls phenix* 2> /dev/null`; do
             mv ${f} $(Pipeline.Workspace)/$(platform)/
           done
+          cd ..
+
+          cd noarch
+          for f in `/bin/ls chem_data* 2> /dev/null`; do
+            mv ${f} $(Pipeline.Workspace)/noarch/
+          done
+          cd ..
         done
 
         rm -fr $(Pipeline.Workspace)/conda_artifacts*
+
+        ls $(Pipeline.Workspace)/$(platform)/
+        ls $(Pipeline.Workspace)/noarch/
       displayName: Extract artifact
-
-    - script: |
-        set -xe
-
-        source activate construct
-
-        cd $(Pipeline.Workspace)/$(platform)
-        for f in `/bin/ls phenix*.tar.bz2`; do
-          echo Converting ${f} to .conda format
-          cph transmute \
-            --zstd-compression-level 22 \
-            --zstd-compression-threads 2 \
-            ${f} \
-            .conda
-          rm -f ${f}
-        done
-        ls
-      displayName: Convert tar.bz2 to .conda
 
     - script: |
         set -xe
@@ -296,19 +289,44 @@ stages:
             --file ${f}
           sleep 60
         done
-      displayName: Upload conda package to Google Drive
+      displayName: Upload platform conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
 
     - script: |
         set -xe
 
+        source activate upload
+
+        cd $(Pipeline.Workspace)/noarch
+        for f in `/bin/ls $(Pipeline.Workspace)/noarch/*.conda`; do
+          echo Uploading ${f}
+          python $(Build.Repository.LocalPath)/scripts/google_drive.py \
+            --credentials $(upload_key.secureFilePath) \
+            --drive "Phenix Installers" \
+            --folder "$(version)" \
+            --subfolder "noarch" \
+            --file ${f}
+          sleep 60
+        done
+      displayName: Upload noarch conda package to Google Drive
+      retryCountOnTaskFailure: 3
+      continueOnError: true
+      condition: and(eq(variables['py_ver'], '3.7'), eq(variables['platform'], 'linux-64')))
+
+    - script: |
+        set -xe
+
         conda remove -n phenix -y --all
 
-        cd $(Pipeline.Workspace)/$(platform)
         conda create -n phenix -y
         source activate phenix
+
+        cd $(Pipeline.Workspace)/$(platform)
         conda install -y phenix*.conda
+
+        cd $(Pipeline.Workspace)/noarch
+        conda install -y chem_data*.conda
 
         cd ${CONDA_PREFIX}/share/phenix/conda_envs
 
@@ -540,6 +558,7 @@ stages:
 
     - script: |
         mkdir $(Pipeline.Workspace)\$(platform)
+        mkdir $(Pipeline.Workspace)\noarch
 
         cd $(Pipeline.Workspace)
         dir
@@ -549,12 +568,17 @@ stages:
           unzip phenix-feedstock*.zip
 
           cd $(platform)
-
           for /R %%F in (phenix*) do (
             move %%F $(Pipeline.Workspace)\$(platform)\
           )
-
           cd ..
+
+          cd noarch
+          for /R %%F in (chem_data*) do (
+            move %%F $(Pipeline.Workspace)\noarch\
+          )
+          cd ..
+
           dir
 
           rmdir /S /Q %%D
@@ -563,20 +587,6 @@ stages:
         cd $(Pipeline.Workspace)
         dir
       displayName: Extract artifact
-
-    - script: |
-        echo on
-        call activate construct
-
-        cph transmute --help
-
-        cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (*.tar.bz2) do (
-          echo "Converting %%F to .conda format"
-          cph transmute --zstd-compression-level 22 %%F .conda
-        )
-        dir
-      displayName: Convert tar.bz2 to .conda
 
     - script: |
         cd $(Pipeline.Workspace)
@@ -613,16 +623,17 @@ stages:
         conda remove -n phenix -y --all
 
         cd $(Pipeline.Workspace)\$(platform)
+        conda create -n phenix -y
         for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda, phenix*tar.bz2) do (
-          conda create -n phenix -y
           conda install -n phenix -y %%F
-
-          conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
-          conda install -n phenix -y -c cctbx202211 --override-channels --no-deps --freeze-installed gemmi nxmx
-          conda install -n phenix -y -c conda-forge --override-channels --no-deps --freeze-installed menuinst
-          conda clean -y --all
         )
-
+        for /R $(Pipeline.Workspace)\noarch %%F in (chem_data*.conda) do (
+          conda install -n phenix -y %%F
+        )
+        conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
+        conda install -n phenix -y -c cctbx202211 --override-channels --no-deps --freeze-installed gemmi nxmx
+        conda install -n phenix -y -c conda-forge --override-channels --no-deps --freeze-installed menuinst
+        conda clean -y --all
       displayName: Create installer environment
       retryCountOnTaskFailure: 3
 
