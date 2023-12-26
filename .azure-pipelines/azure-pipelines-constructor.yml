@@ -325,9 +325,6 @@ stages:
         cd $(Pipeline.Workspace)/$(platform)
         conda install -y phenix*.conda
 
-        cd $(Pipeline.Workspace)/noarch
-        conda install -y chem_data*.conda
-
         cd ${CONDA_PREFIX}/share/phenix/conda_envs
 
         pyver=`echo $(py_ver) | sed 's/\.//'`
@@ -336,6 +333,10 @@ stages:
         if [[ "$(platform)" != *"arm64" ]]; then
           conda install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
         fi
+
+        cd $(Pipeline.Workspace)/noarch
+        conda install -y chem_data*.conda
+
         conda clean -y --all
 
         conda config --set solver classic
@@ -627,12 +628,14 @@ stages:
         for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda, phenix*tar.bz2) do (
           conda install -n phenix -y %%F
         )
-        for /R $(Pipeline.Workspace)\noarch %%F in (chem_data*.conda) do (
-          conda install -n phenix -y %%F
-        )
         conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
         conda install -n phenix -y -c cctbx202211 --override-channels --no-deps --freeze-installed gemmi nxmx
         conda install -n phenix -y -c conda-forge --override-channels --no-deps --freeze-installed menuinst
+
+        for /R $(Pipeline.Workspace)\noarch %%F in (chem_data*.conda) do (
+          conda install -n phenix -y %%F
+        )
+
         conda clean -y --all
       displayName: Create installer environment
       retryCountOnTaskFailure: 3
