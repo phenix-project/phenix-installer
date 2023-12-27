@@ -105,6 +105,8 @@ stages:
     # variable for version
     variables:
       version: 1234
+      buildid_main: 9770
+      buildid_chem: 9769
 
     steps:
 
@@ -197,6 +199,8 @@ stages:
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        runVersion: 'specific'
+        buildId: $(buildid_main)
       displayName: Download Phenix package
 
     # download latest chem_data package
@@ -211,6 +215,8 @@ stages:
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/chem_data'
         patterns: '**/*artifacts*linux*'
+        runVersion: 'specific'
+        buildId: $(buildid_chem)
       displayName: Download chem_data package
 
     - script: |
@@ -450,6 +456,8 @@ stages:
     # variable for version
     variables:
       version: 1234
+      buildid_main: 9770
+      buildid_chem: 9769
 
     steps:
 
@@ -521,6 +529,8 @@ stages:
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        runVersion: 'specific'
+        buildId: $(buildid_main)
       displayName: Download Phenix package
 
     # download latest chem_data package
@@ -535,6 +545,8 @@ stages:
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/chem_data'
         patterns: '**/*artifacts*linux*'
+        runVersion: 'specific'
+        buildId: $(buildid_chem)
       displayName: Download chem_data package
 
     - script: |
