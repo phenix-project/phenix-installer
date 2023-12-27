@@ -235,21 +235,21 @@ stages:
           cd $(Pipeline.Workspace)/${d}
           unzip phenix-feedstock*.zip
 
-          if [ -d build_artifacts ]; then
-            cd build_artifacts
+          if [ -d build_artifacts/$(platform) ]; then
+            cd build_artifacts/$(platform)
+          elif [ -d $(platform) ]; then
+            cd $(platform)
           fi
-
-          cd $(platform)
-          for f in `/bin/ls phenix* 2> /dev/null`; do
+          for f in `/bin/ls phenix*.conda 2> /dev/null`; do
             mv ${f} $(Pipeline.Workspace)/$(platform)/
           done
-          cd ..
 
-          cd noarch
-          for f in `/bin/ls chem_data* 2> /dev/null`; do
-            mv ${f} $(Pipeline.Workspace)/noarch/
-          done
-          cd ..
+          if [ -d $(Pipeline.Workspace)/${d}/build_artifacts/noarch ]; then
+            cd $(Pipeline.Workspace)/${d}/build_artifacts/noarch
+            for f in `/bin/ls chem_data*.conda 2> /dev/null`; do
+              mv ${f} $(Pipeline.Workspace)/noarch/
+            done
+          fi
         done
 
         rm -fr $(Pipeline.Workspace)/conda_artifacts*
