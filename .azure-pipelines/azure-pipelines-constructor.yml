@@ -566,27 +566,31 @@ stages:
 
         for /D %%D in (conda_artifacts*) do (
           cd %%D
-          unzip phenix-feedstock*.zip
+          dir
+          unzip -o phenix-feedstock*.zip
 
+          cd $(Pipeline.Workspace)
+          cd %%D
+          dir
           cd $(platform)
-          for /R %%F in (phenix*) do (
+          for /R %%F in (phenix*.conda) do (
             move %%F $(Pipeline.Workspace)\$(platform)\
           )
-          cd ..
 
-          cd noarch
-          for /R %%F in (chem_data*) do (
+          cd $(Pipeline.Workspace)
+          cd %%D
+          cd build_artifacts\noarch
+          for /R %%F in (chem_data*.conda) do (
             move %%F $(Pipeline.Workspace)\noarch\
           )
-          cd ..
 
-          dir
-
+          cd $(Pipeline.Workspace)
           rmdir /S /Q %%D
         )
 
         cd $(Pipeline.Workspace)
-        dir
+        dir $(platform)
+        dir noarch
       displayName: Extract artifact
 
     - script: |
