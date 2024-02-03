@@ -89,8 +89,8 @@ jobs:
 
   - script: |
       # version=$(year).$(month).a$(day)
-      #version=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
-      version=`python3 -c 'import time; print("1.21-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+      version=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+      # version=`python3 -c 'import time; print("1.21-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
       echo "##vso[task.setVariable variable=version]$version"
       echo $(version)
     displayName: Set version
