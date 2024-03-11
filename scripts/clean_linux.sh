@@ -2,6 +2,11 @@
 
 set -xe
 
+# check disk space before
+df -h
+free -h
+
+# clean image
 mkdir -p /opt/empty_dir || true
 for d in \
         /opt/ghc \
@@ -36,5 +41,6 @@ chmod 600 /swapfile || true
 mkswap /swapfile || true
 swapon /swapfile
 
+# check disk space after
 df -h
 free -h
