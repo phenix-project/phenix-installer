@@ -57,6 +57,16 @@ jobs:
     inputs:
       secureFile: ssh.config
 
+  - task: DownloadSecureFile@1
+    name: token
+    inputs:
+      secureFile: token
+
+  - task: DownloadSecureFile@1
+    name: url
+    inputs:
+      secureFile: url
+
   # download support scripts
   - checkout: self
     path: ./phenix-installer
@@ -89,8 +99,9 @@ jobs:
 
   - script: |
       # version=$(year).$(month).a$(day)
-      version=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+      # version=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
       # version=`python3 -c 'import time; print("1.21-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+      version=1.21.1-5286
       echo "##vso[task.setVariable variable=version]$version"
       echo $(version)
     displayName: Set version
@@ -118,28 +129,67 @@ jobs:
     displayName: Install mamba
     retryCountOnTaskFailure: 3
 
-  # link bootstrap.py
+  # # link bootstrap.py
+  # - script: |
+  #     set -xe
+  #     cd $(Pipeline.Workspace)
+  #     wget https://raw.githubusercontent.com/cctbx/cctbx_project/master/libtbx/auto_build/bootstrap.py
+  #     mkdir modules
+  #   displayName: Download bootstrap.py
+
+  # # download test data
+  # - template: .azure-pipelines/templates/download-data-cache.yml@cctbx_project
+
+  # # download remaining sources
+  # - script: |
+  #     set -xe
+  #     export SVN_SSH="ssh -F $(ssh_config.secureFilePath)"
+  #     cd $(Pipeline.Workspace)
+  #     python bootstrap.py hot update \
+  #       --builder=phenix_release \
+  #       --use-conda \
+  #       --python 37 \
+  #       --cciuser=builder
+  #   displayName: Download remaining sources
+
   - script: |
       set -xe
-      cd $(Pipeline.Workspace)
-      wget https://raw.githubusercontent.com/cctbx/cctbx_project/master/libtbx/auto_build/bootstrap.py
-      mkdir modules
-    displayName: Download bootstrap.py
 
-  # download test data
-  - template: .azure-pipelines/templates/download-data-cache.yml@cctbx_project
+      wget https://cci.lbl.gov/~bkpoon/phenix.enc
 
-  # download remaining sources
-  - script: |
-      set -xe
-      export SVN_SSH="ssh -F $(ssh_config.secureFilePath)"
+      openssl enc -d \
+        -aes-256-cbc \
+        -salt \
+        -md sha256 \
+        -iter 100000 \
+        -pbkdf2 \
+        -in phenix.enc \
+        -out phenix.tgz \
+        -pass env:TARBALL_PASSWORD
+
+      rm -f phenix.enc
+
+      tar -xf phenix.tgz
+
+      mv phenix*/modules $(Pipeline.Workspace)
+
+      rm -fr phenix*
+
+      ls
+
       cd $(Pipeline.Workspace)
-      python bootstrap.py hot update \
-        --builder=phenix_release \
-        --use-conda \
-        --python 37 \
-        --cciuser=builder
-    displayName: Download remaining sources
+      cp modules/cctbx_project/libtbx/auto_build/bootstrap.py .
+
+      cd $(Pipeline.Workspace)/modules
+      for r in boost dials dxtbx xia2; do
+        rm -fr ${r}
+      done
+
+      git clone https://github.com/dials/dials.git
+      git clone https://github.com/dials/dxtbx.git
+      git clone https://github.com/xia2/xia2.git
+
+    displayName: Download specific tarball
 
   - script: |
       set -xe
@@ -160,6 +210,9 @@ jobs:
 
       cd $(Pipeline.Workspace)/modules/xia2
       git apply $(Pipeline.Workspace)/phenix-installer/patches/xia2.patch
+
+      cd $(Pipeline.Workspace)/modules/cctbx_project
+      git apply $(Pipeline.Workspace)/phenix-installer/patches/xfel.patch
     displayName: Switch to DIALS 3.13 and patch for Python 3.7
 
   # base and build
@@ -191,8 +244,10 @@ jobs:
       cd $(Pipeline.Workspace)
       mkdir -p rest
       cd rest
-      scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/token .
-      scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/url .
+      # scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/token .
+      # scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/url .
+      cp $(token.secureFilePath) .
+      cp $(url.secureFilePath) .
 
     displayName: Copy token and url
 
