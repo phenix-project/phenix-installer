@@ -152,7 +152,7 @@ stages:
     # install mamba
     - script: |
         set -xe
-        conda install -n base -c conda-forge -y conda=24
+        conda install -n base -c conda-forge -y conda=24 python=3.10
         conda update -n base -c conda-forge -y --all
         conda install -n base -c conda-forge -y conda-build
         conda info
