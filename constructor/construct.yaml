@@ -1,5 +1,5 @@
 {% set name = "phenix" %}
-{% set version = "REPLACEME" %}
+{% set version = "1.21.1-5286" %}
 
 name: Phenix
 version: {{ version }}
