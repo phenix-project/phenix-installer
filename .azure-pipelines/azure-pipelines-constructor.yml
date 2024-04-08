@@ -152,9 +152,11 @@ stages:
     # install mamba
     - script: |
         set -xe
-        conda install -n base -c conda-forge -y conda=24 python=3.10
+        conda install -n base -c conda-forge -y conda=24
         conda update -n base -c conda-forge -y --all
         conda install -n base -c conda-forge -y conda-build
+        conda clean -y --all
+        conda install -n base -c conda-forge -y --force-reinstall libsqlite
         conda info
       displayName: Install conda-build
       retryCountOnTaskFailure: 3
@@ -164,7 +166,7 @@ stages:
         set -xe
         conda remove -n construct -y --all
         # conda create -n construct -y -c conda-forge ctools/label/dev::constructor
-        conda create -n construct -y -c conda-forge constructor=3.4.4 jinja2 python=3.10
+        conda create -n construct -y -c conda-forge constructor=3.4.4 jinja2
       displayName: Set up constructor environment
       retryCountOnTaskFailure: 3
 
