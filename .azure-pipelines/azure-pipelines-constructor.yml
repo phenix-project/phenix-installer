@@ -99,8 +99,8 @@ stages:
     # variable for version
     variables:
       version: 1234
-      buildid_main: 8278
-      buildid_chem: 8121
+      buildid_main: 8552
+      buildid_chem: 8510
 
     steps:
 
@@ -469,8 +469,8 @@ stages:
     # variable for version
     variables:
       version: 1234
-      buildid_main: 8278
-      buildid_chem: 8121
+      buildid_main: 8552
+      buildid_chem: 8510
 
     steps:
 
