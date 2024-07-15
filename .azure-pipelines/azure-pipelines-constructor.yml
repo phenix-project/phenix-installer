@@ -315,7 +315,7 @@ stages:
       displayName: Upload noarch conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
-      condition: and(eq(variables['py_ver'], '3.7'), eq(variables['platform'], 'linux-64'))
+      condition: and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'linux-64'))
 
     - script: |
         set -xe
@@ -414,8 +414,7 @@ stages:
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
         overwrite: false
       displayName: Upload installer
-      condition: or(eq(variables['py_ver'], '3.7'),
-                    and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'osx-arm64')))
+      condition: and(eq(variables['py_ver'], '3.9'), succeeded())
       continueOnError: true
 
 # =============================================================================
@@ -682,7 +681,7 @@ stages:
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
         overwrite: false
       displayName: Upload installer
-      condition: and(eq(variables['py_ver'], '3.7'), succeeded())
+      condition: and(eq(variables['py_ver'], '3.9'), succeeded())
       continueOnError: true
 
 # =============================================================================
