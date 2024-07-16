@@ -17,7 +17,7 @@ jobs:
   timeoutInMinutes: 360
 
   container:
-    image: rockylinux:8
+    image: centos:7
     options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
   # variables for Google Drive folder and installer name
@@ -55,6 +55,18 @@ jobs:
       sudo $(Build.Repository.LocalPath)/scripts/clean_linux.sh
     displayName: Clean up linux image
     target: host
+
+  # centos setup
+  # https://serverfault.com/questions/1161816/mirrorlist-centos-org-no-longer-resolve
+  - script: |
+      set -xe
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo"
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo"
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo"
+    displayName: Modify yum repositories for CentOS 7
 
   # install dependencies
   - script: |
@@ -160,7 +172,7 @@ jobs:
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
       cd $(Pipeline.Workspace)/phenix
       ln -s ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
-      python3 bootstrap.py base build --builder=phenix --nproc=4 --python=39
+      python bootstrap.py base build --builder=phenix --nproc=4 --python=39
     displayName: Build Phenix
 
   - script: |
