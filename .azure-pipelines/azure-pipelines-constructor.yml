@@ -503,6 +503,8 @@ stages:
         conda install -n base -c conda-forge -y conda=24
         conda update -n base -c conda-forge -y --all
         conda install -n base -c conda-forge -y conda-build
+        conda clean -y --all
+        conda install -n base -c conda-forge -y --force-reinstall libsqlite
         conda info
       displayName: Install conda-build
       retryCountOnTaskFailure: 3
