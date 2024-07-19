@@ -166,6 +166,14 @@ jobs:
   #       builder@boa.lbl.gov:${installer_dir}/$(version)/
   #   displayName: test copy
 
+  # patch installer script
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix
+      cp $(Build.Repository.LocalPath)/patches/create_installer.py \
+         ./modules/cctbx_project/libtbx/auto_build/create_installer.py
+    displayName: Use patched create_installer.py
+
   # build
   - script: |
       set -xe
@@ -179,6 +187,11 @@ jobs:
       set -xe
       df -h
     displayName: Check disk space
+
+  # store build as an artifact
+  - publish: $(Pipeline.Workspace)/phenix
+    artifact: nightly_build
+    continueOnError: true
 
   # create installer
   - script: |
@@ -202,7 +215,7 @@ jobs:
       cd $(Pipeline.Workspace)/phenix
       rm -fr dist
       cd tmp
-      export XZ_OPT=-9
+      export XZ_OPT="-T4 -9"
       tar -Jcf $(installer_name).tar.xz $(installer_name)
     displayName: Recompress with xz
 
