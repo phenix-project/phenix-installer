@@ -8,7 +8,10 @@ resources:
   pipelines:
   - pipeline: source_tarball
     source: source_tarball
-    trigger: true
+    trigger:
+      branches:
+        include:
+          - main
 
 jobs:
 - job: Build_dev_installer
