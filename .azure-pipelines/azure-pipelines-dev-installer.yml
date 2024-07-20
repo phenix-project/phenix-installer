@@ -191,10 +191,38 @@ jobs:
       df -h
     displayName: Check disk space
 
+  # create build tarball and encrypt
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      tar -cf phenix.tar ./phenix
+      openssl enc \
+        -aes-256-cbc \
+        -salt \
+        -md sha256 \
+        -iter 100000 \
+        -pbkdf2 \
+        -in phenix.tar \
+        -out phenix.enc \
+        -pass env:TARBALL_PASSWORD
+    displayName: Create build tarball and encrypt
+
   # store build as an artifact
-  - publish: $(Pipeline.Workspace)/phenix
+  - publish: $(Pipeline.Workspace)/phenix.enc
     artifact: nightly_build
     continueOnError: true
+
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      rm -f phenix.tar
+      rm -f phenix.enc
+    displayName: Clean up build tarballs
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
 
   # create installer
   - script: |
