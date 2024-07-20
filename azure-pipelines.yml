@@ -39,6 +39,8 @@ jobs:
     value: $(Get-Date -Format dd)
   - name: version
     value: $(year).$(month).a$(day)
+  - name: installer_name
+    value: TBD
   # variable for Google Drive folder
   - name: folder_id
     value: 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q
@@ -96,6 +98,12 @@ jobs:
     displayName: Set version
 
   - script: |
+      installer_name=phenix-installer-$(version)-source
+      echo "##vso[task.setVariable variable=installer_name]$installer_name"
+      echo $(installer_name)
+    displayName: Set installer_name
+
+  - script: |
       set -xe
       # release=`echo $(Build.SourceBranch) | sed 's/refs\/heads\/releases\///'`
       release=`python3 -c 'import time; print("1.21-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
@@ -137,7 +145,7 @@ jobs:
       python bootstrap.py hot update \
         --builder=phenix_release \
         --use-conda \
-        --python 37 \
+        --python 39 \
         --cciuser=builder
     displayName: Download remaining sources
 
@@ -146,21 +154,29 @@ jobs:
 
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
-        git checkout dials-3.13
+        git checkout dials-3.20
       done
+    displayName: Select DIALS 3.20
+    #   cd $(Pipeline.Workspace)/modules/dials
+    #   git config user.name "Do Not Merge"
+    #   git config user.email "do_not@mer.ge"
+    #   git revert --no-edit c51410c50f77045663aec9da21faa28689191c1a
+    #   git apply $(Pipeline.Workspace)/phenix-installer/patches/dials.patch
 
-      cd $(Pipeline.Workspace)/modules/dials
-      git config user.name "Do Not Merge"
-      git config user.email "do_not@mer.ge"
-      git revert --no-edit c51410c50f77045663aec9da21faa28689191c1a
-      git apply $(Pipeline.Workspace)/phenix-installer/patches/dials.patch
+    #   cd $(Pipeline.Workspace)/modules/dxtbx
+    #   git apply $(Pipeline.Workspace)/phenix-installer/patches/dxtbx.patch
 
-      cd $(Pipeline.Workspace)/modules/dxtbx
-      git apply $(Pipeline.Workspace)/phenix-installer/patches/dxtbx.patch
+    #   cd $(Pipeline.Workspace)/modules/xia2
+    #   git apply $(Pipeline.Workspace)/phenix-installer/patches/xia2.patch
+    # displayName: Switch to DIALS 3.13 and patch for Python 3.7
 
-      cd $(Pipeline.Workspace)/modules/xia2
-      git apply $(Pipeline.Workspace)/phenix-installer/patches/xia2.patch
-    displayName: Switch to DIALS 3.13 and patch for Python 3.7
+  # patch installer script
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      cp $(Pipeline.Workspace)/phenix-installer/patches/create_installer.py \
+         ./modules/cctbx_project/libtbx/auto_build/create_installer.py
+    displayName: Use patched create_installer.py
 
   # base and build
   - script: |
@@ -170,7 +186,7 @@ jobs:
       python bootstrap.py base build \
         --builder=phenix_release \
         --use-conda \
-        --python 37 \
+        --python 39 \
         --nproc=4
     displayName: Configure and Build
 
@@ -207,6 +223,7 @@ jobs:
   # build/bin/libtbx.create_installer --version $(version) --install_script modules/cctbx_project/libtbx/auto_build/plus_installer.py --dist_dir dist/$(version) tmp/cctbx-$(version)
   - script: |
       set -xe
+
       cd $(Pipeline.Workspace)
       build/bin/libtbx.create_installer \
         --version $(version) \
@@ -215,20 +232,19 @@ jobs:
         --readme modules/phenix/phenix/installer/README \
         --readme modules/phenix/phenix/installer/SOURCES \
         --dist_dir dist/$(version) \
-        tmp/phenix-installer-$(version)-source
-      rm -fr build tmp modules
-      cd ./dist/$(version)
-      tar -xf phenix-installer-$(version)-source.tar.gz
-      cp -a $(Pipeline.Workspace)/rest phenix-installer-$(version)-source
-      export XZ_OPT=-9
-      tar -Jcf phenix-installer-$(version)-source.tar.xz phenix-installer-$(version)-source
+        tmp/$(installer_name)
+      rm -fr build dist modules
+      cd ./tmp
+      cp -a $(Pipeline.Workspace)/rest $(installer_name)
+      export XZ_OPT="-T4 -9"
+      tar -Jcf $(installer_name).tar.xz $(installer_name)
       openssl enc \
         -aes-256-cbc \
         -salt \
         -md sha256 \
         -iter 100000 \
         -pbkdf2 \
-        -in phenix-installer-$(version)-source.tar.xz \
+        -in $(installer_name).tar.xz \
         -out phenix.enc \
         -pass env:TARBALL_PASSWORD
     displayName: Build source tarball
@@ -257,7 +273,7 @@ jobs:
     continueOnError: true
 
   # publish complete source tarball as artifact
-  - publish: $(Pipeline.Workspace)/dist/$(version)/phenix.enc
+  - publish: $(Pipeline.Workspace)/tmp/phenix.enc
     artifact: phenix
     continueOnError: true
 
@@ -271,6 +287,6 @@ jobs:
         --credentials $(upload_key.secureFilePath) \
         --folder_id $(folder_id) \
         --folder_list $(version) \
-        --files $(Pipeline.Workspace)/dist/$(version)/phenix-installer-$(version)-source.tar.xz
+        --files $(Pipeline.Workspace)/tmp/phenix-installer-$(version)-source.tar.xz
     displayName: Upload full source tarball (xz) to Google Drive
     continueOnError: true
