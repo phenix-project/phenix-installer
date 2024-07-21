@@ -1,0 +1,299 @@
+# Build phenix development installer on CentOS 7 from source tarball
+
+# no continuous integration builds or pull requests
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+  - pipeline: dev_installer
+    source: dev_installer
+    trigger:
+      branches:
+        include:
+          - main
+
+jobs:
+- job: Build_cuda_installer
+  pool:
+    vmImage: ubuntu-20.04
+  timeoutInMinutes: 360
+
+  container:
+    image: centos:7
+    options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
+
+  # variables for Google Drive folder and installer name
+  variables:
+  - name: folder_id
+    value: 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q
+  - name: installer_name
+    value: TBD
+  - name: version
+    value: TBD
+
+  strategy:
+    matrix:
+      cuda11:
+        cuda_version: 11
+      cuda12:
+        cuda_version: 12
+
+  steps:
+
+  # secrets for LBL
+  - task: DownloadSecureFile@1
+    name: ssh_key
+    inputs:
+      secureFile: id_rsa
+
+  - task: DownloadSecureFile@1
+    name: upload_key
+    inputs:
+      secureFile: phenix-lbl-04e6cb0d1bf7.json
+
+  - task: DownloadSecureFile@1
+    name: ssh_config
+    inputs:
+      secureFile: ssh.config
+
+  # download support scripts
+  - checkout: self
+
+  # clean up linux image
+  - script: |
+      sudo $(Build.Repository.LocalPath)/scripts/clean_linux.sh
+    displayName: Clean up linux image
+    target: host
+
+  # centos setup
+  # https://serverfault.com/questions/1161816/mirrorlist-centos-org-no-longer-resolve
+  - script: |
+      set -xe
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo"
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo"
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo"
+    displayName: Modify yum repositories for CentOS 7
+
+  # install dependencies
+  - script: |
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "yum install -y sudo"
+    displayName: Set up sudo for CentOS
+
+  - script: |
+      set -xe
+      sudo yum groupinstall -y 'Development Tools'
+      sudo yum install -y \
+        mesa-libGLU-devel \
+        mesa-libGL-devel \
+        openssh \
+        tcsh \
+        wget
+    displayName: Install dependencies
+
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+      bash Miniforge3-Linux-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
+      rm -f Miniforge3-Linux-x86_64.sh
+    displayName: Install conda
+
+  # download source tarball
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: 'specific'
+      project: '$(resources.pipeline.dev_installer.projectID)'
+      pipeline: '$(resources.pipeline.dev_installer.pipelineID)'
+      preferTriggeringPipeline: true
+      allowPartiallySucceededBuilds: false
+      allowFailedBuilds: false
+      artifactName: nightly_build
+
+  # decrypt and extract tarball
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda activate base
+      cd $(Pipeline.Workspace)
+      openssl enc -d \
+        -aes-256-cbc \
+        -salt \
+        -md sha256 \
+        -iter 100000 \
+        -pbkdf2 \
+        -in phenix.enc \
+        -out phenix.tar \
+        -pass env:TARBALL_PASSWORD
+      ls
+      rm -f phenix.enc
+      ls
+      tar -xf phenix.tar
+      ls
+      rm -f phenix.tar
+      ls
+    displayName: Extract tarball
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
+
+  - script: |
+      cd $(Pipeline.Workspace)/phenix
+      version=`cat VERSION | xargs`
+      echo "##vso[task.setVariable variable=version]$version"
+      echo $(version)
+    displayName: Set version
+
+  - script: |
+      installer_name=phenix-installer-$(version)-cuda$(cuda_version)
+      echo "##vso[task.setVariable variable=installer_name]$installer_name"
+      echo $(installer_name)
+    displayName: Set installer_name
+
+  - script: |
+      set -xe
+      echo $(version)
+      echo $(installer_name)
+    displayName: Check version and installer_name
+
+  # test copy
+  # - script: |
+  #     set -xe
+  #     chmod go-rwx $(ssh_key.secureFilePath)
+  #     eval `ssh-agent -s`
+  #     ssh-add $(ssh_key.secureFilePath)
+  #     installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+  #     scp -vvv -F $(ssh_config.secureFilePath) -o StrictHostKeyChecking=no \
+  #       $(Pipeline.Workspace)/phenix/modules/cctbx_project/libtbx/auto_build/bootstrap.py \
+  #       builder@boa.lbl.gov:${installer_dir}/$(version)/
+  #   displayName: test copy
+
+  # patch installer script
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix
+      cp $(Build.Repository.LocalPath)/patches/create_installer.py \
+         ./modules/cctbx_project/libtbx/auto_build/create_installer.py
+      cp $(Build.Repository.LocalPath)/patches/phenix_installer.py \
+         ./modules/phenix/phenix/installer/phenix_installer.py
+    displayName: Use patched phenix_installer.py
+
+  # build
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      cd $(Pipeline.Workspace)/phenix
+      ln -s ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
+      python bootstrap.py base build --builder=phenix --nproc=4 --python=39
+    displayName: Build Phenix
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
+
+  # run qrefine installation
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix/modules
+      git clone https://github.com/qrefine/qrefine.git
+    displayName: Get qrefine repository
+
+  # run qrefine update
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix
+      source ./build/setpaths.sh
+      sh ./modules/qrefine/config/update_phenix.sh aimnet2 cuda$(cuda_version) -y
+    displayName: Run qrefine installation
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
+
+  # create installer
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix
+      ./build/bin/libtbx.create_installer \
+        --binary \
+        --version $(version) \
+        --install_script modules/phenix/phenix/installer/phenix_installer.py \
+        --license modules/phenix/LICENSE.txt \
+        --readme modules/phenix/CHANGES \
+        --readme modules/phenix/phenix/installer/README \
+        --readme modules/phenix/phenix/installer/SOURCES \
+        --dist_dir dist/$(version) \
+        tmp/$(installer_name)
+    displayName: Create binary installer
+
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      cd $(Pipeline.Workspace)/phenix
+      rm -fr dist
+      cd tmp
+      export XZ_OPT="-T4 -9"
+      tar -Jcf $(installer_name).tar.xz $(installer_name)
+    displayName: Recompress with xz
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
+
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda clean -y --all
+    displayName: Clean up
+
+  - script: |
+      set -xe
+      df -h
+    displayName: Check disk space
+
+  # set up Google Drive upload environment
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda remove -n upload -y --all
+      conda create -n upload -y python=3.10
+      conda activate upload
+      pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+    displayName: Set up upload environment
+    retryCountOnTaskFailure: 3
+
+  # upload to LBL
+  - script: |
+      set -xe
+      chmod go-rwx $(ssh_key.secureFilePath)
+      eval `ssh-agent -s`
+      ssh-add $(ssh_key.secureFilePath)
+      installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+      scp -F $(ssh_config.secureFilePath) -o StrictHostKeyChecking=no \
+        $(Pipeline.Workspace)/phenix/tmp/$(installer_name).tar.xz \
+        builder@boa.lbl.gov:${installer_dir}/$(version)/
+    displayName: Upload full development build tarball (xz) to Berkeley
+
+  # upload to Google Drive
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda activate upload
+
+      cd $(Pipeline.Workspace)/phenix/tmp
+      python $(Build.Repository.LocalPath)/scripts/google_drive.py \
+        --credentials $(upload_key.secureFilePath) \
+        --drive "Phenix Installers" \
+        --folder "$(version)" \
+        --file $(installer_name).tar.xz
+    displayName: Upload full development build tarball (xz) to Google Drive
+    continueOnError: true
