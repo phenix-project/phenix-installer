@@ -194,6 +194,8 @@ jobs:
   # create build tarball and encrypt
   - script: |
       set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda activate base
       cd $(Pipeline.Workspace)
       tar -cf phenix.tar ./phenix
       openssl enc \
