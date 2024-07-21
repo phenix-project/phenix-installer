@@ -154,9 +154,9 @@ jobs:
 
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
-        git checkout dials-3.20
+        git checkout dials-3.13
       done
-    displayName: Select DIALS 3.20
+    displayName: Select DIALS 3.13
     #   cd $(Pipeline.Workspace)/modules/dials
     #   git config user.name "Do Not Merge"
     #   git config user.email "do_not@mer.ge"
