@@ -151,7 +151,7 @@ jobs:
     displayName: Set version
 
   - script: |
-      installer_name=phenix-installer-$(version)-cuda$(cuda_version)
+      installer_name=phenix-installer-$(version)-cuda$(cuda_version)-intel-linux-x86_64
       echo "##vso[task.setVariable variable=installer_name]$installer_name"
       echo $(installer_name)
     displayName: Set installer_name
