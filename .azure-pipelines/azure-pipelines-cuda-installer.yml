@@ -210,7 +210,17 @@ jobs:
       set -xe
       cd $(Pipeline.Workspace)/phenix
       source ./build/setpaths.sh
-      sh ./modules/qrefine/config/update_phenix.sh aimnet2 cuda$(cuda_version) -y
+
+      libtbx.configure qrefine > qrefine_configure.log
+
+      # phenix.yaml
+      conda install -p ./conda_base -c conda-forge -y ase=3.22 pymongo=4.8 xtb
+      conda env update -p ./conda_base --file ./modules/qrefine/config/cuda$(cuda_version).yaml
+
+      conda remove -p ./conda_base -y --force cctbx-base
+
+      phenix.python -m pip install git+https://github.com/zubatyuk/aimnet2calc.git
+
     displayName: Run qrefine installation
 
   - script: |
