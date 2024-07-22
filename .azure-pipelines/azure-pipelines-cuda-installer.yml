@@ -208,6 +208,7 @@ jobs:
   # run qrefine update
   - script: |
       set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
       cd $(Pipeline.Workspace)/phenix
       source ./build/setpaths.sh
 
