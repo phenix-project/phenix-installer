@@ -189,7 +189,7 @@ jobs:
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
       cd $(Pipeline.Workspace)/phenix
-      ln -s ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
+      ln -fs ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
       python bootstrap.py base build --builder=phenix --nproc=4 --python=39
     displayName: Build Phenix
 
