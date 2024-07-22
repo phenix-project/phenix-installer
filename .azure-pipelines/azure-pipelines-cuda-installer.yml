@@ -226,6 +226,12 @@ jobs:
 
   - script: |
       set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda clean -y --all
+    displayName: Clean up
+
+  - script: |
+      set -xe
       df -h
     displayName: Check disk space
 

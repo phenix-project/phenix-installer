@@ -36,7 +36,7 @@ rm -fr ${EDGEWEBDRIVER}
 rm -fr ${GECKOWEBDRIVER}
 
 # make swap disk
-fallocate -l 16GiB /swapfile || true
+fallocate -l 8GiB /swapfile || true
 chmod 600 /swapfile || true
 mkswap /swapfile || true
 swapon /swapfile
