@@ -26,7 +26,7 @@ jobs:
   # variables for Google Drive folder and installer name
   variables:
   - name: folder_id
-    value: 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q
+    value: 1-fGBBQ1p6veUj33Yu1h3AsSIQgFlU8bT
   - name: installer_name
     value: TBD
   - name: version
@@ -310,6 +310,7 @@ jobs:
       python $(Build.Repository.LocalPath)/scripts/google_drive.py \
         --credentials $(upload_key.secureFilePath) \
         --drive "Phenix Installers" \
+        --installers-id "$(folder_id)" \
         --folder "$(version)" \
         --file $(installer_name).tar.xz
     displayName: Upload full development build tarball (xz) to Google Drive

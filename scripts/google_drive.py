@@ -145,6 +145,7 @@ def main():
   parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
   parser.add_argument('--credentials', help='JSON credentials for service account', required=True)
   parser.add_argument('--drive', help='Google Drive name', required=True)
+  parser.add_argument('--installers-id', help='Google Drive id of parent folder', default=installers_id)
   parser.add_argument('--folder', help='Folder name for version')
   parser.add_argument('--subfolder', help='Subfolder in version folder')
   parser.add_argument('--file', help='File to upload')
@@ -192,7 +193,7 @@ def main():
   # check folder (version)
   version_folder_id = get_folder_id(
     name=namespace.folder,
-    parent=installers_id,
+    parent=namespace.installers_id,
     driveId=drive_id,
     credentials=credentials)
   if version_folder_id is None:
