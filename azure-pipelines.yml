@@ -44,6 +44,8 @@ jobs:
   # variable for Google Drive folder
   - name: folder_id
     value: 1m2p6k6UdF798vlH1D6eemvTqngj5Ei-q
+  - name: qr_folder_id
+    value: 1-fGBBQ1p6veUj33Yu1h3AsSIQgFlU8bT
   # variable for secrets
   - group: ENV_GROUP
 
@@ -269,6 +271,10 @@ jobs:
           --folder_list "$(version)/${d}"
         sleep 10
       done
+      libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+        --credentials $(upload_key.secureFilePath) \
+        --folder_id $(qr_folder_id) \
+        --folder_list "$(version)"
     displayName: Create folders for conda packages and installers
     continueOnError: true
 
