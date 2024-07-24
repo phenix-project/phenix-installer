@@ -413,7 +413,7 @@ stages:
         contents: Phenix*
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
         overwrite: false
-      displayName: Upload installer
+      displayName: Upload installer to Berkeley
       condition: and(eq(variables['py_ver'], '3.9'), succeeded())
       continueOnError: true
 
@@ -682,7 +682,7 @@ stages:
         contents: Phenix*.exe
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
         overwrite: false
-      displayName: Upload installer
+      displayName: Upload installer to Berkeley
       condition: and(eq(variables['py_ver'], '3.9'), succeeded())
       continueOnError: true
 
