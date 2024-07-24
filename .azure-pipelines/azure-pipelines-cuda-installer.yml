@@ -222,6 +222,12 @@ jobs:
 
       phenix.python -m pip install git+https://github.com/zubatyuk/aimnet2calc.git
 
+      # copy weights
+      MODEL=aimnet2-qr_b97md4_qzvp_2.jpt
+      DESTINATION=./conda_base/lib/python3.9/site-packages/aimnet2calc/assets/aimnet2-qr
+      wget https://github.com/zubatyuk/aimnet-model-zoo/raw/main/aimnet2-qr/${MODEL}
+      mkdir -p ${DESTINATION}
+      cp ${MODEL} ${DESTINATION}
     displayName: Run qrefine installation
 
   - script: |
