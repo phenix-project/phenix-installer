@@ -297,7 +297,7 @@ jobs:
   # upload to LBL
   - task: CopyFilesOverSSH@0
     inputs:
-      sshEndpoint: anaconda
+      sshEndpoint: cci3
       sourceFolder: $(Pipeline.Workspace)/phenix/tmp
       contents: $(installer_name).tar.xz
       targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)

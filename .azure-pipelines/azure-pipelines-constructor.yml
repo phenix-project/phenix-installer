@@ -408,7 +408,7 @@ stages:
 
     - task: CopyFilesOverSSH@0
       inputs:
-        sshEndpoint: anaconda
+        sshEndpoint: cci3
         sourceFolder: $(Build.Repository.LocalPath)/constructor
         contents: Phenix*
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
@@ -677,7 +677,7 @@ stages:
 
     - task: CopyFilesOverSSH@0
       inputs:
-        sshEndpoint: anaconda
+        sshEndpoint: cci3
         sourceFolder: $(Build.Repository.LocalPath)/constructor
         contents: Phenix*.exe
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
