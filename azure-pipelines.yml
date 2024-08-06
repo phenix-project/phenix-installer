@@ -276,6 +276,7 @@ jobs:
         --folder_id $(qr_folder_id) \
         --folder_list "$(version)"
     displayName: Create folders for conda packages and installers
+    retryCountOnTaskFailure: 3
     continueOnError: true
 
   # publish complete source tarball as artifact
