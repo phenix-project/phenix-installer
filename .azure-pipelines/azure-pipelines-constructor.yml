@@ -210,7 +210,7 @@ stages:
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
         runVersion: 'specific'
-        buildId: '8196'
+        buildId: '9345'
       displayName: Download Phenix package
 
     # download latest chem_data package
@@ -226,7 +226,7 @@ stages:
         branchName: 'refs/heads/chem_data'
         patterns: '**/*artifacts*linux*'
         runVersion: 'specific'
-        buildId: '8197'
+        buildId: '9346'
       displayName: Download chem_data package
 
     - script: |
@@ -275,7 +275,7 @@ stages:
     - script: |
         cd constructor
         # version=`python3 update_version.py --version $(Pipeline.Workspace)/$(platform)/phenix*`
-        version=1.21.1-5286
+        version=1.21.2-5419
         echo "##vso[task.setVariable variable=version]$version"
         echo $(version)
       displayName: Set and update version
@@ -551,7 +551,7 @@ stages:
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
         runVersion: 'specific'
-        buildId: '8196'
+        buildId: '9345'
       displayName: Download Phenix package
 
     # download latest chem_data package
@@ -567,7 +567,7 @@ stages:
         branchName: 'refs/heads/chem_data'
         patterns: '**/*artifacts*linux*'
         runVersion: 'specific'
-        buildId: '8197'
+        buildId: '9346'
       displayName: Download chem_data package
 
     - script: |
@@ -616,7 +616,7 @@ stages:
         cd constructor
         # version=`python3 update_version.py --version windows`
         echo ${version}
-        version=1.21.1-5286
+        version=1.21.2-5419
         echo "##vso[task.setVariable variable=version]$version"
         echo ${version}
       displayName: Set and update version
