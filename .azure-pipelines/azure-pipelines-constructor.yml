@@ -370,6 +370,8 @@ stages:
         fi
 
         source activate construct
+        conda info
+        conda info --envs
         cd constructor
 
         if [[ "$(platform)" == *"arm64" ]]; then
@@ -643,6 +645,8 @@ stages:
 
     - script: |
         call activate construct
+        conda info
+        conda info --envs
         cd constructor
         constructor .
         if %errorlevel% neq 0 exit /b %errorlevel%
