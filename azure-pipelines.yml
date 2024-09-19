@@ -156,21 +156,9 @@ jobs:
 
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
-        git checkout dials-3.13
+        git checkout dials-3.21
       done
-
-      cd $(Pipeline.Workspace)/modules/dials
-      git config user.name "Do Not Merge"
-      git config user.email "do_not@mer.ge"
-      git revert --no-edit c51410c50f77045663aec9da21faa28689191c1a
-      git apply $(Pipeline.Workspace)/phenix-installer/patches/dials.patch
-
-      cd $(Pipeline.Workspace)/modules/dxtbx
-      git apply $(Pipeline.Workspace)/phenix-installer/patches/dxtbx.patch
-
-      cd $(Pipeline.Workspace)/modules/xia2
-      git apply $(Pipeline.Workspace)/phenix-installer/patches/xia2.patch
-    displayName: Switch to DIALS 3.13 and patch for Python 3.7
+    displayName: Switch to DIALS 3.21
 
   # patch installer script
   - script: |
@@ -264,7 +252,7 @@ jobs:
   - script: |
       set -xe
       source activate upload
-      for d in 3.7 3.8 3.9 3.10 linux-64 osx-64 osx-arm64 win-64 noarch; do
+      for d in 3.9 3.10 3.11 3.12 linux-64 osx-64 osx-arm64 win-64 noarch; do
         libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
           --credentials $(upload_key.secureFilePath) \
           --folder_id $(folder_id) \
