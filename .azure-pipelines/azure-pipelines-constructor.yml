@@ -320,12 +320,12 @@ stages:
 
         conda remove -n phenix -y --all
 
-        conda create -n phenix -y python=$(py_ver)
+        conda create -n phenix -y -c conda-forge python=$(py_ver)
         source activate phenix
 
         cd $(Pipeline.Workspace)/$(platform)
         conda install -y phenix*.conda
-        conda update -y --all
+        conda update -y -c conda-forge --all
         conda remove -y --force cctbx-base
 
         # cd ${CONDA_PREFIX}/share/phenix/conda_envs
@@ -623,11 +623,11 @@ stages:
         conda remove -n phenix -y --all
 
         cd $(Pipeline.Workspace)\$(platform)
-        conda create -n phenix -y python=$(py_ver)
+        conda create -n phenix -y -c conda-forge python=$(py_ver)
         conda install -n phenix -y phenix*.conda
         # conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
         # conda install -n phenix -y -c cctbx202211 --override-channels --no-deps --freeze-installed gemmi nxmx
-        conda update -n phenix -y --all
+        conda update -n phenix -y -c conda-forge --all
         conda remove -n phenix -y --force cctbx-base
         conda install -n phenix -y -c conda-forge --override-channels --no-deps --freeze-installed menuinst
 
