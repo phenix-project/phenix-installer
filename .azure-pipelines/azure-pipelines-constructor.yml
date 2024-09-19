@@ -25,72 +25,78 @@ stages:
     strategy:
       maxParallel: 6
       matrix:
-        linux_py37:
-          vmImage: ubuntu-latest
-          artifact_platform: linux_64
-          platform: linux-64
-          py_ver: 3.7
-          np_ver: 1.20
-        linux_py38:
-          vmImage: ubuntu-latest
-          artifact_platform: linux_64
-          platform: linux-64
-          py_ver: 3.8
-          np_ver: 1.20
         linux_py39:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
           py_ver: 3.9
-          np_ver: 1.20
+          np_ver: 1.22
         linux_py310:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
           py_ver: 3.10
-          np_ver: 1.21
-        macOS_py37:
-          vmImage: macOS-latest
-          artifact_platform: osx_64
-          platform: osx-64
-          py_ver: 3.7
-          np_ver: 1.20
-        macOS_py38:
-          vmImage: macOS-latest
-          artifact_platform: osx_64
-          platform: osx-64
-          py_ver: 3.8
-          np_ver: 1.20
+          np_ver: 1.22
+        linux_py311:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
+          py_ver: 3.11
+          np_ver: 1.23
+        linux_py312:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
+          py_ver: 3.12
+          np_ver: 1.26
         macOS_py39:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
           py_ver: 3.9
-          np_ver: 1.20
+          np_ver: 1.22
         macOS_py310:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
           py_ver: 3.10
-          np_ver: 1.21
-        macOS_arm64_py38:
+          np_ver: 1.22
+        macOS_py311:
           vmImage: macOS-latest
-          artifact_platform: osx_arm64
-          platform: osx-arm64
-          py_ver: 3.8
-          np_ver: 1.20
+          artifact_platform: osx_64
+          platform: osx-64
+          py_ver: 3.11
+          np_ver: 1.23
+        macOS_py312:
+          vmImage: macOS-latest
+          artifact_platform: osx_64
+          platform: osx-64
+          py_ver: 3.12
+          np_ver: 1.26
         macOS_arm64_py39:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
           py_ver: 3.9
-          np_ver: 1.20
+          np_ver: 1.22
         macOS_arm64_py310:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
           py_ver: 3.10
-          np_ver: 1.21
+          np_ver: 1.22
+        macOS_arm64_py311:
+          vmImage: macOS-latest
+          artifact_platform: osx_arm64
+          platform: osx-arm64
+          py_ver: 3.11
+          np_ver: 1.23
+        macOS_arm64_py312:
+          vmImage: macOS-latest
+          artifact_platform: osx_arm64
+          platform: osx-arm64
+          py_ver: 3.12
+          np_ver: 1.26
 
     pool:
       vmImage: $(vmImage)
@@ -114,12 +120,6 @@ stages:
       inputs:
         secureFile: phenix-lbl-04e6cb0d1bf7.json
       displayName: Download Google Drive credentials
-
-    - task: DownloadSecureFile@1
-      name: ssh_config
-      inputs:
-        secureFile: ssh.config
-      displayName: Download SSH config
 
     # download sources
     - checkout: self
@@ -149,7 +149,7 @@ stages:
     - bash: echo "##vso[task.prependpath]$CONDA/bin"
       displayName: Add conda to PATH
 
-    # install mamba
+    # update conda
     - script: |
         set -xe
         conda install -n base -c conda-forge -y conda=24
@@ -166,7 +166,7 @@ stages:
         set -xe
         conda remove -n construct -y --all
         # conda create -n construct -y -c conda-forge ctools/label/dev::constructor
-        conda create -n construct -y -c conda-forge constructor=3.4.4 jinja2
+        conda create -n construct -y -c conda-forge constructor jinja2
       displayName: Set up constructor environment
       retryCountOnTaskFailure: 3
 
@@ -187,10 +187,8 @@ stages:
 
         conda clean -y --all
 
-        conda config --set solver classic
         source activate construct
         constructor --clean
-        conda config --set solver libmamba
 
         df -h
 
@@ -322,27 +320,28 @@ stages:
 
         conda remove -n phenix -y --all
 
-        conda create -n phenix -y
+        conda create -n phenix -y python=$(py_ver)
         source activate phenix
 
         cd $(Pipeline.Workspace)/$(platform)
         conda install -y phenix*.conda
+        conda update -y --all
+        conda remove -y --force cctbx-base
 
-        cd ${CONDA_PREFIX}/share/phenix/conda_envs
+        # cd ${CONDA_PREFIX}/share/phenix/conda_envs
 
-        pyver=`echo $(py_ver) | sed 's/\.//'`
+        # pyver=`echo $(py_ver) | sed 's/\.//'`
 
-        conda install -y --file phenix_py${pyver}_$(platform).txt
-        if [[ "$(platform)" != *"arm64" ]]; then
-          conda install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
-        fi
+        # conda install -y --file phenix_py${pyver}_$(platform).txt
+        # if [[ "$(platform)" != *"arm64" ]]; then
+        #   conda install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
+        # fi
 
         cd $(Pipeline.Workspace)/noarch
         conda install -y chem_data*.conda
 
         conda clean -y --all
 
-        conda config --set solver classic
       displayName: Create installer environment
       retryCountOnTaskFailure: 3
 
@@ -366,11 +365,10 @@ stages:
         # cross-platform constructor
         if [[ "$(platform)" == *"arm64" ]]; then
           TEMP_DIR=$(mktemp -d)
-          CONDA_SUBDIR=$(platform) conda create -p ${TEMP_DIR} -y -c defaults conda-standalone
+          CONDA_SUBDIR=$(platform) conda create -p ${TEMP_DIR} -y conda-standalone
           CONDA_STANDALONE=${TEMP_DIR}/standalone_conda/conda.exe
         fi
 
-        conda config --set solver classic
         source activate construct
         cd constructor
 
@@ -426,34 +424,34 @@ stages:
 
     strategy:
       matrix:
-        win_py37:
-          vmImage: windows-latest
-          artifact_platform: win_64
-          platform: win-64
-          py_ver: 3.7
-          pyver: 37
-          np_ver: 1.20
-        win_py38:
-          vmImage: windows-latest
-          artifact_platform: win_64
-          platform: win-64
-          py_ver: 3.8
-          pyver: 38
-          np_ver: 1.20
         win_py39:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
           py_ver: 3.9
           pyver: 39
-          np_ver: 1.20
+          np_ver: 1.22
         win_py310:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
           py_ver: 3.10
           pyver: 310
-          np_ver: 1.21
+          np_ver: 1.22
+        win_py311:
+          vmImage: windows-latest
+          artifact_platform: win_64
+          platform: win-64
+          py_ver: 3.11
+          pyver: 311
+          np_ver: 1.23
+        win_py312:
+          vmImage: windows-latest
+          artifact_platform: win_64
+          platform: win-64
+          py_ver: 3.12
+          pyver: 312
+          np_ver: 1.26
 
     pool:
       vmImage: $(vmImage)
@@ -477,12 +475,6 @@ stages:
       inputs:
         secureFile: phenix-lbl-04e6cb0d1bf7.json
       displayName: Download Google Drive credentials
-
-    - task: DownloadSecureFile@1
-      name: ssh_config
-      inputs:
-        secureFile: ssh.config
-      displayName: Download SSH config
 
     - task: DownloadSecureFile@1
       name: nsis_zip
@@ -512,7 +504,7 @@ stages:
     # set up constructor environment
     - script: |
         conda remove -n construct -y --all
-        conda create -n construct -y -c conda-forge constructor=3.4.4 jinja2
+        conda create -n construct -y -c conda-forge constructor jinja2
       displayName: Set up constructor environment
       retryCountOnTaskFailure: 3
 
@@ -616,15 +608,13 @@ stages:
         call activate upload
         echo $(version)
         cd $(Pipeline.Workspace)\$(platform)
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda, phenix*tar.bz2) do (
-          echo "Uploading %%F"
-          python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
-            --credentials $(upload_key.secureFilePath) ^
-            --drive "Phenix Installers" ^
-            --folder $(version) ^
-            --subfolder $(platform) ^
-            --file %%F
-        )
+        echo "Uploading %%F"
+        python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
+          --credentials $(upload_key.secureFilePath) ^
+          --drive "Phenix Installers" ^
+          --folder $(version) ^
+          --subfolder $(platform) ^
+          --file phenix*.conda
       displayName: Upload conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
@@ -633,24 +623,21 @@ stages:
         conda remove -n phenix -y --all
 
         cd $(Pipeline.Workspace)\$(platform)
-        conda create -n phenix -y
-        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda, phenix*tar.bz2) do (
-          conda install -n phenix -y %%F
-        )
-        conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
-        conda install -n phenix -y -c cctbx202211 --override-channels --no-deps --freeze-installed gemmi nxmx
+        conda create -n phenix -y python=$(py_ver)
+        conda install -n phenix -y phenix*.conda
+        # conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
+        # conda install -n phenix -y -c cctbx202211 --override-channels --no-deps --freeze-installed gemmi nxmx
+        conda update -n phenix -y --all
+        conda remove -n phenix -y --force cctbx-base
         conda install -n phenix -y -c conda-forge --override-channels --no-deps --freeze-installed menuinst
 
-        for /R $(Pipeline.Workspace)\noarch %%F in (chem_data*.conda) do (
-          conda install -n phenix -y %%F
-        )
+        conda install -n phenix -y chem_data*.conda
 
         conda clean -y --all
       displayName: Create installer environment
       retryCountOnTaskFailure: 3
 
     - script: |
-        conda config --set solver classic
         call activate construct
         cd constructor
         constructor .
