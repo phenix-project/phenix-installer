@@ -324,7 +324,7 @@ stages:
         source activate phenix
 
         cd $(Pipeline.Workspace)/$(platform)
-        conda install -y -c local --only-deps phenix*.conda
+        conda install -y -c local phenix*.conda
         conda update -y -c conda-forge -c phenix-project --all
         conda remove -y --force cctbx-base
 
@@ -629,7 +629,7 @@ stages:
         cd $(Pipeline.Workspace)\$(platform)
         conda create -n phenix -y -c conda-forge python=$(py_ver)
         for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda) do (
-          conda install -n phenix -y -c local --only-deps %%F
+          conda install -n phenix -y -c local %%F
         )
         conda update -n phenix -y -c conda-forge -c phenix-project --all
         conda remove -n phenix -y --force cctbx-base
