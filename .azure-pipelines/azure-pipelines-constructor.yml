@@ -608,13 +608,15 @@ stages:
         call activate upload
         echo $(version)
         cd $(Pipeline.Workspace)\$(platform)
-        echo "Uploading %%F"
-        python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
-          --credentials $(upload_key.secureFilePath) ^
-          --drive "Phenix Installers" ^
-          --folder $(version) ^
-          --subfolder $(platform) ^
-          --file phenix*.conda
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda) do (
+          echo "Uploading %%F"
+          python $(Build.Repository.LocalPath)/scripts/google_drive.py ^
+            --credentials $(upload_key.secureFilePath) ^
+            --drive "Phenix Installers" ^
+            --folder $(version) ^
+            --subfolder $(platform) ^
+            --file %%F
+        )
       displayName: Upload conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
@@ -624,14 +626,16 @@ stages:
 
         cd $(Pipeline.Workspace)\$(platform)
         conda create -n phenix -y -c conda-forge python=$(py_ver)
-        conda install -n phenix -y phenix*.conda
-        # conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
-        # conda install -n phenix -y -c cctbx202211 --override-channels --no-deps --freeze-installed gemmi nxmx
+        for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda) do (
+          conda install -n phenix -y %%F
+        )
         conda update -n phenix -y -c conda-forge --all
         conda remove -n phenix -y --force cctbx-base
         conda install -n phenix -y -c conda-forge --override-channels --no-deps --freeze-installed menuinst
 
-        conda install -n phenix -y chem_data*.conda
+        for /R $(Pipeline.Workspace)\noarch %%F in (chem_data*.conda) do (
+          conda install -n phenix -y %%F
+        )
 
         conda clean -y --all
       displayName: Create installer environment
