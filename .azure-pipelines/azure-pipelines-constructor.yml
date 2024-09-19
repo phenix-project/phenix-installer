@@ -325,7 +325,7 @@ stages:
 
         cd $(Pipeline.Workspace)/$(platform)
         conda install -y phenix*.conda
-        conda update -y -c conda-forge --all
+        conda update -y -c conda-forge -c phenix-project --all
         conda remove -y --force cctbx-base
 
         # cd ${CONDA_PREFIX}/share/phenix/conda_envs
@@ -629,7 +629,7 @@ stages:
         for /R $(Pipeline.Workspace)\$(platform) %%F in (phenix*.conda) do (
           conda install -n phenix -y %%F
         )
-        conda update -n phenix -y -c conda-forge --all
+        conda update -n phenix -y -c conda-forge -c phenix-project --all
         conda remove -n phenix -y --force cctbx-base
         conda install -n phenix -y -c conda-forge --override-channels --no-deps --freeze-installed menuinst
 
