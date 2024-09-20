@@ -60,7 +60,7 @@ jobs:
     target: host
 
   # centos setup
-  https://serverfault.com/questions/1161816/mirrorlist-centos-org-no-longer-resolve
+  # https://serverfault.com/questions/1161816/mirrorlist-centos-org-no-longer-resolve
   - script: |
       set -xe
       /tmp/docker exec -t -u 0 ci-container \
