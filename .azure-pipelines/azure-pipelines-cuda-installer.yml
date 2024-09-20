@@ -20,7 +20,7 @@ jobs:
   timeoutInMinutes: 360
 
   container:
-    image: centos:7
+    image: centos:9
     options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
   # variables for Google Drive folder and installer name
@@ -68,15 +68,15 @@ jobs:
 
   # centos setup
   # https://serverfault.com/questions/1161816/mirrorlist-centos-org-no-longer-resolve
-  - script: |
-      set -xe
-      /tmp/docker exec -t -u 0 ci-container \
-      sh -c "sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo"
-      /tmp/docker exec -t -u 0 ci-container \
-      sh -c "sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo"
-      /tmp/docker exec -t -u 0 ci-container \
-      sh -c "sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo"
-    displayName: Modify yum repositories for CentOS 7
+  # - script: |
+  #     set -xe
+  #     /tmp/docker exec -t -u 0 ci-container \
+  #     sh -c "sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo"
+  #     /tmp/docker exec -t -u 0 ci-container \
+  #     sh -c "sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo"
+  #     /tmp/docker exec -t -u 0 ci-container \
+  #     sh -c "sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo"
+  #   displayName: Modify yum repositories for CentOS 7
 
   # install dependencies
   - script: |
