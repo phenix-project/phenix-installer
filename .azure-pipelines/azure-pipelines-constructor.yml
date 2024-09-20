@@ -310,12 +310,12 @@ stages:
 
         conda remove -n phenix -y --all
 
-        conda create -n phenix -y -c conda-forge python=$(py_ver)
+        CONDA_SUBDIR=$(platform) conda create -n phenix -y -c conda-forge python=$(py_ver)
         source activate phenix
 
         cd $(Pipeline.Workspace)/$(platform)
-        conda install -y -c local phenix*.conda
-        conda update -y -c conda-forge -c phenix-project --all
+        CONDA_SUBDIR=$(platform) conda install -y -c local phenix*.conda
+        CONDA_SUBDIR=$(platform) conda update -y -c conda-forge -c phenix-project --all
         conda remove -y --force cctbx-base
 
         # cd ${CONDA_PREFIX}/share/phenix/conda_envs
@@ -328,7 +328,7 @@ stages:
         # fi
 
         cd $(Pipeline.Workspace)/noarch
-        conda install -y chem_data*.conda
+        CONDA_SUBDIR=$(platform) conda install -y chem_data*.conda
 
         conda clean -y --all
 
