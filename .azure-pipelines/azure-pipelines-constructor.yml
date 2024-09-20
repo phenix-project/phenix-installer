@@ -362,6 +362,7 @@ stages:
         cd constructor
 
         if [[ "$(platform)" == *"arm64" ]]; then
+          export CONDA_EXE=${CONDA_STANDALONE}
           constructor . --conda-exe ${CONDA_STANDALONE} --platform osx-arm64
         else
           constructor .
