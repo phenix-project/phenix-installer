@@ -7,16 +7,6 @@ ${PREFIX}/bin/libtbx.py_compile_all -i
 popd
 echo "done"
 
-# fix rdkit on osx-arm64
-if [[ "$INSTALLER_PLAT" == "osx-arm64" ]]; then
-  echo ""
-  echo "Fixing rdkit on osx-arm64"
-  echo "========================="
-  echo ""
-
-  echo "done"
-fi
-
 # create custom bin directory
 echo ""
 echo "Creating phenix_bin directory"
