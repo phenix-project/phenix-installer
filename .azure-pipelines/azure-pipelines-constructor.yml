@@ -154,20 +154,11 @@ stages:
         set -xe
         conda install -n base -c conda-forge -y conda=24
         conda update -n base -c conda-forge -y --all
-        conda install -n base -c conda-forge -y conda-build
+        conda install -n base -c conda-forge -y conda-build constructor jinja2
         conda clean -y --all
         conda install -n base -c conda-forge -y --force-reinstall libsqlite
         conda info
-      displayName: Install conda-build
-      retryCountOnTaskFailure: 3
-
-    # set up constructor environment
-    - script: |
-        set -xe
-        conda remove -n construct -y --all
-        # conda create -n construct -y -c conda-forge ctools/label/dev::constructor
-        conda create -n construct -y -c conda-forge constructor=3.8 jinja2
-      displayName: Set up constructor environment
+      displayName: Install conda-build and constructor
       retryCountOnTaskFailure: 3
 
     # set up Google Drive upload environment
@@ -187,7 +178,6 @@ stages:
 
         conda clean -y --all
 
-        source activate construct
         constructor --clean
 
         df -h
@@ -369,9 +359,6 @@ stages:
           CONDA_STANDALONE=${TEMP_DIR}/standalone_conda/conda.exe
         fi
 
-        source activate construct
-        conda info
-        conda info --envs
         cd constructor
 
         if [[ "$(platform)" == *"arm64" ]]; then
@@ -496,26 +483,19 @@ stages:
     - script: |
         conda install -n base -c conda-forge -y conda=24
         conda update -n base -c conda-forge -y --all
-        conda install -n base -c conda-forge -y conda-build
+        conda install -n base -c conda-forge -y conda-build constructor jinja2
         conda clean -y --all
         conda install -n base -c conda-forge -y --force-reinstall libsqlite
         conda info
-      displayName: Install conda-build
-      retryCountOnTaskFailure: 3
-
-    # set up constructor environment
-    - script: |
-        conda remove -n construct -y --all
-        conda create -n construct -y -c conda-forge constructor=3.8 jinja2
-      displayName: Set up constructor environment
+      displayName: Install conda-build and constructor
       retryCountOnTaskFailure: 3
 
     # replace nsis with nsisbi
     - script: |
         unzip $(nsis_zip.secureFilePath)
-        xcopy /S /Y /F nsis-binary-7336-1\* C:\Miniconda\envs\construct\NSIS
+        xcopy /S /Y /F nsis-binary-7336-1\* C:\Miniconda\NSIS
         dir nsis-binary-7336-1
-        dir C:\Miniconda\envs\construct\NSIS
+        dir C:\Miniconda\NSIS
       displayName: Replace NSIS in constructor environment
 
     # set up Google Drive upload environment
@@ -644,9 +624,6 @@ stages:
       retryCountOnTaskFailure: 3
 
     - script: |
-        call activate construct
-        conda info
-        conda info --envs
         cd constructor
         constructor .
         if %errorlevel% neq 0 exit /b %errorlevel%
