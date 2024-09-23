@@ -114,6 +114,7 @@ jobs:
       git checkout chem_data
       git reset --hard chem_data_base
       conda smithy rerender -c auto
+      git cherry-pick 8b92513e610593442cc598a87f9598d5f0616bb8
 
       # start chem_data build first
       git push -f -u origin chem_data
