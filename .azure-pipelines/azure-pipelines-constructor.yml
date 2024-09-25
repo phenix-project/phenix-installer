@@ -529,7 +529,7 @@ stages:
         source: 'specific'
         project: '$(resources.pipeline.phenix_feedstock.projectID)'
         pipeline: '$(resources.pipeline.phenix_feedstock.pipelineID)'
-        preferTriggeringPipeline: true
+        preferTriggeringPipeline: false
         allowPartiallySucceededBuilds: true
         allowFailedBuilds: false
         buildVersionToDownload: 'latestFromBranch'
