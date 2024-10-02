@@ -119,13 +119,12 @@ jobs:
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: Add conda to PATH
 
-  # install mamba
+  # update conda
   - script: |
       set -xe
       conda update -n base -y conda
-      conda install -n base -y conda-libmamba-solver
-      conda config --set solver libmamba
-    displayName: Install mamba
+      conda update -n base -y --all
+    displayName: Update conda
     retryCountOnTaskFailure: 3
 
   # link bootstrap.py
@@ -254,7 +253,9 @@ jobs:
   # create folders for conda packages and installers
   - script: |
       set -xe
-      conda remove -n upload -y --all
+      if [ -d /usr/share/miniconda/envs/upload ]; then
+        conda remove -n upload -y --all
+      fi
       conda create -n upload -y -c conda-forge python=3.9 pydrive2 tabulate tqdm
       source activate upload
       conda install -y -c xfel -c conda-forge --no-deps --freeze-installed libboost libboost-python numpy cctbx.xfel
