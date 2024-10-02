@@ -14,6 +14,8 @@ resources:
       branches:
         include:
           - main
+  - pipeline: data_cache
+    source: 'Update data cache'
 
 stages:
 # =============================================================================
@@ -29,72 +31,84 @@ stages:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
+          conda: Linux
           py_ver: 3.9
           np_ver: 1.22
         linux_py310:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
+          conda: Linux
           py_ver: 3.10
           np_ver: 1.22
         linux_py311:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
+          conda: Linux
           py_ver: 3.11
           np_ver: 1.23
         linux_py312:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
+          conda: Linux
           py_ver: 3.12
           np_ver: 1.26
         macOS_py39:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
+          conda: MacOSX
           py_ver: 3.9
           np_ver: 1.22
         macOS_py310:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
+          conda: MacOSX
           py_ver: 3.10
           np_ver: 1.22
         macOS_py311:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
+          conda: MacOSX
           py_ver: 3.11
           np_ver: 1.23
         macOS_py312:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
+          conda: MacOSX
           py_ver: 3.12
           np_ver: 1.26
         macOS_arm64_py39:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
+          conda: MacOSX
           py_ver: 3.9
           np_ver: 1.22
         macOS_arm64_py310:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
+          conda: MacOSX
           py_ver: 3.10
           np_ver: 1.22
         macOS_arm64_py311:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
+          conda: MacOSX
           py_ver: 3.11
           np_ver: 1.23
         macOS_arm64_py312:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
+          conda: MacOSX
           py_ver: 3.12
           np_ver: 1.26
 
@@ -141,42 +155,48 @@ stages:
         ls
       displayName: Debug information
 
-    - bash: sudo chown -R $USER $CONDA
-      displayName: Take ownership of conda installation
+    # install miniforge
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: 'specific'
+        project: '$(resources.pipeline.data_cache.projectID)'
+        pipeline: '$(resources.pipeline.data_cache.pipelineID)'
+        artifact: 'miniforge'
+        path: $(Pipeline.Workspace)/miniforge
+      displayName: Download miniforge
 
-    # add conda to path
-    # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
-    - bash: echo "##vso[task.prependpath]$CONDA/bin"
-      displayName: Add conda to PATH
-
-    # update conda
     - script: |
         set -xe
-        conda install -n base -c conda-forge -y conda=24
-        conda update -n base -c conda-forge -y --all
+        bash $(Pipeline.Workspace)/miniforge/Miniforge3-$(conda)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
+      displayName: Install miniforge
+
+    - script: |
+        set -xe
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+        conda update --all -y -n base
         conda install -n base -c conda-forge -y conda-build constructor jinja2
-        conda clean -y --all
-        conda install -n base -c conda-forge -y --force-reinstall libsqlite
-        conda info
-      displayName: Install conda-build and constructor
-      retryCountOnTaskFailure: 3
+      displayName: Update miniforge
 
     # set up Google Drive upload environment
     - script: |
         set -xe
-        if [ -d /usr/share/miniconda/envs/upload ]; then
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+        if [ -d $(Pipeline.Workspace)/miniforge/envs/upload ]; then
           conda remove -n upload -y --all
         fi
         conda create -n upload -y python=3.10
-        source activate upload
+        conda activate upload
         pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
       displayName: Set up upload environment
       retryCountOnTaskFailure: 3
 
     - script: |
         set -xe
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
         rm -fr $(Pipeline.Workspace)/conda*
+
+        conda activate base
 
         conda clean -y --all
 
@@ -253,6 +273,7 @@ stages:
 
     - script: |
         set -xe
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
         cd $(Pipeline.Workspace)
         conda index .
         ls
@@ -268,8 +289,9 @@ stages:
 
     - script: |
         set -xe
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
-        source activate upload
+        conda activate upload
 
         cd $(Pipeline.Workspace)/$(platform)
         for f in `/bin/ls $(Pipeline.Workspace)/$(platform)/*.conda`; do
@@ -288,8 +310,9 @@ stages:
 
     - script: |
         set -xe
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
-        source activate upload
+        conda activate upload
 
         cd $(Pipeline.Workspace)/noarch
         for f in `/bin/ls $(Pipeline.Workspace)/noarch/*.conda`; do
@@ -309,13 +332,14 @@ stages:
 
     - script: |
         set -xe
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
-        if [ -d /usr/share/miniconda/envs/phenix ]; then
+        if [ -d $(Pipeline.Workspace)/miniforge/envs/phenix ]; then
           conda remove -n phenix -y --all
         fi
 
         CONDA_SUBDIR=$(platform) conda create -n phenix -y -c conda-forge python=$(py_ver)
-        source activate phenix
+        conda activate phenix
 
         cd $(Pipeline.Workspace)/$(platform)
         CONDA_SUBDIR=$(platform) conda install -y -c local phenix*.conda
@@ -341,8 +365,9 @@ stages:
 
     - script: |
         set -xe
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
-        source activate phenix
+        conda activate phenix
 
         cp ${CONDA_PREFIX}/share/phenix/CHANGES ./constructor/gui/readme_macos.txt
       displayName: Update Changelog
@@ -355,7 +380,8 @@ stages:
 
     - script: |
         set -xe
-
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+        conda activate base
         # cross-platform constructor
         if [[ "$(platform)" == *"arm64" ]]; then
           TEMP_DIR=$(mktemp -d)
@@ -379,8 +405,9 @@ stages:
 
     - script: |
         set -xe
+        source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
-        source activate upload
+        conda activate upload
 
         cd ./constructor
         for f in `/bin/ls Phenix*`; do
