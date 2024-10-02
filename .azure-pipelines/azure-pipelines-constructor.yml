@@ -310,7 +310,9 @@ stages:
     - script: |
         set -xe
 
-        conda remove -n phenix -y --all
+        if [ -d /usr/share/miniconda/envs/phenix ]; then
+          conda remove -n phenix -y --all
+        fi
 
         CONDA_SUBDIR=$(platform) conda create -n phenix -y -c conda-forge python=$(py_ver)
         source activate phenix
