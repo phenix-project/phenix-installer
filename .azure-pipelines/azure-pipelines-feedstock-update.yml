@@ -118,6 +118,7 @@ jobs:
 
       # start chem_data build first
       git push -f -u origin chem_data
+      sleep 60
 
       # then start phenix builds
       git push -u origin main
