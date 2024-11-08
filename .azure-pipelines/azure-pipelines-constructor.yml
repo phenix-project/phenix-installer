@@ -33,84 +33,84 @@ stages:
           platform: linux-64
           conda: Linux
           py_ver: 3.9
-          np_ver: 1.22
+          # np_ver: 1.22
         linux_py310:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
           conda: Linux
           py_ver: 3.10
-          np_ver: 1.22
+          # np_ver: 1.22
         linux_py311:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
           conda: Linux
           py_ver: 3.11
-          np_ver: 1.23
+          # np_ver: 1.23
         linux_py312:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
           conda: Linux
           py_ver: 3.12
-          np_ver: 1.26
+          # np_ver: 1.26
         macOS_py39:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
           conda: MacOSX
           py_ver: 3.9
-          np_ver: 1.22
+          # np_ver: 1.22
         macOS_py310:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
           conda: MacOSX
           py_ver: 3.10
-          np_ver: 1.22
+          # np_ver: 1.22
         macOS_py311:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
           conda: MacOSX
           py_ver: 3.11
-          np_ver: 1.23
+          # np_ver: 1.23
         macOS_py312:
           vmImage: macOS-latest
           artifact_platform: osx_64
           platform: osx-64
           conda: MacOSX
           py_ver: 3.12
-          np_ver: 1.26
+          # np_ver: 1.26
         macOS_arm64_py39:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
           conda: MacOSX
           py_ver: 3.9
-          np_ver: 1.22
+          # np_ver: 1.22
         macOS_arm64_py310:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
           conda: MacOSX
           py_ver: 3.10
-          np_ver: 1.22
+          # np_ver: 1.22
         macOS_arm64_py311:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
           conda: MacOSX
           py_ver: 3.11
-          np_ver: 1.23
+          # np_ver: 1.23
         macOS_arm64_py312:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
           platform: osx-arm64
           conda: MacOSX
           py_ver: 3.12
-          np_ver: 1.26
+          # np_ver: 1.26
 
     pool:
       vmImage: $(vmImage)
@@ -218,7 +218,8 @@ stages:
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        # patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
     # download latest chem_data package
@@ -342,7 +343,9 @@ stages:
         conda activate phenix
 
         cd $(Pipeline.Workspace)/$(platform)
-        CONDA_SUBDIR=$(platform) conda install -y -c local phenix*.conda
+        for f in `/bin/ls phenix*.conda`; do
+          CONDA_SUBDIR=$(platform) conda install -y -c local ${f}
+        done
         # CONDA_SUBDIR=$(platform) conda update -y -c conda-forge -c phenix-project --all
         # conda remove -y --force cctbx-base
 
@@ -451,28 +454,28 @@ stages:
           platform: win-64
           py_ver: 3.9
           pyver: 39
-          np_ver: 1.22
+          # np_ver: 1.22
         win_py310:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
           py_ver: 3.10
           pyver: 310
-          np_ver: 1.22
+          # np_ver: 1.22
         win_py311:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
           py_ver: 3.11
           pyver: 311
-          np_ver: 1.23
+          # np_ver: 1.23
         win_py312:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
           py_ver: 3.12
           pyver: 312
-          np_ver: 1.26
+          # np_ver: 1.26
 
     pool:
       vmImage: $(vmImage)
@@ -551,7 +554,8 @@ stages:
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        # patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
     # download latest chem_data package
