@@ -198,13 +198,6 @@ jobs:
       df -h
     displayName: Check disk space
 
-  # run qrefine installation
-  - script: |
-      set -xe
-      cd $(Pipeline.Workspace)/phenix/modules
-      git clone https://github.com/qrefine/qrefine.git
-    displayName: Get qrefine repository
-
   # run qrefine update
   - script: |
       set -xe
