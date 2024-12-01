@@ -72,7 +72,8 @@ jobs:
 
   # ubuntu setup
   - script: |
-      sudo apt-get install -y build-essential curl git git-lfs libgl1-mesa-dev libglu1-mesa-dev locales subversion
+      set -xe
+      sudo apt-get install -y build-essential curl libgl1-mesa-dev libglu1-mesa-dev locales subversion
       sudo locale-gen en_US.UTF-8
       sudo update-locale
     displayName: Install dependencies for Ubuntu
@@ -137,6 +138,16 @@ jobs:
 
   # download test data
   - template: .azure-pipelines/templates/download-data-cache.yml@cctbx_project
+
+  # clean up git-lfs hooks
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      rm -fr ./modules/*/.git/hooks/post-checkout
+      rm -fr ./modules/*/.git/hooks/post-commit
+      rm -fr ./modules/*/.git/hooks/post-merge
+      rm -fr ./modules/*/.git/hooks/pre-push
+    displayName: Clean up git-lfs hooks
 
   # download remaining sources
   - script: |
