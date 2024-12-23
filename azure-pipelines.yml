@@ -164,6 +164,13 @@ jobs:
 
   - script: |
       set -xe
+      cd $(Pipeline.Workspace)/modules/phenix
+      git checkout gui
+      git rebase master
+    displayName: Switch to gui branch on phenix
+
+  - script: |
+      set -xe
 
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
