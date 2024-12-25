@@ -314,7 +314,7 @@ jobs:
   - task: CopyFilesOverSSH@0
     inputs:
       sshEndpoint: cci3
-      sourceFolder: $(Pipeline.Workspace)/phenix/tmp
+      sourceFolder: $(Pipeline.Workspace)/tmp
       contents: $(installer_name).tar.xz
       targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
       overwrite: false
@@ -331,6 +331,6 @@ jobs:
         --credentials $(upload_key.secureFilePath) \
         --folder_id $(folder_id) \
         --folder_list $(version) \
-        --files $(Pipeline.Workspace)/tmp/phenix-installer-$(version)-source.tar.xz
+        --files $(Pipeline.Workspace)/tmp/$(installer_name).tar.xz
     displayName: Upload full source tarball (xz) to Google Drive
     continueOnError: true
