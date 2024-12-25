@@ -51,6 +51,12 @@ jobs:
 
   steps:
 
+  # secrets for LBL
+  - task: DownloadSecureFile@1
+    name: ssh_key
+    inputs:
+      secureFile: id_rsa
+
   - task: DownloadSecureFile@1
     name: upload_key
     inputs:
@@ -302,6 +308,17 @@ jobs:
   # publish complete source tarball as artifact
   - publish: $(Pipeline.Workspace)/tmp/phenix.enc
     artifact: phenix
+    continueOnError: true
+
+  # upload to LBL
+  - task: CopyFilesOverSSH@0
+    inputs:
+      sshEndpoint: cci3
+      sourceFolder: $(Pipeline.Workspace)/phenix/tmp
+      contents: $(installer_name).tar.xz
+      targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
+      overwrite: false
+    displayName: Upload installer to Berkeley
     continueOnError: true
 
   # upload full source tarball to Google Drive
