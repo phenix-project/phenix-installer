@@ -170,6 +170,10 @@ jobs:
 
   - script: |
       set -xe
+
+      git config --global user.email "bkpoon@lbl.gov"
+      git config --global user.name "Billy K. Poon"
+
       cd $(Pipeline.Workspace)/modules/phenix
       git checkout gui
       git rebase master
