@@ -184,6 +184,14 @@ jobs:
          ./modules/phenix/phenix/installer/phenix_installer.py
     displayName: Use patched phenix_installer.py
 
+  # switch to dxtbx 3.13
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix/modules
+      rm -fr dxtbx
+      git clone -b dials-3.13 https://github.com/dials/dxtbx.git
+    displayName: Switch dxtbx to dials-3.13
+
   # build
   - script: |
       set -xe
