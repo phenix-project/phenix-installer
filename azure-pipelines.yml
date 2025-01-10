@@ -285,7 +285,7 @@ jobs:
       if [ -d /usr/share/miniconda/envs/upload ]; then
         conda remove -n upload -y --all
       fi
-      conda create -n upload -y -c conda-forge python pydrive2 tabulate tqdm
+      conda create -n upload -y -c conda-forge python=3.10 pydrive2 tabulate tqdm
       source activate upload
       conda install -y -c xfel -c conda-forge --no-deps --freeze-installed libboost libboost-python numpy cctbx.xfel
     displayName: Set up upload environment
