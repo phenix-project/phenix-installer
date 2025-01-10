@@ -67,7 +67,7 @@ jobs:
   - script: |
       set -xe
 
-      conda create -n upload -y -c conda-forge python=3.9 pydrive2 tabulate tqdm
+      conda create -n upload -y -c conda-forge python pydrive2 tabulate tqdm
       source activate upload
       conda install -y -c xfel -c conda-forge --no-deps --freeze-installed libboost libboost-python numpy cctbx.xfel
 
