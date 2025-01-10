@@ -55,17 +55,12 @@ jobs:
   - task: DownloadSecureFile@1
     name: ssh_key
     inputs:
-      secureFile: id_rsa
+      secureFile: id_ed25519_azure
 
   - task: DownloadSecureFile@1
     name: upload_key
     inputs:
       secureFile: phenix-lbl-04e6cb0d1bf7.json
-
-  - task: DownloadSecureFile@1
-    name: ssh_config
-    inputs:
-      secureFile: ssh.config
 
   # download support scripts
   - checkout: self
@@ -159,7 +154,6 @@ jobs:
   # download remaining sources
   - script: |
       set -xe
-      export SVN_SSH="ssh -F $(ssh_config.secureFilePath)"
       cd $(Pipeline.Workspace)
       python bootstrap.py hot update \
         --builder=phenix_release \
@@ -237,9 +231,8 @@ jobs:
       cd $(Pipeline.Workspace)
       mkdir -p rest
       cd rest
-      scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/token .
-      scp -F $(ssh_config.secureFilePath) builder@boa.lbl.gov:${installer_dir}/rest/url .
-
+      scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/token .
+      scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/url .
     displayName: Copy token and url
 
   # update version in Dockerfile
@@ -312,6 +305,13 @@ jobs:
   # publish complete source tarball as artifact
   - publish: $(Pipeline.Workspace)/tmp/phenix.enc
     artifact: phenix
+    continueOnError: true
+
+  # create database entry on cci3
+  - script:
+      set -xe
+      ssh cciadmin@cci3.lbl.gov "/home/cciadmin/.conda/envs/httpd/bin/python /net/cci/auto_build/repositories/phenix_dev/installer/web/add_mysql_build.py $(version) buildbot --build_dir /net/cci/auto_build/phenix_installers"
+    displayName: Create database entry for build
     continueOnError: true
 
   # upload to LBL
