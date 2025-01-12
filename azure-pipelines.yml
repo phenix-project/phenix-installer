@@ -138,6 +138,20 @@ jobs:
       mkdir modules
     displayName: Download bootstrap.py
 
+  # copy REST credentials
+  - script: |
+      set -xe
+
+      installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
+
+      cd $(Pipeline.Workspace)
+      mkdir -p rest
+      cd rest
+      ssh-keyscan -t ed25519 cci3.lbl.gov >> ~/.ssh/known_hosts
+      scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/token .
+      scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/url .
+    displayName: Copy token and url
+
   # download test data
   - template: .azure-pipelines/templates/download-data-cache.yml@cctbx_project
 
@@ -231,6 +245,7 @@ jobs:
       cd $(Pipeline.Workspace)
       mkdir -p rest
       cd rest
+      ssh-keyscan -t ed25519 cci3.lbl.gov >> ~/.ssh/known_hosts
       scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/token .
       scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/url .
     displayName: Copy token and url
