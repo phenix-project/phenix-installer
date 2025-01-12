@@ -231,6 +231,7 @@ jobs:
       cd $(Pipeline.Workspace)
       mkdir -p rest
       cd rest
+      ssh-keyscan -t ed25519 cci3.lbl.gov >> ~/.ssh/known_hosts
       scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/token .
       scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/url .
     displayName: Copy token and url
