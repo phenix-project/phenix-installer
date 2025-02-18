@@ -309,7 +309,7 @@ jobs:
     continueOnError: true
 
   # create database entry on cci3
-  - script:
+  - script: |
       set -xe
       ssh cciadmin@cci3.lbl.gov "/home/cciadmin/.conda/envs/httpd/bin/python /net/cci/auto_build/repositories/phenix_dev/installer/web/add_mysql_build.py $(version) buildbot --build_dir /net/cci/auto_build/phenix_installers"
     displayName: Create database entry for build
