@@ -106,6 +106,8 @@ jobs:
 
       conda smithy rerender -c auto
 
+      git cherry-pick ab5ac96ddb1e46e8746bbf692a4c9e127db35751
+
       # update chem_data branch
       git checkout chem_data_base
       git rebase main
