@@ -1,3 +1,6 @@
+# unset problematic environment variables
+unset LIBTBX_BUILD
+
 # compile Python files
 echo ""
 echo "Compiling Python files"

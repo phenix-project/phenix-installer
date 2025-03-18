@@ -1,3 +1,6 @@
+REM unset problematic environment variables
+set "LIBTBX_BUILD="
+
 REM set paths
 set PATH=%PREFIX%;%PREFIX%\Library\mingw-w64\bin;%PREFIX%\Library\usr\bin;%PREFIX%\Library\bin;%PREFIX%\Scripts;%PREFIX%\bin;%PATH%
 
