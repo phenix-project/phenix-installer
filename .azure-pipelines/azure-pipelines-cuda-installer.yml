@@ -189,14 +189,14 @@ jobs:
       set -xe
       cd $(Pipeline.Workspace)/phenix/modules
       rm -fr dxtbx
-      git clone -b dials-3.13 https://github.com/dials/dxtbx.git
-    displayName: Switch dxtbx to dials-3.13
+      git clone -b dials-3.22 https://github.com/dials/dxtbx.git
+    displayName: Switch dxtbx to dials-3.22
 
   # use conda compilers
   - script: |
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-      conda create -n compilers cxx-compiler=13
+      conda create -n compilers cxx-compiler
     displayName: Install conda compilers
 
   # build
