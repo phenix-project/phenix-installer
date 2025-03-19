@@ -196,7 +196,7 @@ jobs:
   - script: |
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-      conda create -n compilers cxx-compiler
+      conda create -y -n compilers cxx-compiler
     displayName: Install conda compilers
 
   # build
