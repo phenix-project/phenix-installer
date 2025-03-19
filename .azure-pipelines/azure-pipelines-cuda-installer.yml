@@ -192,13 +192,23 @@ jobs:
       git clone -b dials-3.13 https://github.com/dials/dxtbx.git
     displayName: Switch dxtbx to dials-3.13
 
+  # use conda compilers
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda create -n compilers cxx-compiler=13
+    displayName: Install conda compilers
+
   # build
   - script: |
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda activate compilers
       cd $(Pipeline.Workspace)/phenix
       ln -fs ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
-      python bootstrap.py base build --builder=phenix --nproc=4 --python=39
+      python bootstrap.py base build --builder=phenix --nproc=4 --python=39 \
+        --config-flags="--use_environment_flags" \
+        --use-conda=$(Pipeline.Workspace)/phenix/modules/phenix/conda_envs/phenix_py39_linux-64.txt2
     displayName: Build Phenix
 
   - script: |
