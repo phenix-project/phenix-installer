@@ -26,7 +26,7 @@ resources:
 jobs:
 - job: Build_phenix_source_tarball
   pool:
-    vmImage: ubuntu-latest
+    vmImage: ubuntu-22.04
   timeoutInMinutes: 360
 
   # variables for version
