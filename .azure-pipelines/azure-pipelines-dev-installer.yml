@@ -16,11 +16,11 @@ resources:
 jobs:
 - job: Build_dev_installer
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   timeoutInMinutes: 360
 
   container:
-    image: centos:7
+    image: cctbx/centos:7
     options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
   # variables for Google Drive folder and installer name
@@ -60,23 +60,6 @@ jobs:
     target: host
 
   # centos setup
-  # https://serverfault.com/questions/1161816/mirrorlist-centos-org-no-longer-resolve
-  - script: |
-      set -xe
-      /tmp/docker exec -t -u 0 ci-container \
-      sh -c "sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo"
-      /tmp/docker exec -t -u 0 ci-container \
-      sh -c "sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo"
-      /tmp/docker exec -t -u 0 ci-container \
-      sh -c "sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo"
-    displayName: Modify yum repositories for CentOS 7
-
-  # install dependencies
-  - script: |
-      /tmp/docker exec -t -u 0 ci-container \
-      sh -c "yum install -y sudo"
-    displayName: Set up sudo for CentOS
-
   - script: |
       set -xe
       sudo yum groupinstall -y 'Development Tools'
