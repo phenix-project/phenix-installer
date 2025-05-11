@@ -516,7 +516,6 @@ stages:
 
     # install mamba
     - script: |
-        conda install -n base -c conda-forge -y conda=25
         conda update -n base -c conda-forge -y --all
         conda install -n base -c conda-forge -y conda-build constructor=3.9 jinja2
         conda clean -y --all
