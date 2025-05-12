@@ -526,9 +526,9 @@ stages:
     # replace nsis with nsisbi
     - script: |
         unzip $(nsis_zip.secureFilePath)
-        xcopy /S /Y /F nsis-binary-7336-1\* C:\Miniconda\NSIS
+        xcopy /S /Y /F nsis-binary-7336-1\* C:\Miniconda\envs\construct\NSIS
         dir nsis-binary-7336-1
-        dir C:\Miniconda\NSIS
+        dir C:\Miniconda\envs\construct\NSIS
       displayName: Replace NSIS in constructor environment
 
     # set up Google Drive upload environment
