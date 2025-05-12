@@ -516,10 +516,9 @@ stages:
 
     # install mamba
     - script: |
-        conda update -n base -c conda-forge -y --all
-        conda install -n base -c conda-forge -y conda-build constructor=3.9 jinja2
+        conda update -n base -y --all
+        conda create -n construct -c conda-forge -y conda-build python=3.10 constructor=3.9 jinja2
         conda clean -y --all
-        conda install -n base -c conda-forge -y --force-reinstall libsqlite
         conda info
       displayName: Install conda-build and constructor
       retryCountOnTaskFailure: 3
@@ -660,6 +659,7 @@ stages:
       retryCountOnTaskFailure: 3
 
     - script: |
+        call activate construct
         cd constructor
         constructor .
         if %errorlevel% neq 0 exit /b %errorlevel%
