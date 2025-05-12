@@ -638,6 +638,7 @@ stages:
       continueOnError: true
 
     - script: |
+        call activate construct
         conda remove -n phenix -y --all
 
         cd $(Pipeline.Workspace)\$(platform)
