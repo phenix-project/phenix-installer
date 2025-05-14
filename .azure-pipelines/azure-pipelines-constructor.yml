@@ -521,6 +521,8 @@ stages:
         conda create -n construct -c conda-forge -y conda-build python=3.10 constructor=3.9 jinja2
         conda clean -y --all
         conda info
+        call activate construct
+        call conda info
       displayName: Install conda-build and constructor
       retryCountOnTaskFailure: 3
 

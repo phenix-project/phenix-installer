@@ -10,7 +10,8 @@ license_file: LICENSE.txt
 channels:
   - https://conda.anaconda.org/conda-forge
 
-environment: phenix
+environment: phenix  # [unix]
+environment: "C:\\Miniconda\\envs\\phenix"  # [win]
 
 # general options
 conclusion_file: ./gui/conclusion.txt  # [unix]
