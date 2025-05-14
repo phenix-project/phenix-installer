@@ -174,7 +174,7 @@ stages:
         set -xe
         source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
         conda update --all -y -n base
-        conda install -n base -c conda-forge -y conda-build constructor=3.9 jinja2
+        conda install -n base -c conda-forge -y conda-build constructor jinja2
       displayName: Update miniforge
 
     # set up Google Drive upload environment
@@ -518,7 +518,7 @@ stages:
     - script: |
         conda install -n base -y conda-index
         conda update -n base -y --all
-        conda create -n construct -c conda-forge -y conda-build python=3.10 constructor=3.9 jinja2
+        conda create -n construct -c conda-forge -y conda-build python=3.10 constructor jinja2
         conda clean -y --all
         conda info
         call activate construct
