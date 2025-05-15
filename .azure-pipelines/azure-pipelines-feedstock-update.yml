@@ -106,8 +106,6 @@ jobs:
 
       conda smithy rerender -c auto
 
-      git cherry-pick ab5ac96ddb1e46e8746bbf692a4c9e127db35751
-
       # update chem_data branch
       git checkout chem_data_base
       git rebase main
@@ -117,7 +115,6 @@ jobs:
       git reset --hard chem_data_base
       conda smithy rerender -c auto
       #git commit --allow-empty -m "Trigger build"
-      git cherry-pick c99bb05115a718563f4ecd8614661fe272711252
 
       # start chem_data build first
       git push -f -u origin chem_data
