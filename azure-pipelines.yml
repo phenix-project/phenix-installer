@@ -214,6 +214,23 @@ jobs:
         --nproc=4
     displayName: Configure and Build
 
+  # build documentation
+  - script: |
+      set -xe
+
+      cd $(Pipeline.Workspace)
+      source build/setpaths.sh
+
+      phenix_html.rebuild_docs
+      cp ./modules/phenix/CHANGES ./doc
+      mv ./doc $(version)
+
+      tar -cJf $(version)_docs.tar.xz
+
+      scp -r ./$(version) cciadmin@cci3.lbl.gov:/net/cci/phenix/docs/$(version)
+    displayName: Build documentation
+    continueOnError: true
+
   # remove symoblic link for Windows
   - script: |
       set -xe
@@ -338,4 +355,18 @@ jobs:
         --folder_list $(version) \
         --files $(Pipeline.Workspace)/tmp/$(installer_name).tar.xz
     displayName: Upload full source tarball (xz) to Google Drive
+    continueOnError: true
+
+  # upload documentation to Google Drive
+  - script: |
+      set -xe
+
+      source activate upload
+
+      libtbx.python $(Pipeline.Workspace)/phenix-installer/scripts/upload_installer.py \
+        --credentials $(upload_key.secureFilePath) \
+        --folder_id $(folder_id) \
+        --folder_list $(version) \
+        --files $(Pipeline.Workspace)/$(version)_docs.tar.xz
+    displayName: Upload documentation tarball (xz) to Google Drive
     continueOnError: true
