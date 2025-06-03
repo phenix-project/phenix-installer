@@ -225,7 +225,7 @@ jobs:
       cp ./modules/phenix/CHANGES ./doc
       mv ./doc $(version)
 
-      tar -cJf $(version)_docs.tar.xz
+      tar -cJf $(version)_docs.tar.xz ./$(version)
 
       scp -r ./$(version) cciadmin@cci3.lbl.gov:/net/cci/phenix/docs/$(version)
     displayName: Build documentation
