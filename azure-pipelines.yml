@@ -227,7 +227,7 @@ jobs:
 
       tar -cJf $(version)_docs.tar.xz ./$(version)
 
-      ssh-keyscan -t ed25519 cci3.lbl.gov
+      ssh-keyscan -t ed25519 cci3.lbl.gov >> ~/.ssh/known_hosts
       scp -r ./$(version) cciadmin@cci3.lbl.gov:/net/cci/phenix/docs/$(version)
     displayName: Build documentation
     continueOnError: true
