@@ -218,8 +218,8 @@ stages:
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
-        # patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
+        # patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
     # download latest chem_data package
@@ -555,8 +555,8 @@ stages:
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
-        # patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
+        # patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
+        patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
     # download latest chem_data package
