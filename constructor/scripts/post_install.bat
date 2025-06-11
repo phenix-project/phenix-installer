@@ -22,6 +22,7 @@ set SCRIPT_LOCATION=%PREFIX%\Lib\site-packages\libtbx\auto_build\conda_build\cre
   --prefix %PREFIX% ^
   --custom_bin %INSTALLER_NAME%_bin ^
   --packages phenix dials dxtbx
+if %ERRORLEVEL% neq 0 exit 1
 echo "done"
 
 REM write phenix_env files
@@ -35,6 +36,7 @@ set SCRIPT_LOCATION=%PREFIX%\Lib\site-packages\libtbx\auto_build\conda_build\wri
   --bin-dir %INSTALLER_NAME%_bin ^
   --version %INSTALLER_VER% ^
   --destination %PREFIX%
+if %ERRORLEVEL% neq 0 exit 1
 if exist "%PREFIX%\\%INSTALLER_NAME%_env.bat" echo "%PREFIX%\\%INSTALLER_NAME%.bat created"
 if exist "%PREFIX%\\%INSTALLER_NAME%_env.bat" copy "%PREFIX%\\%INSTALLER_NAME%.bat" "%PREFIX%\\%INSTALLER_NAME%.sh"
 if exist "%PREFIX%\\%INSTALLER_NAME%_env.sh" echo "%PREFIX%\\%INSTALLER_NAME%.sh created"
@@ -45,7 +47,9 @@ echo ""
 echo "Rebuilding rotarama and cablam caches"
 echo "====================================="
 call %PREFIX%\Library\bin\mmtbx.rebuild_rotarama_cache.bat
+if %ERRORLEVEL% neq 0 exit 1
 call %PREFIX%\Library\bin\mmtbx.rebuild_cablam_cache.bat
+if %ERRORLEVEL% neq 0 exit 1
 echo "done"
 
 REM build documentation
@@ -54,6 +58,7 @@ echo "Building Phenix documentation"
 echo "============================="
 set PYTHONIOENCODING="utf8"
 call %PREFIX%\Library\bin\phenix_html.rebuild_docs.bat
+if %ERRORLEVEL% neq 0 exit 1
 echo "done"
 
 REM print copy of conclusion.txt without unix text

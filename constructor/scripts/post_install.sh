@@ -1,3 +1,6 @@
+# stop for any failure
+set -e
+
 # unset problematic environment variables
 unset LIBTBX_BUILD
 
