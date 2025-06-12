@@ -68,7 +68,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     phenix \
     --app_name=${INSTALLER_NAME}-${INSTALLER_VER} \
     --dest=${PREFIX} \
-    --alias_build
+    --alias_build \
+    --extra_lines="os.environ['PHENIX_VERSION'] = '${INSTALLER_VER}'"
   popd
   echo "done"
 fi
