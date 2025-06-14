@@ -34,6 +34,13 @@ stages:
           conda: Linux
           py_ver: 3.9
           np_ver: 1.22
+        cuda12_linux_py39:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: cuda12_linux-64
+          conda: Linux
+          py_ver: 3.9
+          np_ver: 1.22
         linux_py310:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
@@ -346,17 +353,16 @@ stages:
         for f in `/bin/ls phenix*.conda`; do
           CONDA_SUBDIR=$(platform) conda install -y -c local ${f}
         done
-        # CONDA_SUBDIR=$(platform) conda update -y -c conda-forge -c phenix-project --all
-        # conda remove -y --force cctbx-base
 
         cd ${CONDA_PREFIX}/share/phenix/conda_envs
 
         pyver=`echo $(py_ver) | sed 's/\.//'`
 
-        conda install -y --file phenix_py${pyver}_$(platform).txt2
-        # if [[ "$(platform)" != *"arm64" ]]; then
-        #   conda install -y -c cctbx202211 --no-deps --freeze-installed gemmi nxmx
-        # fi
+        env_file=phenix_py${pyver}_$(platform).txt2
+        if [ ! -f ${env_file} ]; then
+          env_file=phenix_py${pyver}_$(platform).txt
+        fi
+        conda install -y --file ${env_file}
 
         cd $(Pipeline.Workspace)/noarch
         CONDA_SUBDIR=$(platform) conda install -y chem_data*.conda
