@@ -170,6 +170,7 @@ stages:
         df -h
         free -h
       displayName: Remove swap
+      condition: eq(variables['platform'], 'linux-64')
       continueOnError: true
 
     - script: |
