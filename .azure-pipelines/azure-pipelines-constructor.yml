@@ -181,13 +181,13 @@ stages:
           php rubygems selenium node dotnet-sdk-8.0 postgresql mysql; do
           echo "Removing ${p}"
           echo "======================="
-          sudo apt-get remove -y ${p}
+          sudo apt-get purge -y ${p}
         done
         sudo apt-get autoremove -y
         sudo apt-get clean -y
 
-        rm -fr ${CONDA}
-        rm -fr ${VCPKG_INSTALLATION_ROOT}
+        sudo rm -fr ${CONDA}
+        sudo rm -fr ${VCPKG_INSTALLATION_ROOT}
       displayName: Clean up linux image some more
       condition: eq(variables['platform'], 'linux-64')
       continueOnError: true
