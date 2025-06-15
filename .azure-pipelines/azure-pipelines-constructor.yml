@@ -174,11 +174,12 @@ stages:
       continueOnError: true
 
     - script: |
-        sudo apt-get remove -y \
-          docker-ce docker-ce-cli containerd.io \
+        for p in docker-ce docker-ce-cli containerd.io \
           gfortran-12 gfortran-13 gfortran 14 \
           g++-12 g++-13 g++-14 \
-          clang-16 clang-17 clang-18
+          clang-16 clang-17 clang-18; do
+          sudo apt-get remove -y ${p}
+        done
         sudo apt-get autoremove -y
         sudo apt-get clean -y
       displayName: Clean up linux image some more
