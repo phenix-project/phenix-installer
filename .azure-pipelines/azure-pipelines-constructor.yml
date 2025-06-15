@@ -449,6 +449,16 @@ stages:
 
     - script: |
         set -xe
+        cd ./constructor
+        ls
+        mv Phenix-$(version)-Linux-x86_64.sh Phenix-$(version)-CUDA$(cuda)-Linux-x86_64.sh
+        ls
+      displayName: Rename CUDA installer
+      condition: gt(variables['cuda'], 0)
+      continueOnError: true
+
+    - script: |
+        set -xe
         source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
         conda activate upload
