@@ -177,11 +177,20 @@ stages:
         for p in docker-ce docker-ce-cli containerd.io \
           gfortran-12 gfortran-13 gfortran 14 \
           g++-12 g++-13 g++-14 \
-          clang-16 clang-17 clang-18; do
+          clang-16 clang-17 clang-18 \
+          php rubygems selenium node ; do
+          echo "Removing ${p}"
+          echo "======================="
           sudo apt-get remove -y ${p}
         done
         sudo apt-get autoremove -y
         sudo apt-get clean -y
+
+        ls ${AGENT_TOOLSDIRECTORY}
+        for t in Go Node.js Python PyPy Ruby; do
+          echo "Removing ${t}"
+          echo "======================="
+          rm -fr ${AGENT_TOOLSDIRECTORY}/${t}
       displayName: Clean up linux image some more
       condition: eq(variables['platform'], 'linux-64')
       continueOnError: true
