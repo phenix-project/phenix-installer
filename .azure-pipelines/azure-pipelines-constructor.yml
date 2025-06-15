@@ -201,6 +201,9 @@ stages:
         cd $(Pipeline.Workspace)
         pwd
         ls
+
+        cat /proc/swaps
+        sudo cat /etc/fstab
       displayName: Debug information
 
     # install miniforge
