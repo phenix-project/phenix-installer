@@ -186,11 +186,13 @@ stages:
         sudo apt-get autoremove -y
         sudo apt-get clean -y
 
+        echo ${AGENT_TOOLSDIRECTORY}
         ls ${AGENT_TOOLSDIRECTORY}
         for t in Go Node.js Python PyPy Ruby; do
           echo "Removing ${t}"
           echo "======================="
           rm -fr ${AGENT_TOOLSDIRECTORY}/${t}
+        done
       displayName: Clean up linux image some more
       condition: eq(variables['platform'], 'linux-64')
       continueOnError: true
