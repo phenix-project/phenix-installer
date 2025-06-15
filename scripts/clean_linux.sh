@@ -30,10 +30,12 @@ docker image prune --all --force
 rm -fr ${JAVA_HOME_8_X64}
 rm -fr ${JAVA_HOME_11_X64}
 rm -fr ${JAVA_HOME_17_X64}
+rm -fr ${JAVA_HOME_21_X64}
 
 rm -fr ${CHROMEWEBDRIVER}
 rm -fr ${EDGEWEBDRIVER}
 rm -fr ${GECKOWEBDRIVER}
+rm -fr ${SELENIUM_JAR_PATH}
 
 # make swap disk
 fallocate -l 8GiB /swapfile || true
