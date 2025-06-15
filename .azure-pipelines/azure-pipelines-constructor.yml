@@ -177,11 +177,20 @@ stages:
       continueOnError: true
 
     - script: |
-        for p in docker-ce docker-ce-cli containerd.io \
-          gfortran-12 gfortran-13 gfortran 14 \
+        for p in \
+          docker-ce docker-ce-cli containerd.io \
+          cpp cpp-12 cpp-13 cpp-14 \
+          gcc gcc-12 gcc-13 gcc-14 \
+          gfortran gfortran-12 gfortran-13 gfortran-14 \
           g++-12 g++-13 g++-14 \
-          clang-16 clang-17 clang-18 \
-          php rubygems selenium node dotnet-sdk-8.0 postgresql mysql; do
+          clang-16 clang-format-16 clang-17 clang-format-17 clang-18 clang-format-18 \
+          lld-16 lld-17 lld-18 lldb-18 \
+          firebird3.0-common firebird3.0-common-doc \
+          apache2 apache2-bin apache2-data apache2-utils \
+          mysql-server mysql-client \
+          postgresql-16 postgresql-client-16 \
+          temurin-8-jdk temurin-11-jdk temurin-17-jdk temurin-21-jdk\
+          nginx php8.3 php8.3-cli php8.3-common python3-dev ruby ruby-dev dotnet-sdk-8.0; do
           echo "Removing ${p}"
           echo "======================="
           sudo apt-get purge -y ${p}
@@ -189,8 +198,22 @@ stages:
         sudo apt-get autoremove -y
         sudo apt-get clean -y
 
+        sudo rm -fr /usr/libexec/docker
+        sudo rm -fr /var/www/html
+        sudo rm -fr /usr/share/php
+
         sudo rm -fr ${CONDA}
         sudo rm -fr ${VCPKG_INSTALLATION_ROOT}
+
+        sudo rm -fr /opt/pipx/*
+
+        sudo apt list --installed
+        cd /
+        sudo du -sh -- *  | sort -rh
+        cd /opt/az
+        sudo du -sh -- *  | sort -rh
+        cd /usr
+        sudo du -sh -- *  | sort -rh
       displayName: Clean up linux image some more
       condition: eq(variables['platform'], 'linux-64')
       continueOnError: true
@@ -359,6 +382,7 @@ stages:
       displayName: Upload platform conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
+      condition: eq(variables['cuda'], 0)
 
     - script: |
         set -xe
