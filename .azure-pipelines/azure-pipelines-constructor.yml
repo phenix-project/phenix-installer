@@ -169,6 +169,9 @@ stages:
         sudo rm -fr /swapfile
         df -h
         free -h
+
+        cat /proc/swaps
+        sudo cat /etc/fstab
       displayName: Remove swap
       condition: eq(variables['platform'], 'linux-64')
       continueOnError: true
@@ -201,9 +204,6 @@ stages:
         cd $(Pipeline.Workspace)
         pwd
         ls
-
-        cat /proc/swaps
-        sudo cat /etc/fstab
       displayName: Debug information
 
     # install miniforge
