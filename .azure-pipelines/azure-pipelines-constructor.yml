@@ -377,7 +377,7 @@ stages:
       displayName: Upload noarch conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
-      condition: and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'linux-64'))
+      condition: and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'linux-64'), eq(variables['cuda'], 0))
 
     - script: |
         set -xe
