@@ -165,6 +165,14 @@ stages:
       condition: eq(variables['platform'], 'linux-64')
 
     - script: |
+        sudo swapoff /swapfile
+        sudo rm -fr /swapfile
+        df -h
+        free -h
+      displayName: Remove swap
+      continueOnError: true
+
+    - script: |
         set -xe
 
         pwd
