@@ -1,6 +1,9 @@
 # stop for any failure
 set -e
 
+# store current directory
+current_dir=`pwd`
+
 # unset problematic environment variables
 unset LIBTBX_BUILD
 
@@ -8,9 +11,9 @@ unset LIBTBX_BUILD
 echo ""
 echo "Compiling Python files"
 echo "======================"
-pushd ${PREFIX}/lib
+cd ${PREFIX}/lib
 ${PREFIX}/bin/libtbx.py_compile_all -i
-popd
+cd ${current_dir}
 echo "done"
 
 # create custom bin directory
@@ -63,14 +66,14 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo ""
   echo "Creating macOS phenix.app"
   echo "========================="
-  pushd ${PREFIX}
+  cd ${PREFIX}
   ${PREFIX}/bin/libtbx.create_mac_app \
     phenix \
     --app_name=${INSTALLER_NAME}-${INSTALLER_VER} \
     --dest=${PREFIX} \
     --alias_build \
     --extra_lines="os.environ['PHENIX_VERSION'] = '${INSTALLER_VER}'"
-  popd
+  cd ${current_dir}
   echo "done"
 fi
 
