@@ -189,7 +189,7 @@ stages:
           apache2 apache2-bin apache2-data apache2-utils \
           mysql-server mysql-client \
           postgresql-16 postgresql-client-16 \
-          temurin-8-jdk temurin-11-jdk temurin-17-jdk temurin-21-jdk\
+          java-common temurin-8-jdk temurin-11-jdk temurin-17-jdk temurin-21-jdk\
           nginx php8.3 php8.3-cli php8.3-common python3-dev ruby ruby-dev dotnet-sdk-8.0; do
           echo "Removing ${p}"
           echo "======================="
@@ -200,20 +200,27 @@ stages:
 
         sudo rm -fr /usr/libexec/docker
         sudo rm -fr /var/www/html
-        sudo rm -fr /usr/share/php
 
         sudo rm -fr ${CONDA}
         sudo rm -fr ${VCPKG_INSTALLATION_ROOT}
 
         sudo rm -fr /opt/pipx/*
 
+        sudo rm -fr /usr/share/miniconda
+        sudo rm -fr /usr/share/php
+        sudo rm -fr /usr/local/julia*
+        sudo rm -fr /usr/local/share/chromium
+
         sudo apt list --installed
-        cd /
-        sudo du -sh -- *  | sort -rh
-        cd /opt/az
-        sudo du -sh -- *  | sort -rh
-        cd /usr
-        sudo du -sh -- *  | sort -rh
+
+        for d in / /opt/az /usr /usr/share /usr/local /usr/local/share; do
+          cd ${d}
+          echo ""
+          echo "${d}"
+          echo "======================="
+          sudo du -sh -- *  | sort -rh
+        done
+
       displayName: Clean up linux image some more
       condition: eq(variables['platform'], 'linux-64')
       continueOnError: true
@@ -448,6 +455,16 @@ stages:
 
         cp ${CONDA_PREFIX}/share/phenix/CHANGES ./constructor/gui/readme_macos.txt
       displayName: Update Changelog
+
+    - script: |
+        set -xe
+        cd $(Pipeline.Workspace)/miniforge/pkgs
+        rm -fr phenix* chem_data*
+        cd $(Pipeline.Workspace)/miniforge/envs/phenix/lib/python*/site-packages
+        rm -fr phenix* chem_data*
+      displayName: Clear phenix and chem_data for cuda installer
+      continueOnError: true
+      condition: gt(variables['cuda'], 0)
 
     - script: |
         set -xe
