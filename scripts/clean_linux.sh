@@ -37,12 +37,6 @@ rm -fr ${EDGEWEBDRIVER}
 rm -fr ${GECKOWEBDRIVER}
 rm -fr ${SELENIUM_JAR_PATH}
 
-# make swap disk
-fallocate -l 8GiB /swapfile || true
-chmod 600 /swapfile || true
-mkswap /swapfile || true
-swapon /swapfile
-
 # check disk space after
 df -h
 free -h
