@@ -72,7 +72,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     --app_name=${INSTALLER_NAME}-${INSTALLER_VER} \
     --dest=${PREFIX} \
     --alias_build \
-    --extra_lines="os.environ['PHENIX_VERSION'] = '${INSTALLER_VER}'"
+    --extra_lines="os.environ['PHENIX'] = '${PREFIX}\nos.environ['PHENIX_PREFIX'] = '${PREFIX}'\nos.environ['PHENIX_VERSION'] = '${INSTALLER_VER}'"
   cd ${current_dir}
   echo "done"
 fi
