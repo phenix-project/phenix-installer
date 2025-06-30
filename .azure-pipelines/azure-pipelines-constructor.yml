@@ -537,7 +537,7 @@ stages:
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
         overwrite: false
       displayName: Upload installer to Berkeley
-      condition: and(eq(variables['py_ver'], '3.9'), succeeded())
+      condition: or(and(eq(variables['py_ver'], '3.9'), succeeded()), and(gt(variables['cuda'], 0), succeeded()))
       continueOnError: true
 
 # =============================================================================
