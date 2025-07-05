@@ -67,12 +67,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Creating macOS phenix.app"
   echo "========================="
   cd ${PREFIX}
+  EXTRA_LINES=`echo "os.environ['PHENIX'] = '${PREFIX}'\nos.environ['PHENIX_PREFIX'] = '${PREFIX}'\nos.environ['PHENIX_VERSION'] = '${INSTALLER_VER}'"`
   ${PREFIX}/bin/libtbx.create_mac_app \
     phenix \
     --app_name=${INSTALLER_NAME}-${INSTALLER_VER} \
     --dest=${PREFIX} \
     --alias_build \
-    --extra_lines="os.environ['PHENIX'] = '${PREFIX}\nos.environ['PHENIX_PREFIX'] = '${PREFIX}'\nos.environ['PHENIX_VERSION'] = '${INSTALLER_VER}'"
+    --extra_lines="${EXTRA_LINES}"
   cd ${current_dir}
   echo "done"
 fi
