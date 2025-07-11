@@ -660,6 +660,24 @@ stages:
         patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
+    - script: |
+        cd $(Pipeline.Workspace)
+        call activate construct
+        python $(Build.Repository.LocalPath)\scripts\get_artifact_url.py ^
+          --organization phenix-release ^
+          --project feedstock-builds ^
+          --runId $(resources.pipeline.phenix_feedstock.runID)^
+          --platform $(artifact_platform) ^
+          --python-version $(py_ver)
+        choco install wget
+        wget -i download_url
+        dir
+        unzip "content@format=zip"
+        dir
+        del /S /Q "content@format=zip"
+        dir
+      displayName: Download specific artifact
+
     # download latest chem_data package
     - task: DownloadPipelineArtifact@2
       inputs:
