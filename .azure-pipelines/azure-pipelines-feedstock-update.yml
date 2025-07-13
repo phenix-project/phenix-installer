@@ -107,7 +107,7 @@ jobs:
       conda smithy rerender -c auto
 
       # skip Windows environment artifact storage
-      sed -i "s/condition: not(eq(variables.ENV_ARTIFACT_PATH, ''))/condition: false/g" .azure-pipelines/azure-pipelines-win.yml
+      sed -i "s/@echo on//g" .scripts/create_conda_build_artifacts.bat
       git commit -am "Skip Windows environment artifact"
 
       # update chem_data branch
