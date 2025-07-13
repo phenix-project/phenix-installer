@@ -99,7 +99,7 @@ jobs:
         --new-version $(version) \
         --meta-path ./recipe/meta.yaml
 
-      git commit -am "Update for $(version)"
+      git commit -am "Update for $(version)" || true
 
       conda create -n smithy -c conda-forge -y conda-smithy
       source activate smithy
