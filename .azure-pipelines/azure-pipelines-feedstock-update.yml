@@ -106,10 +106,6 @@ jobs:
 
       conda smithy rerender -c auto
 
-      # skip Windows environment artifact storage
-      sed -i "s/@echo on//g" .scripts/create_conda_build_artifacts.bat
-      git commit -am "Skip Windows environment artifact"
-
       # update chem_data branch
       git checkout chem_data_base
       git rebase main
