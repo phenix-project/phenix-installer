@@ -63,6 +63,10 @@ jobs:
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: Add conda to PATH
 
+  # accept conda tos
+  - script: conda config --set plugins.auto_accept_tos yes
+    displayName: Accept conda TOS
+
   # get statistics
   - script: |
       set -xe
