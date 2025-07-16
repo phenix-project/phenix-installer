@@ -184,8 +184,6 @@ jobs:
 
       git revert 451e713a1d1d76b4f42673f65b1626e618975dfe
       git revert c16316c4bde588979dc8eb07441f2d1822362bec
-
-      git commit -am "Remove Tracker"
     displayName: Remove Tracker
 
   - script: |
