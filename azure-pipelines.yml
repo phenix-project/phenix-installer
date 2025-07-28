@@ -172,14 +172,6 @@ jobs:
       git config --global user.email "bkpoon@lbl.gov"
       git config --global user.name "Billy K. Poon"
 
-      cd $(Pipeline.Workspace)/modules/phenix
-      git checkout gui
-      git rebase master
-    displayName: Switch to gui branch on phenix
-
-  - script: |
-      set -xe
-
       cd $(Pipeline.Workspace)/modules/cctbx_project
 
       git revert 451e713a1d1d76b4f42673f65b1626e618975dfe
