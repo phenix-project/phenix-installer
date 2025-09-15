@@ -1,0 +1,138 @@
+[submodule "modules/amber_adaptbx"]
+	path = modules/amber_adaptbx
+	url = https://github.com/phenix-project/amber_adaptbx.git
+[submodule "modules/amber_library"]
+	path = modules/amber_library
+	url = https://github.com/phenix-project/amber_library.git
+[submodule "modules/annlib"]
+	path = modules/annlib
+	url = https://github.com/cctbx/annlib.git
+[submodule "modules/annlib_adaptbx"]
+	path = modules/annlib_adaptbx
+	url = https://github.com/cctbx/annlib_adaptbx.git
+[submodule "modules/boost"]
+	path = modules/boost
+	url = https://github.com/cctbx/boost.git
+[submodule "modules/cbflib"]
+	path = modules/cbflib
+	url = https://github.com/dials/cbflib.git
+[submodule "modules/ccp4io"]
+	path = modules/ccp4io
+	url = https://github.com/cctbx/ccp4io.git
+[submodule "modules/ccp4io_adaptbx"]
+	path = modules/ccp4io_adaptbx
+	url = https://github.com/cctbx/ccp4io_adaptbx.git
+[submodule "modules/chem_data"]
+	path = modules/chem_data
+	url = https://gitlab.com/phenix_project/chem_data.git
+[submodule "modules/clipper"]
+	path = modules/clipper
+	url = https://github.com/cctbx/clipper.git
+[submodule "modules/Colabs"]
+	path = modules/Colabs
+	url = https://github.com/phenix-project/Colabs.git
+[submodule "modules/dials"]
+	path = modules/dials
+	url = https://github.com/dials/dials.git
+[submodule "modules/dxtbx"]
+	path = modules/dxtbx
+	url = https://github.com/dials/dxtbx.git
+[submodule "modules/eigen"]
+	path = modules/eigen
+	url = https://gitlab.com/libeigen/eigen.git
+[submodule "modules/elbow"]
+	path = modules/elbow
+	url = git@github.com:phenix-project/elbow.git
+[submodule "modules/gui_resources"]
+	path = modules/gui_resources
+	url = https://github.com/cctbx/gui_resources.git
+[submodule "modules/iota"]
+	path = modules/iota
+	url = https://github.com/ssrl-px/iota.git
+[submodule "modules/king"]
+	path = modules/king
+	url = https://github.com/rlabduke/phenix_king_binaries.git
+[submodule "modules/ksdssp"]
+	path = modules/ksdssp
+	url = git@github.com:phenix-project/ksdssp.git
+[submodule "modules/labelit"]
+	path = modules/labelit
+	url = git@github.com:phenix-project/labelit.git
+[submodule "modules/muscle"]
+	path = modules/muscle
+	url = git@github.com:phenix-project/muscle.git
+[submodule "modules/opt_resources"]
+	path = modules/opt_resources
+	url = git@github.com:phenix-project/opt_resources.git
+[submodule "modules/phaser"]
+	path = modules/phaser
+	url = https://gitlab.developers.cam.ac.uk/scm/haematology/readgroup/phaser.git
+[submodule "modules/phaser_regression"]
+	path = modules/phaser_regression
+	url = https://gitlab.developers.cam.ac.uk/scm/haematology/readgroup/phaser_regression.git
+[submodule "modules/phaser_voyager"]
+	path = modules/phaser_voyager
+	url = https://gitlab.developers.cam.ac.uk/scm/haematology/readgroup/phaser_voyager.git
+[submodule "modules/phasertng"]
+	path = modules/phasertng
+	url = https://gitlab.developers.cam.ac.uk/scm/haematology/readgroup/phasertng.git
+[submodule "modules/phenix"]
+	path = modules/phenix
+	url = git@github.com:phenix-project/phenix.git
+[submodule "modules/phenix_dev_doc"]
+	path = modules/phenix_dev_doc
+	url = https://github.com/phenix-project/phenix_dev_doc.git
+[submodule "modules/phenix_examples"]
+	path = modules/phenix_examples
+	url = https://gitlab.com/phenix_project/phenix_examples.git
+[submodule "modules/phenix_html"]
+	path = modules/phenix_html
+	url = https://github.com/phenix-project/phenix_html.git
+[submodule "modules/phenix_pathwalker"]
+	path = modules/phenix_pathwalker
+	url = git@github.com:phenix-project/phenix_pathwalker.git
+[submodule "modules/phenix_regression"]
+	path = modules/phenix_regression
+	url = https://gitlab.com/phenix_project/phenix_regression.git
+[submodule "modules/Plex"]
+	path = modules/Plex
+	url = git@github.com:phenix-project/Plex.git
+[submodule "modules/probe"]
+	path = modules/probe
+	url = https://github.com/rlabduke/probe.git
+[submodule "modules/pulchra"]
+	path = modules/pulchra
+	url = git@github.com:phenix-project/pulchra.git
+[submodule "modules/PyQuante"]
+	path = modules/PyQuante
+	url = git@github.com:phenix-project/PyQuante.git
+[submodule "modules/qrefine"]
+	path = modules/qrefine
+	url = https://github.com/qrefine/qrefine.git
+[submodule "modules/reduce"]
+	path = modules/reduce
+	url = https://github.com/rlabduke/reduce.git
+[submodule "modules/reel"]
+	path = modules/reel
+	url = git@github.com:phenix-project/reel.git
+[submodule "modules/solve_resolve"]
+	path = modules/solve_resolve
+	url = git@github.com:phenix-project/solve_resolve.git
+[submodule "modules/tntbx"]
+	path = modules/tntbx
+	url = https://github.com/cctbx/tntbx.git
+[submodule "modules/voyager_regression"]
+	path = modules/voyager_regression
+	url = https://gitlab.developers.cam.ac.uk/scm/haematology/readgroup/voyager_regression.git
+[submodule "modules/xia2"]
+	path = modules/xia2
+	url = https://github.com/xia2/xia2.git
+[submodule "modules/geostd"]
+	path = modules/geostd
+	url = https://github.com/phenix-project/geostd.git
+[submodule "modules/cctbx_project"]
+	path = modules/cctbx_project
+	url = https://github.com/cctbx/cctbx_project.git
+[submodule "modules/ncdist"]
+	path = modules/ncdist
+	url = https://github.com/yayahjb/ncdist.git
