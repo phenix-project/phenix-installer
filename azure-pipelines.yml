@@ -257,6 +257,7 @@ jobs:
       ssh-keyscan -t ed25519 cci3.lbl.gov >> ~/.ssh/known_hosts
       scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/token .
       scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/url .
+      scp cciadmin@cci3.lbl.gov:${installer_dir}/rest/ai_url .
     displayName: Copy token and url
 
   # update version in Dockerfile
