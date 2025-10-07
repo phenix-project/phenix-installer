@@ -620,8 +620,8 @@ stages:
 
     # install conda build
     - script: |
-        conda install -n base -y conda-index
-        conda create -n construct -c conda-forge -y conda-build python=3.10 constructor jinja2
+        conda install -n base -y conda-index conda=25.7
+        conda create -n construct -c conda-forge -y conda=25.7 conda-build python=3.10 constructor jinja2
         conda clean -y --all
         conda info
         call activate construct
