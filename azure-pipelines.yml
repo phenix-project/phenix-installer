@@ -127,12 +127,12 @@ jobs:
     displayName: Accept conda TOS
 
   # update conda
-  - script: |
-      set -xe
-      conda update -n base -y conda
-      conda update -n base -y --all
-    displayName: Update conda
-    retryCountOnTaskFailure: 3
+  # - script: |
+  #     set -xe
+  #     conda update -n base -y conda
+  #     conda update -n base -y --all
+  #   displayName: Update conda
+  #   retryCountOnTaskFailure: 3
 
   # link bootstrap.py
   - script: |
