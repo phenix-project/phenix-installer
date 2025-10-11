@@ -176,21 +176,27 @@ jobs:
     displayName: Switch dxtbx to dials-3.22
 
   # use conda compilers
-  - script: |
-      set -xe
-      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-      conda create -y -n compilers cxx-compiler=1.10
-    displayName: Install conda compilers
+  # - script: |
+  #     set -xe
+  #     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+  #     conda create -y -n compilers cxx-compiler=1.10
+  #   displayName: Install conda compilers
 
   # build
   - script: |
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-      conda activate compilers
+      # conda activate compilers
       cd $(Pipeline.Workspace)/phenix
+      rm -fr conda_base
+      rm -fr modules/boost
       ln -fs ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
-      python bootstrap.py base build --builder=phenix --nproc=4 --python=39 \
-        --config-flags="--use_environment_flags" \
+      ls
+      python bootstrap.py base build \
+        --builder=phenix \
+        --nproc=4 \
+        --python=39 \
+        --config-flags="--cxxstd=c++14" \
         --use-conda=$(Pipeline.Workspace)/phenix/modules/phenix/conda_envs/phenix_py39_linux-64.txt2
     displayName: Build Phenix
 
