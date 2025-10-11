@@ -210,12 +210,15 @@ jobs:
   - script: |
       set -xe
       cd $(Pipeline.Workspace)
+      mv ./modules/boost .
       export CCTBX_SKIP_CHEMDATA_CACHE_REBUILD=1
       python bootstrap.py base build \
         --builder=phenix_release \
-        --use-conda \
+        --use-conda=$(Pipeline.Workspace)/modules/phenix/conda_envs/phenix_py39_linux-64.txt2 \
         --python 39 \
+        --config-flags="--cxxstd=c++14" \
         --nproc=4
+      mv ./boost ./modules/
     displayName: Configure and Build
 
   # build documentation
