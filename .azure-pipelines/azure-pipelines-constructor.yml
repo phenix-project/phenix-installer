@@ -210,8 +210,11 @@ stages:
         sudo rm -fr /usr/share/php
         sudo rm -fr /usr/local/julia*
         sudo rm -fr /usr/local/share/chromium
+        sudo rm -fr /usr/local/aws-sam-cli
+        sudo rm -fr /usr/local/aws-cli
 
         sudo apt list --installed
+        dpkg-query -W -f='${Installed-Size;8}  ${Package}\n' | sort -n
 
         for d in / /opt/az /usr /usr/share /usr/local /usr/local/share; do
           cd ${d}
