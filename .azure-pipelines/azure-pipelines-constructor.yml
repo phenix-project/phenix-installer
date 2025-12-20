@@ -187,6 +187,7 @@ stages:
           lld-16 lld-17 lld-18 lldb-18 \
           firebird3.0-common firebird3.0-common-doc \
           apache2 apache2-bin apache2-data apache2-utils \
+          google-cloud-cli google-cloud-cli-anthoscli \
           mysql-server mysql-client \
           postgresql-16 postgresql-client-16 \
           java-common temurin-8-jdk temurin-11-jdk temurin-17-jdk temurin-21-jdk\
@@ -206,9 +207,13 @@ stages:
 
         sudo rm -fr /opt/pipx/*
 
+        sudo rm -fr /usr/share/gradle*
         sudo rm -fr /usr/share/miniconda
         sudo rm -fr /usr/share/php
+        sudo rm -fr /usr/src/*
+        sudo rm -fr /usr/local/bin/*
         sudo rm -fr /usr/local/julia*
+        sudo rm -fr /usr/local/lib/*
         sudo rm -fr /usr/local/share/chromium
         sudo rm -fr /usr/local/aws-sam-cli
         sudo rm -fr /usr/local/aws-cli
@@ -216,7 +221,7 @@ stages:
         sudo apt list --installed
         dpkg-query -W -f='${Installed-Size;8}  ${Package}\n' | sort -n
 
-        for d in / /opt/az /usr /usr/share /usr/local /usr/local/share; do
+        for d in / /opt/az /usr /usr/lib /usr/share /usr/local /usr/local/bin /usr/local/lib /usr/local/share; do
           cd ${d}
           echo ""
           echo "${d}"
