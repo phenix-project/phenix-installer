@@ -797,10 +797,15 @@ stages:
           call conda install -n phenix -y %%F
           if %errorlevel% neq 0 exit /b %errorlevel%
         )
-
-        call conda clean -y --all
       displayName: Create installer environment
       retryCountOnTaskFailure: 3
+
+    - script: |
+        call conda clean -y --all
+        timeout /T 10
+        del /S /Q C:\Miniconda\pkgs\*.conda
+        dir C:\
+      displayName: Clean up
 
     - script: |
         call activate construct
