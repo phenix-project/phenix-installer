@@ -670,6 +670,7 @@ stages:
 
     - script: |
         cd $(Pipeline.Workspace)
+        call activate base
         python $(Build.Repository.LocalPath)\scripts\get_artifact_url.py ^
           --organization phenix-release ^
           --project feedstock-builds ^
