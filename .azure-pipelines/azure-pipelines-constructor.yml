@@ -637,7 +637,11 @@ stages:
     # replace nsis with nsisbi
     - script: |
         unzip $(nsis_zip.secureFilePath)
+        robocopy C:\Miniconda\NSIS\Plugins\x86-unicode C:\Miniconda\x86-unicode /E /XC /XN /XO
+        rmdir /S /Q C:\Miniconda\NSIS
+        mkdir C:\Miniconda\NSIS
         xcopy /S /Y /F nsis-binary-7423-3\* C:\Miniconda\NSIS
+        robocopy C:\Miniconda\x86-unicode C:\Miniconda\NSIS\Plugins\x86-unicode /E /XC /XN /XO
         dir nsis-binary-7423-3
         dir C:\Miniconda\NSIS
         rmdir /S /Q nsis-binary-7423-3
