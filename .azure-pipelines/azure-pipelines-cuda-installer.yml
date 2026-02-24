@@ -167,19 +167,11 @@ jobs:
          ./modules/phenix/phenix/installer/phenix_installer.py
     displayName: Use patched phenix_installer.py
 
-  # switch to dxtbx 3.13
-  - script: |
-      set -xe
-      cd $(Pipeline.Workspace)/phenix/modules
-      rm -fr dxtbx
-      git clone -b dials-3.22 https://github.com/dials/dxtbx.git
-    displayName: Switch dxtbx to dials-3.22
-
   # use conda compilers
   - script: |
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-      conda create -y -n compilers cxx-compiler=1.10
+      conda create -y -n compilers
     displayName: Install conda compilers
 
   # build
@@ -198,9 +190,8 @@ jobs:
         --nproc=4 \
         --python=39 \
         --config-flags="--compiler=conda" \
-        --config-flags="--cxxstd=c++14" \
         --config-flags="--use_environment_flags" \
-        --use-conda=$(Pipeline.Workspace)/phenix/modules/phenix/conda_envs/phenix_py39_linux-64.txt2
+        --use-conda=$(Pipeline.Workspace)/phenix/modules/phenix/conda_envs/phenix_py39_linux-64.txt
     displayName: Build Phenix
 
   - script: |

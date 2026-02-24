@@ -440,7 +440,7 @@ stages:
 
         pyver=`echo $(py_ver) | sed 's/\.//'`
 
-        env_file=phenix_py${pyver}_$(platform).txt2
+        env_file=phenix_py${pyver}_$(platform).txt
         if [ $(cuda) -gt "0" ]; then
           env_file=phenix_py${pyver}_cuda$(cuda)_$(platform).txt
         fi
@@ -789,7 +789,7 @@ stages:
           if %errorlevel% neq 0 exit /b %errorlevel%
         )
 
-        call conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt2
+        call conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
         if %errorlevel% neq 0 exit /b %errorlevel%
 
         for /R $(Pipeline.Workspace)\noarch %%F in (chem_data*.conda) do (
