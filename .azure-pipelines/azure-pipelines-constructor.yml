@@ -34,15 +34,13 @@ stages:
           cuda: 0
           conda: Linux
           py_ver: 3.9
-          np_ver: 1.22
-        cuda12_linux_py310:
+        cuda12_linux_py39:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
           cuda: 12
           conda: Linux
-          py_ver: 3.10
-          np_ver: 1.22
+          py_ver: 3.9
         linux_py310:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
@@ -50,7 +48,6 @@ stages:
           cuda: 0
           conda: Linux
           py_ver: 3.10
-          np_ver: 1.22
         linux_py311:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
@@ -58,7 +55,6 @@ stages:
           cuda: 0
           conda: Linux
           py_ver: 3.11
-          np_ver: 1.23
         linux_py312:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
@@ -66,7 +62,6 @@ stages:
           cuda: 0
           conda: Linux
           py_ver: 3.12
-          np_ver: 1.26
         macOS_py39:
           vmImage: macOS-latest
           artifact_platform: osx_64
@@ -74,7 +69,6 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.9
-          np_ver: 1.22
         macOS_py310:
           vmImage: macOS-latest
           artifact_platform: osx_64
@@ -82,7 +76,6 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.10
-          np_ver: 1.22
         macOS_py311:
           vmImage: macOS-latest
           artifact_platform: osx_64
@@ -90,7 +83,6 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.11
-          np_ver: 1.23
         macOS_py312:
           vmImage: macOS-latest
           artifact_platform: osx_64
@@ -98,7 +90,6 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.12
-          np_ver: 1.26
         macOS_arm64_py39:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
@@ -106,7 +97,6 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.9
-          np_ver: 1.22
         macOS_arm64_py310:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
@@ -114,7 +104,6 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.10
-          np_ver: 1.22
         macOS_arm64_py311:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
@@ -122,7 +111,6 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.11
-          np_ver: 1.23
         macOS_arm64_py312:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
@@ -130,7 +118,6 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.12
-          np_ver: 1.26
 
     pool:
       vmImage: $(vmImage)
