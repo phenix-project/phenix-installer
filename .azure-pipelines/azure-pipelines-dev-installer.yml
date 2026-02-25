@@ -140,18 +140,6 @@ jobs:
       echo $(installer_name)
     displayName: Check version and installer_name
 
-  # test copy
-  # - script: |
-  #     set -xe
-  #     chmod go-rwx $(ssh_key.secureFilePath)
-  #     eval `ssh-agent -s`
-  #     ssh-add $(ssh_key.secureFilePath)
-  #     installer_dir=/net/cci-filer2/raid1/auto_build/phenix_installers
-  #     scp -vvv -F $(ssh_config.secureFilePath) -o StrictHostKeyChecking=no \
-  #       $(Pipeline.Workspace)/phenix/modules/cctbx_project/libtbx/auto_build/bootstrap.py \
-  #       builder@boa.lbl.gov:${installer_dir}/$(version)/
-  #   displayName: test copy
-
   # patch installer script
   - script: |
       set -xe
@@ -160,21 +148,16 @@ jobs:
          ./modules/cctbx_project/libtbx/auto_build/create_installer.py
     displayName: Use patched create_installer.py
 
-  # switch to dxtbx 3.13
-  - script: |
-      set -xe
-      cd $(Pipeline.Workspace)/phenix/modules
-      rm -fr dxtbx
-      git clone -b dials-3.13 https://github.com/dials/dxtbx.git
-    displayName: Switch dxtbx to dials-3.13
-
   # build
   - script: |
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
       cd $(Pipeline.Workspace)/phenix
       ln -s ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
-      python bootstrap.py base build --builder=phenix --nproc=4 --python=39
+      python bootstrap.py base build \
+        --builder=phenix \
+        --use-conda=./modules/phenix/conda_envs/phenix_py39_cuda12_linux-64.txt \
+        --nproc=4
     displayName: Build Phenix
 
   - script: |
