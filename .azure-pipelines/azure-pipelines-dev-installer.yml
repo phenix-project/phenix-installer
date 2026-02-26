@@ -79,6 +79,12 @@ jobs:
       rm -f Miniforge3-Linux-x86_64.sh
     displayName: Install conda
 
+  - script: |
+      set -xe
+      source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda create -n compilers -y c-compiler cxx-compiler
+    displayName: Create compiler environment
+
   # download source tarball
   - task: DownloadPipelineArtifact@2
     inputs:
@@ -152,6 +158,7 @@ jobs:
   - script: |
       set -xe
       source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+      conda activate compilers
       cd $(Pipeline.Workspace)/phenix
       ln -s ./modules/cctbx_project/libtbx/auto_build/bootstrap.py
       python bootstrap.py base build \
