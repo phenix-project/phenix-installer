@@ -179,6 +179,11 @@ jobs:
 
   - script: |
       set -xe
+      rm -fr $(Pipeline.Workspace)/miniforge/pkgs/*
+    displayName: Clean conda package cache
+
+  - script: |
+      set -xe
       df -h
     displayName: Check disk space
 
@@ -256,11 +261,6 @@ jobs:
       rm -f phenix.tar
       rm -f phenix.enc
     displayName: Clean up build tarballs
-
-  - script: |
-      set -xe
-      rm -fr $(Pipeline.Workspace)/miniforge/pkgs/*
-    displayName: Clean conda package cache
 
   - script: |
       set -xe
