@@ -257,8 +257,14 @@ jobs:
       rm -f phenix.enc
     displayName: Clean up build tarballs
 
+  - script:|
+      set -xe
+      rm -fr $(Pipeline.Workspace)/miniforge/pkgs/*
+    displayName: Clean conda package cache
+
   - script: |
       set -xe
+      du -sh cd $(Pipeline.Workspace)/phenix/conda_base
       df -h
     displayName: Check disk space
 
