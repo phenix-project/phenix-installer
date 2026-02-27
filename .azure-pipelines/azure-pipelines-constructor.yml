@@ -453,7 +453,7 @@ stages:
     - script: |
         set -xe
         cd $(Pipeline.Workspace)/miniforge/pkgs
-        rm -fr phenix* chem_data*
+        rm -fr *
         rm -fr $(Pipeline.Workspace)/miniforge/envs/phenix/lib/python*/site-packages/phenix*
         rm -fr $(Pipeline.Workspace)/miniforge/envs/phenix/lib/python*/site-packages/chem_data*
       displayName: Clear phenix and chem_data for cuda installer
