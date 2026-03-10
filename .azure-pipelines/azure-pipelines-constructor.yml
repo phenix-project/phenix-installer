@@ -791,11 +791,15 @@ stages:
         call conda clean -y --all
         timeout /T 10
         del /S /Q C:\Miniconda\pkgs\*.conda
+        rmdir /S /Q C:\ghcup
+        rmdir /S /Q C:\hostedtoolcache
         rmdir /S /Q C:\mingw32
         rmdir /S /Q C:\mingw64
         rmdir /S /Q C:\Julia
+        rmdir /S /Q C:\PostgreSQL
         rmdir /S /Q C:\selenium
         rmdir /S /Q C:\SeleniumWebDrivers
+        rmdir /S /Q C:\Strawberry
         dir C:
       displayName: Clean up
 
