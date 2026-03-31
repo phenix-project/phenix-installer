@@ -171,7 +171,9 @@ stages:
           gfortran gfortran-12 gfortran-13 gfortran-14 \
           g++-12 g++-13 g++-14 \
           clang-16 clang-format-16 clang-17 clang-format-17 clang-18 clang-format-18 \
+          libclang1-18 libclang-cpp18 \
           lld-16 lld-17 lld-18 lldb-18 \
+          libllvm18 libllvm20 \
           firebird3.0-common firebird3.0-common-doc \
           apache2 apache2-bin apache2-data apache2-utils \
           google-cloud-cli google-cloud-cli-anthoscli \
