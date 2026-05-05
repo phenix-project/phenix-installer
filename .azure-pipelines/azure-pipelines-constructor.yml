@@ -261,9 +261,9 @@ stages:
         if [ -d $(Pipeline.Workspace)/miniforge/envs/upload ]; then
           conda remove -n upload -y --all
         fi
-        conda create -n upload -y python=3.10
+        conda create -n upload -y python=3.11 pip
         conda activate upload
-        pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+        python -m pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
       displayName: Set up upload environment
       retryCountOnTaskFailure: 3
 
@@ -639,9 +639,9 @@ stages:
     # set up Google Drive upload environment
     - script: |
         conda remove -n upload -y --all
-        conda create -n upload -y python=3.10
+        conda create -n upload -y python=3.11 pip
         call activate upload
-        pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+        python -m pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
       displayName: Set up upload environment
       retryCountOnTaskFailure: 3
 
@@ -888,9 +888,9 @@ stages:
         if [ -d $(Pipeline.Workspace)/miniforge/envs/upload ]; then
           conda remove -n upload -y --all
         fi
-        conda create -n upload -y python=3.10
+        conda create -n upload -y python=3.11 pip
         source activate upload
-        pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
+        python -m pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
       displayName: Set up upload environment
       retryCountOnTaskFailure: 3
 
