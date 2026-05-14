@@ -61,6 +61,13 @@ call %PREFIX%\Library\bin\phenix_html.rebuild_docs.bat
 if %ERRORLEVEL% neq 0 exit 1
 echo "done"
 
+REM fix libsvm.dll
+echo ""
+echo "Copying libsvm.dll"
+echo "=================="
+copy "%PREFIX%\Library\bin\libsvm.dll" "%PREFIX%\Library\lib\libsvm.dll"
+echo "done"
+
 REM print copy of conclusion.txt without unix text
 echo ""
 echo "=========================================================================="
