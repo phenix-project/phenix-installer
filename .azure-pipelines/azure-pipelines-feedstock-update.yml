@@ -108,7 +108,7 @@ jobs:
       conda create -n smithy -c conda-forge -y conda-smithy
       source activate smithy
 
-      conda smithy rerender -c auto
+      conda-smithy rerender -c auto
 
       # update chem_data branch
       git checkout chem_data_base
@@ -117,7 +117,7 @@ jobs:
 
       git checkout chem_data
       git reset --hard chem_data_base
-      conda smithy rerender -c auto
+      conda-smithy rerender -c auto
       #git commit --allow-empty -m "Trigger build"
 
       # start chem_data build first
