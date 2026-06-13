@@ -27,27 +27,13 @@ stages:
     strategy:
       maxParallel: 6
       matrix:
-        linux_py39:
-          vmImage: ubuntu-latest
-          artifact_platform: linux_64
-          platform: linux-64
-          cuda: 0
-          conda: Linux
-          py_ver: 3.9
-        cuda12_linux_py39:
+        cuda12_linux_py311:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
           platform: linux-64
           cuda: 12
           conda: Linux
-          py_ver: 3.9
-        linux_py310:
-          vmImage: ubuntu-latest
-          artifact_platform: linux_64
-          platform: linux-64
-          cuda: 0
-          conda: Linux
-          py_ver: 3.10
+          py_ver: 3.11
         linux_py311:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
@@ -62,20 +48,13 @@ stages:
           cuda: 0
           conda: Linux
           py_ver: 3.12
-        macOS_py39:
-          vmImage: macOS-latest
-          artifact_platform: osx_64
-          platform: osx-64
+        linux_py313:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
           cuda: 0
-          conda: MacOSX
-          py_ver: 3.9
-        macOS_py310:
-          vmImage: macOS-latest
-          artifact_platform: osx_64
-          platform: osx-64
-          cuda: 0
-          conda: MacOSX
-          py_ver: 3.10
+          conda: Linux
+          py_ver: 3.13
         macOS_py311:
           vmImage: macOS-latest
           artifact_platform: osx_64
@@ -90,20 +69,13 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.12
-        macOS_arm64_py39:
+        macOS_py313:
           vmImage: macOS-latest
-          artifact_platform: osx_arm64
-          platform: osx-arm64
+          artifact_platform: osx_64
+          platform: osx-64
           cuda: 0
           conda: MacOSX
-          py_ver: 3.9
-        macOS_arm64_py310:
-          vmImage: macOS-latest
-          artifact_platform: osx_arm64
-          platform: osx-arm64
-          cuda: 0
-          conda: MacOSX
-          py_ver: 3.10
+          py_ver: 3.13
         macOS_arm64_py311:
           vmImage: macOS-latest
           artifact_platform: osx_arm64
@@ -118,6 +90,13 @@ stages:
           cuda: 0
           conda: MacOSX
           py_ver: 3.12
+        macOS_arm64_py313:
+          vmImage: macOS-latest
+          artifact_platform: osx_arm64
+          platform: osx-arm64
+          cuda: 0
+          conda: MacOSX
+          py_ver: 3.13
 
     pool:
       vmImage: $(vmImage)
@@ -295,7 +274,6 @@ stages:
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        # patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
@@ -407,7 +385,7 @@ stages:
       displayName: Upload noarch conda package to Google Drive
       retryCountOnTaskFailure: 3
       continueOnError: true
-      condition: and(eq(variables['py_ver'], '3.9'), eq(variables['platform'], 'linux-64'), eq(variables['cuda'], 0))
+      condition: and(eq(variables['py_ver'], '3.11'), eq(variables['platform'], 'linux-64'), eq(variables['cuda'], 0))
 
     - script: |
         set -xe
@@ -533,7 +511,7 @@ stages:
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
         overwrite: false
       displayName: Upload installer to Berkeley
-      condition: or(and(eq(variables['py_ver'], '3.9'), succeeded()), and(gt(variables['cuda'], 0), succeeded()))
+      condition: or(and(eq(variables['py_ver'], '3.11'), succeeded()), and(gt(variables['cuda'], 0), succeeded()))
       continueOnError: true
 
 # =============================================================================
@@ -545,34 +523,24 @@ stages:
 
     strategy:
       matrix:
-        win_py39:
-          vmImage: windows-latest
-          artifact_platform: win_64
-          platform: win-64
-          py_ver: 3.9
-          pyver: 39
-          np_ver: 1.22
-        win_py310:
-          vmImage: windows-latest
-          artifact_platform: win_64
-          platform: win-64
-          py_ver: 3.10
-          pyver: 310
-          np_ver: 1.22
         win_py311:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
           py_ver: 3.11
           pyver: 311
-          np_ver: 1.23
         win_py312:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
           py_ver: 3.12
           pyver: 312
-          np_ver: 1.26
+        win_py313:
+          vmImage: windows-latest
+          artifact_platform: win_64
+          platform: win-64
+          py_ver: 3.13
+          pyver: 313
 
     pool:
       vmImage: $(vmImage)
@@ -657,7 +625,6 @@ stages:
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
         # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        # patterns: '**/*artifacts*$(artifact_platform)_numpy$(np_ver)python$(py_ver)*'
         patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
@@ -838,7 +805,7 @@ stages:
         targetFolder: /net/cci-filer2/raid1/auto_build/phenix_installers/$(version)
         overwrite: false
       displayName: Upload installer to Berkeley
-      condition: and(eq(variables['py_ver'], '3.9'), succeeded())
+      condition: and(eq(variables['py_ver'], '3.11'), succeeded())
       continueOnError: true
 
 # =============================================================================

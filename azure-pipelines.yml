@@ -170,9 +170,9 @@ jobs:
 
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
-        git checkout dials-3.22
+        git checkout dials-3.29
       done
-    displayName: Switch to DIALS 3.22
+    displayName: Switch to DIALS 3.29
 
   # patch installer script
   - script: |
@@ -189,7 +189,7 @@ jobs:
       export CCTBX_SKIP_CHEMDATA_CACHE_REBUILD=1
       python bootstrap.py base build \
         --builder=phenix_release \
-        --use-conda=$(Pipeline.Workspace)/modules/phenix/conda_envs/phenix_py39_linux-64.txt \
+        --use-conda=$(Pipeline.Workspace)/modules/phenix/conda_envs/phenix_py311_linux-64.txt \
         --nproc=4
     displayName: Configure and Build
 
