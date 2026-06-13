@@ -411,6 +411,10 @@ stages:
         if [ $(cuda) -gt "0" ]; then
           env_file=phenix_py${pyver}_cuda$(cuda)_$(platform).txt
         fi
+        # temporarily use coot environment
+        if [ $(py_ver) == "3.11" ]; then
+          env_file=phenix_coot_py${pyver}_$(platform).txt
+        fi
         conda install -y --file ${env_file}
 
         cd $(Pipeline.Workspace)/noarch
