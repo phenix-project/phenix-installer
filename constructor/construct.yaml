@@ -21,7 +21,8 @@ default_prefix: "%USERPROFILE%\\{{ name }}-{{ version }}"  # [win]
 exclude:  # [unix]
   - readline  # [unix]
 initialize_by_default: false
-installer_type: all
+installer_type: all  # [unix]
+installer_type: exe  # [win]
 welcome_image: ""
 
 # post installation
