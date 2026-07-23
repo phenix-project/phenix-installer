@@ -522,7 +522,9 @@ stages:
         set -xe
         cd ./constructor
         ls
-        mv Phenix-$(version)-Linux-x86_64.sh Phenix-Coot-$(version)-Linux-x86_64.sh
+        for p in Linux-x86_64 MacOSX-x86_64 MacOSX-arm64; do
+          mv Phenix-$(version)-${p}.sh Phenix-Coot-$(version)-${p}.sh
+        done
         ls
       displayName: Rename Coot installer
       condition: gt(variables['coot'], 0)
