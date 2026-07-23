@@ -32,6 +32,7 @@ stages:
           artifact_platform: linux_64
           platform: linux-64
           cuda: 12
+          coot: 0
           conda: Linux
           py_ver: 3.11
         linux_py311:
@@ -39,6 +40,15 @@ stages:
           artifact_platform: linux_64
           platform: linux-64
           cuda: 0
+          coot: 0
+          conda: Linux
+          py_ver: 3.11
+        coot_linux_py311:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
+          cuda: 0
+          coot: 1
           conda: Linux
           py_ver: 3.11
         linux_py312:
@@ -46,6 +56,7 @@ stages:
           artifact_platform: linux_64
           platform: linux-64
           cuda: 0
+          coot: 0
           conda: Linux
           py_ver: 3.12
         linux_py313:
@@ -53,6 +64,7 @@ stages:
           artifact_platform: linux_64
           platform: linux-64
           cuda: 0
+          coot: 0
           conda: Linux
           py_ver: 3.13
         macOS_py311:
@@ -60,6 +72,15 @@ stages:
           artifact_platform: osx_64
           platform: osx-64
           cuda: 0
+          coot: 0
+          conda: MacOSX
+          py_ver: 3.11
+        coot_macOS_py311:
+          vmImage: macOS-latest
+          artifact_platform: osx_64
+          platform: osx-64
+          cuda: 0
+          coot: 1
           conda: MacOSX
           py_ver: 3.11
         macOS_py312:
@@ -67,6 +88,7 @@ stages:
           artifact_platform: osx_64
           platform: osx-64
           cuda: 0
+          coot: 0
           conda: MacOSX
           py_ver: 3.12
         macOS_py313:
@@ -74,6 +96,7 @@ stages:
           artifact_platform: osx_64
           platform: osx-64
           cuda: 0
+          coot: 0
           conda: MacOSX
           py_ver: 3.13
         macOS_arm64_py311:
@@ -81,6 +104,15 @@ stages:
           artifact_platform: osx_arm64
           platform: osx-arm64
           cuda: 0
+          coot: 0
+          conda: MacOSX
+          py_ver: 3.11
+        coot_macOS_arm64_py311:
+          vmImage: macOS-latest
+          artifact_platform: osx_arm64
+          platform: osx-arm64
+          cuda: 0
+          coot: 1
           conda: MacOSX
           py_ver: 3.11
         macOS_arm64_py312:
@@ -88,6 +120,7 @@ stages:
           artifact_platform: osx_arm64
           platform: osx-arm64
           cuda: 0
+          coot: 0
           conda: MacOSX
           py_ver: 3.12
         macOS_arm64_py313:
@@ -95,6 +128,7 @@ stages:
           artifact_platform: osx_arm64
           platform: osx-arm64
           cuda: 0
+          coot: 0
           conda: MacOSX
           py_ver: 3.13
 
@@ -411,8 +445,7 @@ stages:
         if [ $(cuda) -gt "0" ]; then
           env_file=phenix_py${pyver}_cuda$(cuda)_$(platform).txt
         fi
-        # temporarily use coot environment
-        if [ $(py_ver) == "3.11" ]; then
+        if [ $(coot) -gt "0" ]; then
           env_file=phenix_coot_py${pyver}_$(platform).txt
         fi
         conda install -y --file ${env_file}
@@ -487,6 +520,16 @@ stages:
 
     - script: |
         set -xe
+        cd ./constructor
+        ls
+        mv Phenix-$(version)-Linux-x86_64.sh Phenix-Coot-$(version)-Linux-x86_64.sh
+        ls
+      displayName: Rename Coot installer
+      condition: gt(variables['coot'], 0)
+      continueOnError: true
+
+    - script: |
+        set -xe
         source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
         conda activate upload
@@ -531,18 +574,21 @@ stages:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
+          coot: 0
           py_ver: 3.11
           pyver: 311
         win_py312:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
+          coot: 0
           py_ver: 3.12
           pyver: 312
         win_py313:
           vmImage: windows-latest
           artifact_platform: win_64
           platform: win-64
+          coot: 0
           py_ver: 3.13
           pyver: 313
 
