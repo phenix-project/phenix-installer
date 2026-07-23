@@ -523,7 +523,10 @@ stages:
         cd ./constructor
         ls
         for p in Linux-x86_64 MacOSX-x86_64 MacOSX-arm64; do
-          mv Phenix-$(version)-${p}.sh Phenix-Coot-$(version)-${p}.sh
+          if [ -f Phenix-$(version)-${p}.sh ]; then
+            echo "Renaming Phenix-$(version)-${p}.sh to Phenix-Coot-$(version)-${p}.sh"
+            mv Phenix-$(version)-${p}.sh Phenix-Coot-$(version)-${p}.sh
+          fi
         done
         ls
       displayName: Rename Coot installer
