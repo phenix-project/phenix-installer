@@ -65,6 +65,7 @@ jobs:
   # download support scripts
   - checkout: self
     path: ./phenix-installer
+    persistCredentials: true
 
   # clean up linux image
   - script: |
@@ -181,6 +182,28 @@ jobs:
       cp $(Pipeline.Workspace)/phenix-installer/patches/create_installer.py \
          ./modules/cctbx_project/libtbx/auto_build/create_installer.py
     displayName: Use patched create_installer.py
+
+  # store hashes for this build
+  - script: |
+      set -xe
+      $(Pipeline.Workspace)/phenix-installer/scripts/get_module_hashes.py \
+        $(Pipeline.Workspace)/modules > $(Pipeline.Workspace)/phenix-installer/module_hashes.txt
+
+      cat $(Pipeline.Workspace)/phenix-installer/module_hashes.txt
+    displayName: Store module hashes
+
+  # push module hashes
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix-installer
+
+      git config user.name "Billy K. Poon"
+      git config user.email "bkpoon@lbl.gov"
+
+      git commit -am "Update for $(version)"
+      git push -u origin main
+    displayName: Store module hashes
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
   # base and build
   - script: |
