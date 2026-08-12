@@ -1,0 +1,50 @@
+# Module git hashes parsed from bootstrap update log (2026-08-05, builder=phenix_release)
+# format: <module_directory> <commit_hash>
+# Not in log (updated via "git pull --rebase", no hash recorded): chem_data, chem_data/geostd,
+#   phenix_regression, phenix_examples
+cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # pinned by explicit checkout in bootstrap
+cctbx_project        0dec5b3f5c70bcec4c422d5197e927ed604748b0
+dxtbx                d3693b8d3b17a3054fe19cb351c407d24dfbf7cc  # CAUTION: hash is clone-time default-branch HEAD; run ended on branch dials-3.24 (tip not in log)
+gui_resources        b3c2cd6c36aabcf7095f5282b0aa25be00a93cd0
+ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076
+ccp4io_adaptbx       d8534cac262365e8a815f275cd1f1aa1650972cb
+annlib               e23a7c1be859508878fe07ed49d5f82b836b5fe7
+annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a
+tntbx                98c86dd72fabd2ea7e2c95b878deec5e3b269952
+clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29
+eigen                3147391d946bb4b6c68edd901f2add6ac1f31f8c
+reduce               d723303c0ae7a9991a4f723b74f9bfa268d33e87
+ksdssp               06d77a2870df60c2cda7dada66a46d572e889acb
+ncdist               2d11145ad734288e3fc5addaf9705027e076fe6f
+phenix               e233674244d01b0be0b1b495aae625d44c0d6b6e
+phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4
+phenix_html          f6664ee1d96bae2a110a86b89407972858f0207e
+phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb
+Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c
+labelit              b9d40623eca3395fc16e167bd31a288c6c9f1e42
+Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac
+PyQuante             5d9679f6f1cbc6378023d299427f456cafa95b8c
+elbow                00ee50146121797795ee9ab742f8df1b5f0286df
+amber_adaptbx        af4a71b92c3c0636f254fc74ce2850aaff88539e
+amber_library        ff8d6022087d7e5dfc95266220f001f1eabee125
+pulchra              89fe573c0045876c09f38e119457b91c51d158f6
+qrefine              bd7f84b46ae7f214e5cf0582e56a7a648394dfcc
+solve_resolve        6891635167e65a11f3f2abc211d5ed5e7e0b617b
+reel                 0e18ed8d91b27fedf21507ebebd44e5ee8b187a2
+opt_resources        a7f3fb328557436e95455065a5b6c735fe9db3bd
+muscle               e6f72e3fb606f9861d115a01a160136c7058dbfd
+probe                835c2c63dd14b8c30599900b07c2296925cc933c
+king                 b490153f117a87949659957f3bd36a110e1ac64f
+phaser               632e2a2520b43e79c49b951e6c7aad5daf4dfe7c
+phasertng            6dbe2bc740934740de3bc19e573bd1288c0e171e
+phaser_regression    96527c1f91f9d677bff91afdbee307126a8dc86a
+voyager_regression   3f00d3e16e7137a99875fbb3284725a2ff2d8328
+phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2
+onedep_lib           a8fb25a459902b766dac9b8e0460af2da3f3905b
+dials                07200b1d2df34fd8804d4e2bab3f38d7a410dca5  # CAUTION: hash is clone-time default-branch HEAD; run ended on branch dials-3.24 (tip not in log)
+iota                 bf26550d46299a704107e7298555b57b8129242a
+xia2                 83512ae40f2e9731585abc9e4ef777506d8ed2e0  # CAUTION: hash is clone-time default-branch HEAD; run ended on branch dials-3.24 (tip not in log)
+chem_data            c7a1d576667e44ae721ee9bb69a984845f624882  # main
+chem_data/geostd     eaf8906a478e0fee4e6e6d3d3b2854d0fa13eabb  # master
+phenix_examples      a4f5de3398072ae7f2300d92f5122072e3a8c996  # master
+phenix_regression    f99b9c87b8601f049d77b79a9e55f4d6c806972d
