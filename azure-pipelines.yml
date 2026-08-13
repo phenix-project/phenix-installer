@@ -183,6 +183,18 @@ jobs:
          ./modules/cctbx_project/libtbx/auto_build/create_installer.py
     displayName: Use patched create_installer.py
 
+  # set up git
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/phenix-installer
+
+      git config user.name "Billy K. Poon"
+      git config user.email "bkpoon@lbl.gov"
+
+      git checkout main
+      git pull --rebase
+    displayName: Set up phenix-installer
+
   # store hashes for this build
   - script: |
       set -xe
@@ -196,9 +208,6 @@ jobs:
   - script: |
       set -xe
       cd $(Pipeline.Workspace)/phenix-installer
-
-      git config user.name "Billy K. Poon"
-      git config user.email "bkpoon@lbl.gov"
 
       git commit -am "Update for $(version)"
       git push -u origin main
