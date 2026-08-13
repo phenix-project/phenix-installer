@@ -186,7 +186,7 @@ jobs:
   # store hashes for this build
   - script: |
       set -xe
-      $(Pipeline.Workspace)/phenix-installer/scripts/get_module_hashes.py \
+      $(Pipeline.Workspace)/phenix-installer/scripts/get_module_hashes.sh \
         $(Pipeline.Workspace)/modules > $(Pipeline.Workspace)/phenix-installer/module_hashes.txt
 
       cat $(Pipeline.Workspace)/phenix-installer/module_hashes.txt
