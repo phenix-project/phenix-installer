@@ -158,30 +158,11 @@ jobs:
   - script: |
       set -xe
 
-      git config --global user.email "bkpoon@lbl.gov"
-      git config --global user.name "Billy K. Poon"
-
-      cd $(Pipeline.Workspace)/modules/cctbx_project
-
-      git revert c16316c4bde588979dc8eb07441f2d1822362bec
-    displayName: Remove Tracker
-
-  - script: |
-      set -xe
-
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
         git checkout dials-3.30
       done
     displayName: Switch to DIALS 3.30
-
-  # patch installer script
-  - script: |
-      set -xe
-      cd $(Pipeline.Workspace)
-      cp $(Pipeline.Workspace)/phenix-installer/patches/create_installer.py \
-         ./modules/cctbx_project/libtbx/auto_build/create_installer.py
-    displayName: Use patched create_installer.py
 
   # set up git
   - script: |
@@ -213,6 +194,23 @@ jobs:
       git push -u origin main
     displayName: Store module hashes
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+  # remove Tracker
+  - script: |
+      set -xe
+
+      cd $(Pipeline.Workspace)/modules/cctbx_project
+
+      git revert c16316c4bde588979dc8eb07441f2d1822362bec
+    displayName: Remove Tracker
+
+  # patch installer script
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      cp $(Pipeline.Workspace)/phenix-installer/patches/create_installer.py \
+         ./modules/cctbx_project/libtbx/auto_build/create_installer.py
+    displayName: Use patched create_installer.py
 
   # base and build
   - script: |
