@@ -201,6 +201,9 @@ jobs:
 
       cd $(Pipeline.Workspace)/modules/cctbx_project
 
+      git config user.name "Billy K. Poon"
+      git config user.email "bkpoon@lbl.gov"
+
       git revert c16316c4bde588979dc8eb07441f2d1822362bec
     displayName: Remove Tracker
 
