@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-08-22 03:15:34 UTC
+# 2026-08-23 03:12:37 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -32,12 +32,12 @@ phaser               632e2a2520b43e79c49b951e6c7aad5daf4dfe7c  # master
 phaser_regression    96527c1f91f9d677bff91afdbee307126a8dc86a  # master
 phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2  # master
 phasertng            6dbe2bc740934740de3bc19e573bd1288c0e171e  # master
-phenix               4b7de80f994c50eccf1e079aa6946f01ebb0c333  # master
+phenix               916f613d033a45dcf8549904224b9dfbfe281dd6  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      a4f5de3398072ae7f2300d92f5122072e3a8c996  # master
 phenix_html          f6664ee1d96bae2a110a86b89407972858f0207e  # master
 phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
-phenix_regression    ddbd69800ea1c86e492943ecc98b019092d3b56c  # master
+phenix_regression    4305a446d4c0098ddbc7292aed6b8f0667bb6bde  # master
 probe                835c2c63dd14b8c30599900b07c2296925cc933c  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
 qrefine              bd7f84b46ae7f214e5cf0582e56a7a648394dfcc  # master
