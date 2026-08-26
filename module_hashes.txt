@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-08-25 03:11:35 UTC
+# 2026-08-26 03:09:42 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       d8534cac262365e8a815f275cd1f1aa1650972cb  # master
-cctbx_project        ce5ac391bab851aebb156b9ad9a7a436d380acb4  # master
+cctbx_project        76fcc6b501133dbc5cde8fc996e4e4221b5e1f0b  # master
 chem_data            c7a1d576667e44ae721ee9bb69a984845f624882  # main
 chem_data/geostd     eaf8906a478e0fee4e6e6d3d3b2854d0fa13eabb  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
@@ -32,7 +32,7 @@ phaser               632e2a2520b43e79c49b951e6c7aad5daf4dfe7c  # master
 phaser_regression    96527c1f91f9d677bff91afdbee307126a8dc86a  # master
 phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2  # master
 phasertng            6dbe2bc740934740de3bc19e573bd1288c0e171e  # master
-phenix               1b543151136d17d63b051a567b4eba2c4143255b  # master
+phenix               673a5e6b084ad3582595e86f185aba14ef74b5c2  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      a4f5de3398072ae7f2300d92f5122072e3a8c996  # master
 phenix_html          f6664ee1d96bae2a110a86b89407972858f0207e  # master
