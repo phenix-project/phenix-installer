@@ -159,8 +159,17 @@ jobs:
       set -xe
 
       # use 2.2 hashes for modules
-      $(Pipeline.Workspace)/phenix-installer/scripts/get_module_hashes.sh \
+      $(Pipeline.Workspace)/phenix-installer/scripts/checkout_module_hashes.sh \
         $(Pipeline.Workspace)/phenix-installer/module_hashes.txt $(Pipeline.Workspace)/modules
+
+      # update cctbx_project and phenix to 2.2 branches
+      cd $(Pipeline.Workspace)/modules/cctbx_project
+      git remote add phenix https://github.com/phenix-project/cctbx_project.git
+      git fetch phenix
+      git checkout phenix-2.2
+
+      cd $(Pipeline.Workspace)/modules/phenix
+      git checkout releases/2.2
 
       # update specific repositories to latest commits
       for d in amber_adaptbx qrefine; do
