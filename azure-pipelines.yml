@@ -158,6 +158,25 @@ jobs:
   - script: |
       set -xe
 
+      # use 2.2 hashes for modules
+      $(Pipeline.Workspace)/phenix-installer/scripts/get_module_hashes.sh \
+        $(Pipeline.Workspace)/phenix-installer/module_hashes.txt $(Pipeline.Workspace)/modules
+
+      # update specific repositories to latest commits
+      for d in amber_adaptbx qrefine; do
+        cd $(Pipeline.Workspace)/modules/${d}
+        git checkout master
+        git pull --rebase
+      done
+
+      cd $(Pipeline.Workspace)/modules/elbow
+      git checkout main
+      git pull --rebase
+    displayName: Switch to point release (2.2.1)
+
+  - script: |
+      set -xe
+
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
         git checkout dials-3.30
