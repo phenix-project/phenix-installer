@@ -7,14 +7,13 @@ import os
 import sys
 
 def get_version_from_file(filename):
-  version = os.path.basename(filename).split('-')[1]  # dev.1234 or 1.23.4567
-  split_version = version.split('.')
-  build_number = split_version[-1]  # 1234
-  if len(split_version) > 2:
-    version = '.'.join(split_version[:2])  # 1.23
-  else:
-    version = split_version[0]  # dev
-  version = '-'.join([version, build_number])  # dev-1234 or 1.23-4567
+  # conda package name: <name>-<version>-<build string>.<ext>
+  # version is dev.1234, 1.23.4567, or 1.23.4rc1.4567 (point release)
+  version = os.path.basename(filename).split('-')[1]
+  # the build number is always the last component; everything before it is
+  # the Phenix version (dev, 1.23, or 1.23.4rc1)
+  version, build_number = version.rsplit('.', 1)
+  version = '-'.join([version, build_number])  # dev-1234, 1.23-4567, or 1.23.4rc1-4567
   return version
 
 def update_version(filename, pkg_name, version):
