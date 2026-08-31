@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-08-30 03:13:16 UTC
+# 2026-08-31 03:11:51 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -40,7 +40,7 @@ phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
 phenix_regression    f99b9c87b8601f049d77b79a9e55f4d6c806972d  # detached
 probe                835c2c63dd14b8c30599900b07c2296925cc933c  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
-qrefine              592b9209f1e7c67e26a6f9b1f809304a651e4093  # master
+qrefine              2504cb3641e591c89d1ec7ca3b3e516bf3bee415  # master
 reduce               d723303c0ae7a9991a4f723b74f9bfa268d33e87  # master
 reel                 0e18ed8d91b27fedf21507ebebd44e5ee8b187a2  # main
 solve_resolve        6891635167e65a11f3f2abc211d5ed5e7e0b617b  # master
