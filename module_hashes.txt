@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-09-03 03:10:34 UTC
+# 2026-09-01 03:12:39 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,8 +11,8 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       d8534cac262365e8a815f275cd1f1aa1650972cb  # master
-cctbx_project        35e155e021bc97242df6a169ddc2e78dbceae86a  # master
-chem_data            4be7e9c9c2aa3643f84a40d7409a86feb474f8f9  # main
+cctbx_project        a7b2293ea1fe3403721e5f5e08cb6a4aa390086e  # phenix-2.2
+chem_data            c7a1d576667e44ae721ee9bb69a984845f624882  # detached
 chem_data/geostd     eaf8906a478e0fee4e6e6d3d3b2854d0fa13eabb  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
 dials                dda5bf8949d1d3d5f11afd105ed23bcb568c96ed  # dials-3.30
@@ -32,15 +32,15 @@ phaser               632e2a2520b43e79c49b951e6c7aad5daf4dfe7c  # master
 phaser_regression    96527c1f91f9d677bff91afdbee307126a8dc86a  # master
 phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2  # master
 phasertng            6dbe2bc740934740de3bc19e573bd1288c0e171e  # master
-phenix               17b2a417dfc60cf242083365764fb5a7b0dc32aa  # master
+phenix               d135f46c7c1f59f10eb7205f3036a5b22a178571  # releases/2.2
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      a4f5de3398072ae7f2300d92f5122072e3a8c996  # master
 phenix_html          f6664ee1d96bae2a110a86b89407972858f0207e  # master
 phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
-phenix_regression    447615f598ec96c2596e7ab21215133b5d595d39  # master
+phenix_regression    f99b9c87b8601f049d77b79a9e55f4d6c806972d  # detached
 probe                835c2c63dd14b8c30599900b07c2296925cc933c  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
-qrefine              17e0edffcd08ba95835fa5305d2ab852b26fac9c  # master
+qrefine              2504cb3641e591c89d1ec7ca3b3e516bf3bee415  # master
 reduce               d723303c0ae7a9991a4f723b74f9bfa268d33e87  # master
 reel                 0e18ed8d91b27fedf21507ebebd44e5ee8b187a2  # main
 solve_resolve        6891635167e65a11f3f2abc211d5ed5e7e0b617b  # master
