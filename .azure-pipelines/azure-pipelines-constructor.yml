@@ -335,10 +335,16 @@ stages:
         cd $(Pipeline.Workspace)
         ls
 
-        for d in conda_artifacts*/; do
+        for d in conda_artifacts*/ conda_pkgs*/ ; do
           cd $(Pipeline.Workspace)/${d}
-          unzip phenix-feedstock*.zip
-          tar -xf phenix-feedstock*.tar.zst
+          for f in `/bin/ls phenix-feedstock*.zip`; do
+            echo ${f}
+            unzip ${f}
+          done
+          for f in `/bin/ls phenix-feedstock*.tar.zst`; do
+            echo ${f}
+            tar -xf ${f}
+          done
 
           if [ -d build_artifacts/$(platform) ]; then
             cd build_artifacts/$(platform)
