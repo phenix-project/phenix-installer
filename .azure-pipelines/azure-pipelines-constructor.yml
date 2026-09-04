@@ -307,8 +307,7 @@ stages:
         allowFailedBuilds: false
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
-        # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
+        patterns: '**/*conda_pkgs*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
     # download latest chem_data package
@@ -322,7 +321,6 @@ stages:
         allowFailedBuilds: false
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/chem_data'
-        # patterns: '**/*artifacts*linux*'
         patterns: '**/*conda_pkgs*linux*'
       displayName: Download chem_data package
 
@@ -693,8 +691,7 @@ stages:
         allowFailedBuilds: false
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/main'
-        # patterns: '**/*$(artifact_platform)_python$(py_ver)*'
-        patterns: '**/*artifacts*$(artifact_platform)_python$(py_ver)*'
+        patterns: '**/*conda_pkgs*$(artifact_platform)_python$(py_ver)*'
       displayName: Download Phenix package
 
     - script: |
@@ -726,7 +723,6 @@ stages:
         allowFailedBuilds: false
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/chem_data'
-        # patterns: '**/*artifacts*linux*'
         patterns: '**/*conda_pkgs*linux*'
       displayName: Download chem_data package
 

@@ -97,8 +97,8 @@ jobs:
 
   - script: |
       # version=$(year).$(month).a$(day)
-      # version=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
-      version=`python3 -c 'import time; print("2.2.1-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+      version=`python3 -c 'import time; print("dev-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
+      # version=`python3 -c 'import time; print("2.2.1-%s"%(int((time.time() - 1255046400) / (24*60*60))))'`
       echo "##vso[task.setVariable variable=version]$version"
       echo $(version)
     displayName: Set version
@@ -155,38 +155,38 @@ jobs:
       python bootstrap.py hot update --builder=phenix_release
     displayName: Download remaining sources
 
-  - script: |
-      set -xe
+  # - script: |
+  #     set -xe
 
-      # make sure point release hashes exist
-      cd $(Pipeline.Workspace)/modules/cctbx_project
-      git remote add phenix https://github.com/phenix-project/cctbx_project.git
-      git fetch phenix
+  #     # make sure point release hashes exist
+  #     cd $(Pipeline.Workspace)/modules/cctbx_project
+  #     git remote add phenix https://github.com/phenix-project/cctbx_project.git
+  #     git fetch phenix
 
-      # use 2.2 hashes for modules
-      $(Pipeline.Workspace)/phenix-installer/scripts/checkout_module_hashes.sh \
-        $(Pipeline.Workspace)/phenix-installer/module_hashes.txt $(Pipeline.Workspace)/modules
+  #     # use 2.2 hashes for modules
+  #     $(Pipeline.Workspace)/phenix-installer/scripts/checkout_module_hashes.sh \
+  #       $(Pipeline.Workspace)/phenix-installer/module_hashes.txt $(Pipeline.Workspace)/modules
 
-      # update cctbx_project and phenix to 2.2 branches
-      cd $(Pipeline.Workspace)/modules/cctbx_project
-      git checkout phenix-2.2
-      git pull --rebase
+  #     # update cctbx_project and phenix to 2.2 branches
+  #     cd $(Pipeline.Workspace)/modules/cctbx_project
+  #     git checkout phenix-2.2
+  #     git pull --rebase
 
-      cd $(Pipeline.Workspace)/modules/phenix
-      git checkout releases/2.2
-      git pull --rebase
+  #     cd $(Pipeline.Workspace)/modules/phenix
+  #     git checkout releases/2.2
+  #     git pull --rebase
 
-      # update specific repositories to latest commits
-      for d in amber_adaptbx qrefine phenix_examples; do
-        cd $(Pipeline.Workspace)/modules/${d}
-        git checkout master
-        git pull --rebase
-      done
+  #     # update specific repositories to latest commits
+  #     for d in amber_adaptbx qrefine phenix_examples; do
+  #       cd $(Pipeline.Workspace)/modules/${d}
+  #       git checkout master
+  #       git pull --rebase
+  #     done
 
-      cd $(Pipeline.Workspace)/modules/elbow
-      git checkout main
-      git pull --rebase
-    displayName: Switch to point release (2.2.1)
+  #     cd $(Pipeline.Workspace)/modules/elbow
+  #     git checkout main
+  #     git pull --rebase
+  #   displayName: Switch to point release (2.2.1)
 
   - script: |
       set -xe
