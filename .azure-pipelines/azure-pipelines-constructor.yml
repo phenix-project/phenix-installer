@@ -322,7 +322,8 @@ stages:
         allowFailedBuilds: false
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/chem_data'
-        patterns: '**/*artifacts*linux*'
+        # patterns: '**/*artifacts*linux*'
+        patterns: '**/*conda_pkgs*linux*'
       displayName: Download chem_data package
 
     - script: |
@@ -337,6 +338,7 @@ stages:
         for d in conda_artifacts*/; do
           cd $(Pipeline.Workspace)/${d}
           unzip phenix-feedstock*.zip
+          tar -xf phenix-feedstock*.tar.zst
 
           if [ -d build_artifacts/$(platform) ]; then
             cd build_artifacts/$(platform)
@@ -666,7 +668,7 @@ stages:
     # set up Google Drive upload environment
     - script: |
         conda remove -n upload -y --all
-        conda create -n upload -y python=3.11 pip
+        conda create -c conda-forge -n upload -y python=3.11 pip m2-tar zstd
         call activate upload
         python -m pip install --no-input google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
       displayName: Set up upload environment
@@ -716,7 +718,8 @@ stages:
         allowFailedBuilds: false
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'refs/heads/chem_data'
-        patterns: '**/*artifacts*linux*'
+        # patterns: '**/*artifacts*linux*'
+        patterns: '**/*conda_pkgs*linux*'
       displayName: Download chem_data package
 
     - script: |
@@ -726,10 +729,13 @@ stages:
         cd $(Pipeline.Workspace)
         dir
 
-        for /D %%D in (conda_artifacts*) do (
+        call activate upload
+
+        for /D %%D in (conda_artifacts* conda_pkgs*) do (
           cd %%D
           dir
           unzip -o phenix-feedstock*.zip
+          tar -xf phenix-feedstock*.tar.zst
 
           cd $(Pipeline.Workspace)
           cd %%D
