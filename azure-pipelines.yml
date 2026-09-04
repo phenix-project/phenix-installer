@@ -267,6 +267,15 @@ jobs:
         --nproc=4
     displayName: Configure and Build
 
+  # set the Phenix version for the documentation
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      source build/setpaths.sh
+      echo "export PHENIX_VERSION=$(version)" > build/dispatcher_include_zz_version.sh
+      libtbx.refresh
+    displayName: Set PHENIX_VERSION
+
   # build documentation
   - script: |
       set -xe
