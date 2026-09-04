@@ -57,6 +57,7 @@ echo ""
 echo "Building Phenix documentation"
 echo "============================="
 set PYTHONIOENCODING="utf8"
+set PHENIX_VERSION=%INSTALLER_VER%
 call %PREFIX%\Library\bin\phenix_html.rebuild_docs.bat
 if %ERRORLEVEL% neq 0 exit 1
 echo "done"

@@ -58,7 +58,7 @@ echo "done"
 echo ""
 echo "Building Phenix documentation"
 echo "============================="
-${PREFIX}/bin/phenix_html.rebuild_docs
+PHENIX_VERSION=${INSTALLER_VER} ${PREFIX}/bin/phenix_html.rebuild_docs
 echo "done"
 
 # build .app on macOS
