@@ -340,10 +340,12 @@ stages:
           for f in `/bin/ls phenix-feedstock*.zip`; do
             echo ${f}
             unzip ${f}
+            ls
           done
           for f in `/bin/ls phenix-feedstock*.tar.zst`; do
             echo ${f}
             tar -xf ${f}
+            ls
           done
 
           if [ -d build_artifacts/$(platform) ]; then
@@ -355,8 +357,8 @@ stages:
             mv ${f} $(Pipeline.Workspace)/$(platform)/
           done
 
-          if [ -d $(Pipeline.Workspace)/${d}/build_artifacts/noarch ]; then
-            cd $(Pipeline.Workspace)/${d}/build_artifacts/noarch
+          if [ -d $(Pipeline.Workspace)/${d}/noarch ]; then
+            cd $(Pipeline.Workspace)/${d}/noarch
             for f in `/bin/ls chem_data*.conda 2> /dev/null`; do
               mv ${f} $(Pipeline.Workspace)/noarch/
             done
