@@ -814,7 +814,7 @@ stages:
           if %errorlevel% neq 0 exit /b %errorlevel%
         )
 
-        call conda install -n phenix -y --format explicit --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
+        call conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
         if %errorlevel% neq 0 exit /b %errorlevel%
 
         for /R $(Pipeline.Workspace)\noarch %%F in (chem_data*.conda) do (
