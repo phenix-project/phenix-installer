@@ -333,7 +333,7 @@ stages:
         cd $(Pipeline.Workspace)
         ls
 
-        for d in conda_artifacts*/ conda_pkgs*/ ; do
+        for d in conda_pkgs*/ ; do
           cd $(Pipeline.Workspace)/${d}
           for f in `/bin/ls phenix-feedstock*.zip`; do
             echo ${f}
@@ -363,7 +363,7 @@ stages:
           fi
         done
 
-        rm -fr $(Pipeline.Workspace)/conda_artifacts*
+        rm -fr $(Pipeline.Workspace)/conda_pkgs*
 
         ls $(Pipeline.Workspace)/$(platform)/
         ls $(Pipeline.Workspace)/noarch/
@@ -735,7 +735,7 @@ stages:
 
         call activate upload
 
-        for /D %%D in (conda_artifacts* conda_pkgs*) do (
+        for /D %%D in (conda_pkgs*) do (
           cd %%D
           dir
           unzip -o phenix-feedstock*.zip
