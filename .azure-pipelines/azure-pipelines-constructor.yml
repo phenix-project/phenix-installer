@@ -519,6 +519,33 @@ stages:
     - script: |
         set -xe
         cd ./constructor
+        # macOS 15+ kills pkg pre/postinstall scripts after 600 s (PKInstallTask
+        # timeout). Raise the limit on every component package inside the
+        # distribution pkg. The pkg is unsigned, so no re-signing is needed.
+        for pkg in Phenix-$(version)-MacOSX-*.pkg; do
+          [ -f "${pkg}" ] || continue
+          rm -rf pkg_expanded
+          pkgutil --expand "${pkg}" pkg_expanded
+          sed -i '' -E \
+            -e 's/(<(pre|post)install file="[^"]*") timeout="[0-9]+"/\1/' \
+            -e 's/(<(pre|post)install file="[^"]*")/\1 timeout="21600"/' \
+            pkg_expanded/*/PackageInfo
+          grep -n 'install file=' pkg_expanded/*/PackageInfo
+          if grep -n 'install file=' pkg_expanded/*/PackageInfo | grep -v 'timeout="21600"'; then
+            echo "Failed to patch script timeout in ${pkg}"
+            exit 1
+          fi
+          pkgutil --flatten pkg_expanded "${pkg}.patched"
+          mv -f "${pkg}.patched" "${pkg}"
+          rm -rf pkg_expanded
+        done
+        ls
+      displayName: Patch macOS pkg script timeout
+      condition: startsWith(variables['platform'], 'osx')
+
+    - script: |
+        set -xe
+        cd ./constructor
         ls
         mv Phenix-$(version)-Linux-x86_64.sh Phenix-$(version)-CUDA$(cuda)-Linux-x86_64.sh
         ls
