@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-09-25 03:14:33 UTC
+# 2026-09-26 03:13:09 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -13,7 +13,7 @@ ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
 cctbx_project        097e316e3398b9624e08d3d59e8e2ae6ca3245a0  # master
 chem_data            7b10568d6c4f0f91d35e04d3846cbf421763d792  # main
-chem_data/geostd     4e1c1c0444d9ab9c4a1e01626011ea0f62fddb16  # master
+chem_data/geostd     6b9ef76b4167e27c1530745e0311e8c5ac59338c  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
 dials                17cfc5af87c711969b11e2848b1bbea45118fc27  # dials-3.30
 dxtbx                f881b1dd531f5b53add3c49841d54b1368bf77bb  # dials-3.30
