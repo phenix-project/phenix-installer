@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-09-29 03:12:48 UTC
+# 2026-09-30 03:13:18 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        51d1923a909a2550cacf83262ed697de7b65d9b6  # master
+cctbx_project        f7230dfb4fef449595f261831aed97009cfd2f85  # master
 chem_data            7b10568d6c4f0f91d35e04d3846cbf421763d792  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
@@ -37,10 +37,10 @@ phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      5259ea6aac9269e44f743c745f7706f31014027a  # master
 phenix_html          3f3607bf15d1947161cd90a1de7af1c42fe247d7  # master
 phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
-phenix_regression    3e70a7c8310c6fb60944965b9a0d273e83e0df62  # master
+phenix_regression    5dc1abc43a119ba4ae084828da2bbceb144d6228  # master
 probe                835c2c63dd14b8c30599900b07c2296925cc933c  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
-qrefine              f2dd5c171de54ec0b015d30570782297a91328af  # master
+qrefine              071e45c5af05428b0fb3a8d9ed9244abf351cb13  # master
 reduce               3cef69cecc8e5fcfff236a2e64166cce601e5e0c  # master
 reel                 0e77ef69dd66535fb6b2bfee86a5ca07c07e1fad  # main
 solve_resolve        6891635167e65a11f3f2abc211d5ed5e7e0b617b  # master
