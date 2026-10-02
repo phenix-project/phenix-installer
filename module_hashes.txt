@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-10-01 03:12:29 UTC
+# 2026-10-02 03:10:32 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        630219f31d4fe761dda9899fc487d3eb933f8165  # master
+cctbx_project        f954f77da1c47d37c8092578ef095f2de711dd49  # master
 chem_data            7b10568d6c4f0f91d35e04d3846cbf421763d792  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
@@ -32,15 +32,15 @@ phaser               632e2a2520b43e79c49b951e6c7aad5daf4dfe7c  # master
 phaser_regression    96527c1f91f9d677bff91afdbee307126a8dc86a  # master
 phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2  # master
 phasertng            6dbe2bc740934740de3bc19e573bd1288c0e171e  # master
-phenix               7b1d39acab23750b2335cd9a4a8407ab58aa8352  # master
+phenix               974e6ec839ca7dcc5c8d91a9a8a5d60753aa9b59  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      5259ea6aac9269e44f743c745f7706f31014027a  # master
 phenix_html          3f3607bf15d1947161cd90a1de7af1c42fe247d7  # master
 phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
-phenix_regression    8d521cdf380cea60445775c6a58acce0e9bda4bf  # master
+phenix_regression    7358715006c6626c0daf0fa6ac7d0e5b1a3abc44  # master
 probe                835c2c63dd14b8c30599900b07c2296925cc933c  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
-qrefine              071e45c5af05428b0fb3a8d9ed9244abf351cb13  # master
+qrefine              223f9f7fe795d2b065a4bf3ee4c4f5f30ab58d6f  # master
 reduce               3cef69cecc8e5fcfff236a2e64166cce601e5e0c  # master
 reel                 0e77ef69dd66535fb6b2bfee86a5ca07c07e1fad  # main
 solve_resolve        6891635167e65a11f3f2abc211d5ed5e7e0b617b  # master
