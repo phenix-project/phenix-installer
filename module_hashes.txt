@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-10-09 03:12:14 UTC
+# 2026-10-10 03:11:36 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        8a216251df08f4291daf22c1ba2d459c1f500269  # master
+cctbx_project        9647dd141254d00158dec328cbfb9b64660100b9  # master
 chem_data            7b10568d6c4f0f91d35e04d3846cbf421763d792  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
@@ -32,12 +32,12 @@ phaser               43b381221f6c8c39e68fa3615d0fbf46f5dcb104  # master
 phaser_regression    8dcc75d26c7e0b046ef36fef00d32e2426ec14d2  # master
 phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2  # master
 phasertng            6dbe2bc740934740de3bc19e573bd1288c0e171e  # master
-phenix               a579a89df0f77e283ac9284a166799ebf6f760fe  # master
+phenix               15997f07e8c969d20cd5a6e9781151e94425fa94  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      5259ea6aac9269e44f743c745f7706f31014027a  # master
 phenix_html          3f3607bf15d1947161cd90a1de7af1c42fe247d7  # master
 phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
-phenix_regression    733f3f41cd55763098621e6660645a598584f592  # master
+phenix_regression    8529c2f4272eb2619cbb5f1d38bb6e28af6b6a04  # master
 probe                835c2c63dd14b8c30599900b07c2296925cc933c  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
 qrefine              223f9f7fe795d2b065a4bf3ee4c4f5f30ab58d6f  # master
