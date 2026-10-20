@@ -110,6 +110,11 @@ jobs:
 
       conda-smithy rerender -c auto
 
+      # fix undefined variable in Windows artifact script (conda-smithy 2026.10.19)
+      # https://github.com/conda-forge/conda-smithy/pull/2720
+      sed -i 's/%ARCHIVE_UNIQUE_ID%/%ARTIFACT_UNIQUE_ID%/g' .scripts/create_conda_build_artifacts.bat
+      git commit -m "Fix artifact name in Windows artifact script" .scripts/create_conda_build_artifacts.bat || true
+
       # update chem_data branch
       git checkout chem_data_base
       git rebase main
