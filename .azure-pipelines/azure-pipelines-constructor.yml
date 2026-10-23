@@ -475,15 +475,21 @@ stages:
         cp ${CONDA_PREFIX}/share/phenix/CHANGES ./constructor/gui/readme_macos.txt
       displayName: Update Changelog
 
+    # constructor only reads conda-meta from the environment, so drop the
+    # package cache and the extracted files to make room for the installer build
     - script: |
         set -xe
-        cd $(Pipeline.Workspace)/miniforge/pkgs
-        rm -fr *
-        rm -fr $(Pipeline.Workspace)/miniforge/envs/phenix/lib/python*/site-packages/phenix*
-        rm -fr $(Pipeline.Workspace)/miniforge/envs/phenix/lib/python*/site-packages/chem_data*
-      displayName: Clear phenix and chem_data for cuda installer
+        rm -fr $(Pipeline.Workspace)/miniforge/pkgs/*
+        cd $(Pipeline.Workspace)/miniforge/envs/phenix
+        for f in * .[!.]*; do
+          [ "${f}" = "conda-meta" ] && continue
+          [ -e "${f}" ] || continue
+          rm -fr -- "${f}"
+        done
+        ls -a
+        df -h
+      displayName: Prune phenix environment for constructor
       continueOnError: true
-      condition: gt(variables['cuda'], 0)
 
     - script: |
         set -xe
