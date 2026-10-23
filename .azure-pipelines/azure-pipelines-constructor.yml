@@ -75,6 +75,30 @@ stages:
           coot: 0
           conda: Linux
           py_ver: 3.13
+        linux_aarch64_py311:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_aarch64
+          platform: linux-aarch64
+          cuda: 0
+          coot: 0
+          conda: Linux
+          py_ver: 3.11
+        linux_aarch64_py312:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_aarch64
+          platform: linux-aarch64
+          cuda: 0
+          coot: 0
+          conda: Linux
+          py_ver: 3.12
+        linux_aarch64_py313:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_aarch64
+          platform: linux-aarch64
+          cuda: 0
+          coot: 0
+          conda: Linux
+          py_ver: 3.13
         cuda12_linux_aarch64_py311:
           vmImage: ubuntu-latest
           artifact_platform: linux_aarch64
@@ -592,7 +616,7 @@ stages:
         set -xe
         cd ./constructor
         ls
-        for p in Linux-x86_64 MacOSX-x86_64 MacOSX-arm64; do
+        for p in Linux-x86_64 Linux-aarch64 MacOSX-x86_64 MacOSX-arm64; do
           if [ -f Phenix-$(version)-${p}.sh ]; then
             echo "Renaming Phenix-$(version)-${p}.sh to Phenix-Coot-$(version)-${p}.sh"
             mv Phenix-$(version)-${p}.sh Phenix-Coot-$(version)-${p}.sh
