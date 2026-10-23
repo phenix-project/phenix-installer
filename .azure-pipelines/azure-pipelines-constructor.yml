@@ -35,6 +35,14 @@ stages:
           coot: 0
           conda: Linux
           py_ver: 3.11
+        cuda13_linux_py311:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_64
+          platform: linux-64
+          cuda: 13
+          coot: 0
+          conda: Linux
+          py_ver: 3.11
         linux_py311:
           vmImage: ubuntu-latest
           artifact_platform: linux_64
@@ -67,6 +75,22 @@ stages:
           coot: 0
           conda: Linux
           py_ver: 3.13
+        cuda12_linux_aarch64_py311:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_aarch64
+          platform: linux-aarch64
+          cuda: 12
+          coot: 0
+          conda: Linux
+          py_ver: 3.11
+        cuda13_linux_aarch64_py311:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_aarch64
+          platform: linux-aarch64
+          cuda: 13
+          coot: 0
+          conda: Linux
+          py_ver: 3.11
         macOS_py311:
           vmImage: macOS-latest
           artifact_platform: osx_64
@@ -162,7 +186,7 @@ stages:
     - script: |
         sudo $(Build.Repository.LocalPath)/scripts/clean_linux.sh
       displayName: Clean up linux image
-      condition: eq(variables['platform'], 'linux-64')
+      condition: eq(variables['conda'], 'Linux')
 
     - script: |
         sudo swapoff /swapfile
@@ -173,7 +197,7 @@ stages:
         cat /proc/swaps
         sudo cat /etc/fstab
       displayName: Remove swap
-      condition: eq(variables['platform'], 'linux-64')
+      condition: eq(variables['conda'], 'Linux')
       continueOnError: true
 
     - script: |
@@ -232,7 +256,7 @@ stages:
         done
 
       displayName: Clean up linux image some more
-      condition: eq(variables['platform'], 'linux-64')
+      condition: eq(variables['conda'], 'Linux')
       continueOnError: true
 
     - script: |
@@ -502,7 +526,7 @@ stages:
         source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
         conda activate base
         # cross-platform constructor
-        if [[ "$(platform)" == *"arm64" ]]; then
+        if [[ "$(platform)" == *"arm64" || "$(platform)" == *"aarch64" ]]; then
           TEMP_DIR=$(mktemp -d)
           CONDA_SUBDIR=$(platform) conda create -p ${TEMP_DIR} -y conda-standalone
           CONDA_STANDALONE=${TEMP_DIR}/standalone_conda/conda.exe
@@ -510,9 +534,9 @@ stages:
 
         cd constructor
 
-        if [[ "$(platform)" == *"arm64" ]]; then
+        if [[ "$(platform)" == *"arm64" || "$(platform)" == *"aarch64" ]]; then
           export CONDA_EXE=${CONDA_STANDALONE}
-          constructor . --conda-exe ${CONDA_STANDALONE} --platform osx-arm64
+          constructor . --conda-exe ${CONDA_STANDALONE} --platform $(platform)
         else
           constructor .
         fi
@@ -553,7 +577,12 @@ stages:
         set -xe
         cd ./constructor
         ls
-        mv Phenix-$(version)-Linux-x86_64.sh Phenix-$(version)-CUDA$(cuda)-Linux-x86_64.sh
+        for p in Linux-x86_64 Linux-aarch64; do
+          if [ -f Phenix-$(version)-${p}.sh ]; then
+            echo "Renaming Phenix-$(version)-${p}.sh to Phenix-$(version)-CUDA$(cuda)-${p}.sh"
+            mv Phenix-$(version)-${p}.sh Phenix-$(version)-CUDA$(cuda)-${p}.sh
+          fi
+        done
         ls
       displayName: Rename CUDA installer
       condition: gt(variables['cuda'], 0)
