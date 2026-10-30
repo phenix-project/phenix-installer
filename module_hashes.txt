@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/vsts/work/1/modules
-# 2026-10-29 03:10:27 UTC
+# 2026-10-30 03:13:52 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,14 +11,14 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        e1d7b005974c43ae4b7690d625d24904e27f191c  # master
+cctbx_project        034bdfcb57aea66c72b3ee72f08b2847f7a3f390  # master
 chem_data            7b10568d6c4f0f91d35e04d3846cbf421763d792  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
 dials                17cfc5af87c711969b11e2848b1bbea45118fc27  # dials-3.30
 dxtbx                f881b1dd531f5b53add3c49841d54b1368bf77bb  # dials-3.30
 eigen                3147391d946bb4b6c68edd901f2add6ac1f31f8c  # detached
-elbow                d19a45b7472c5e9e32c62e1bb5e7614ce824c2df  # main
+elbow                e99d1465eddf1a4a8564e47e4776ec1ce05d371a  # main
 gui_resources        b3c2cd6c36aabcf7095f5282b0aa25be00a93cd0  # master
 iota                 bf26550d46299a704107e7298555b57b8129242a  # master
 king                 1b96ec06d33f1be683d03e6a4d783bdded5619b7  # master
@@ -32,15 +32,15 @@ phaser               af88c37e1f6a06e7b678d5a57f9ebcc323c7900a  # master
 phaser_regression    8dcc75d26c7e0b046ef36fef00d32e2426ec14d2  # master
 phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2  # master
 phasertng            1df059102649c3b2ff6b834375ac6b121a8aaf60  # master
-phenix               a58b33678ec6a9dcf0d011d18ba9247d0261ea95  # master
+phenix               037e79bf2665bc30a24acfd55e903c4f71d9ef62  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      5259ea6aac9269e44f743c745f7706f31014027a  # master
 phenix_html          0be9c97eed330a6264cdc920960d02a8aa08617d  # master
 phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
-phenix_regression    e371254a027ec67d135beff409fc2d4eed5c7020  # master
+phenix_regression    2d9c6882ef0d2d07e7c12a8ba44b77bc66baa493  # master
 probe                f3e0fadd3986d228f3b37c17f4ec20a7391daf37  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
-qrefine              ffa49e0f46e65eda1443bcfd630c6685849d4170  # master
+qrefine              f40d71973ba85d5da84a5b6065005470b23b2e93  # master
 reduce               6749e64de95fd37bc552014c03a0ababba8a8ef3  # master
 reel                 0e77ef69dd66535fb6b2bfee86a5ca07c07e1fad  # main
 solve_resolve        6891635167e65a11f3f2abc211d5ed5e7e0b617b  # master
