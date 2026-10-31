@@ -20,7 +20,7 @@ echo "============================="
 set SCRIPT_LOCATION=%PREFIX%\Lib\site-packages\libtbx\auto_build\conda_build\create_custom_bin.py
 %PREFIX%\python.exe %SCRIPT_LOCATION% ^
   --prefix %PREFIX% ^
-  --custom_bin %INSTALLER_NAME%_bin ^
+  --custom_bin phenix_bin ^
   --packages phenix dials dxtbx
 if %ERRORLEVEL% neq 0 exit 1
 echo "done"
@@ -33,7 +33,7 @@ set SCRIPT_LOCATION=%PREFIX%\Lib\site-packages\libtbx\auto_build\conda_build\wri
 %PREFIX%\python.exe %SCRIPT_LOCATION% ^
   --program %INSTALLER_NAME% ^
   --prefix %PREFIX% ^
-  --bin-dir %INSTALLER_NAME%_bin ^
+  --bin-dir phenix_bin ^
   --version %INSTALLER_VER% ^
   --destination %PREFIX%
 if %ERRORLEVEL% neq 0 exit 1
