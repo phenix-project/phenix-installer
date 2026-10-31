@@ -481,6 +481,11 @@ stages:
         set -xe
         source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 
+        # solve against glibc 2.28 (RHEL 8 and newer) instead of the CI host's glibc
+        if [[ "$(platform)" == linux-* ]]; then
+          export CONDA_OVERRIDE_GLIBC=2.28
+        fi
+
         if [ -d $(Pipeline.Workspace)/miniforge/envs/phenix ]; then
           conda remove -n phenix -y --all
         fi
