@@ -193,7 +193,7 @@ jobs:
 
       for r in dials dxtbx xia2; do
         cd $(Pipeline.Workspace)/modules/${r}
-        git checkout dials-3.30
+        git checkout dials-3.31
       done
     displayName: Switch to DIALS 3.30
 
