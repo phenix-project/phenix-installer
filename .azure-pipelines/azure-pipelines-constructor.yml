@@ -83,6 +83,14 @@ stages:
           coot: 0
           conda: Linux
           py_ver: 3.11
+        coot_linux_aarch64_py311:
+          vmImage: ubuntu-latest
+          artifact_platform: linux_aarch64
+          platform: linux-aarch64
+          cuda: 0
+          coot: 1
+          conda: Linux
+          py_ver: 3.11
         linux_aarch64_py312:
           vmImage: ubuntu-latest
           artifact_platform: linux_aarch64
