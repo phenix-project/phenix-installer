@@ -698,6 +698,13 @@ stages:
           coot: 0
           py_ver: 3.11
           pyver: 311
+        coot_win_py311:
+          vmImage: windows-latest
+          artifact_platform: win_64
+          platform: win-64
+          coot: 1
+          py_ver: 3.11
+          pyver: 311
         win_py312:
           vmImage: windows-latest
           artifact_platform: win_64
@@ -918,7 +925,9 @@ stages:
           if %errorlevel% neq 0 exit /b %errorlevel%
         )
 
-        call conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\phenix_py$(pyver)_$(platform).txt
+        set env_file=phenix_py$(pyver)_$(platform).txt
+        if $(coot) gtr 0 set env_file=phenix_coot_py$(pyver)_$(platform).txt
+        call conda install -n phenix -y --file C:\Miniconda\envs\phenix\Library\share\phenix\conda_envs\%env_file%
         if %errorlevel% neq 0 exit /b %errorlevel%
 
         for /R $(Pipeline.Workspace)\noarch %%F in (chem_data*.conda) do (
@@ -928,6 +937,16 @@ stages:
         )
       displayName: Create installer environment
       retryCountOnTaskFailure: 3
+
+    # do not ship a Coot installer whose environment file lacks Coot
+    - script: |
+        dir C:\Miniconda\envs\phenix\conda-meta\coot-*.json
+        if not exist C:\Miniconda\envs\phenix\conda-meta\coot-*.json (
+          echo Coot is missing from phenix_coot_py$(pyver)_$(platform).txt
+          exit /b 1
+        )
+      displayName: Check Coot in installer environment
+      condition: and(succeeded(), gt(variables['coot'], 0))
 
     - script: |
         call conda clean -y --all
@@ -952,6 +971,16 @@ stages:
         if %errorlevel% neq 0 exit /b %errorlevel%
         dir
       displayName: Create installer
+
+    # fail instead of uploading under the same name as the win_py311 installer
+    - script: |
+        cd constructor
+        echo Renaming Phenix-$(version)-Windows-x86_64.exe to Phenix-Coot-$(version)-Windows-x86_64.exe
+        move Phenix-$(version)-Windows-x86_64.exe Phenix-Coot-$(version)-Windows-x86_64.exe
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        dir
+      displayName: Rename Coot installer
+      condition: and(succeeded(), gt(variables['coot'], 0))
 
     - script: |
         call activate upload
