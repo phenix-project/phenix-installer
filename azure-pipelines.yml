@@ -118,14 +118,18 @@ jobs:
     displayName: Override version for release branch
     condition: startswith(variables['Build.SourceBranch'], 'refs/heads/releases/')
 
-  # add conda to path
-  # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=ubuntu-16-04#add-conda-to-your-system-path
-  - bash: echo "##vso[task.prependpath]$CONDA/bin"
-    displayName: Add conda to PATH
+  # install conda (ubuntu-latest no longer ships conda)
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)
+      wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+      bash Miniforge3-Linux-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
+      rm -f Miniforge3-Linux-x86_64.sh
+    displayName: Install conda
 
-  # accept conda tos
-  - script: conda config --set plugins.auto_accept_tos yes
-    displayName: Accept conda TOS
+  # add conda to path
+  - bash: echo "##vso[task.prependpath]$(Pipeline.Workspace)/miniforge/bin"
+    displayName: Add conda to PATH
 
   # link bootstrap.py
   - script: |
@@ -357,7 +361,7 @@ jobs:
   # create folders for conda packages and installers
   - script: |
       set -xe
-      if [ -d /usr/share/miniconda/envs/upload ]; then
+      if [ -d $(Pipeline.Workspace)/miniforge/envs/upload ]; then
         conda remove -n upload -y --all
       fi
       conda create -n upload -y -c conda-forge python=3.11 pydrive2 tabulate tqdm
