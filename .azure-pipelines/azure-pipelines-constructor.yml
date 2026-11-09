@@ -562,10 +562,21 @@ stages:
         set -xe
         source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
         conda activate base
-        # cross-platform constructor
-        if [[ "$(platform)" == *"arm64" || "$(platform)" == *"aarch64" ]]; then
+
+        # conda-standalone embedded in the installer
+        # newer Linux builds bundle a libgcc_s.so.1 that requires glibc 2.35
+        # (first bad versions: 26.9.4 for linux-64, 26.7.0 for linux-aarch64)
+        standalone=""
+        if [[ "$(platform)" == "linux-64" ]]; then
+          standalone="conda-standalone=26.7.0=h643be8f_0"
+        elif [[ "$(platform)" == "linux-aarch64" ]]; then
+          standalone="conda-standalone=26.5.2=hb5cd7dd_1"
+        elif [[ "$(platform)" == *"arm64" ]]; then
+          standalone="conda-standalone"
+        fi
+        if [ -n "${standalone}" ]; then
           TEMP_DIR=$(mktemp -d)
-          CONDA_SUBDIR=$(platform) conda create -p ${TEMP_DIR} -y conda-standalone
+          CONDA_SUBDIR=$(platform) conda create -p ${TEMP_DIR} -y ${standalone}
           CONDA_STANDALONE=${TEMP_DIR}/standalone_conda/conda.exe
         fi
 
@@ -577,8 +588,11 @@ stages:
         cd constructor
 
         if [[ "$(platform)" == *"arm64" || "$(platform)" == *"aarch64" ]]; then
+          # cross-platform constructor
           export CONDA_EXE=${CONDA_STANDALONE}
           constructor . --conda-exe ${CONDA_STANDALONE} --platform $(platform)
+        elif [ -n "${standalone}" ]; then
+          constructor . --conda-exe ${CONDA_STANDALONE}
         else
           constructor .
         fi
