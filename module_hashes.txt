@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/runner/work/1/modules
-# 2026-11-09 03:12:25 UTC
+# 2026-11-10 03:11:26 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        8c12e2d250c20398f50da772503211a6f51ff600  # master
+cctbx_project        0d3cde7fea7ff5b909d5544c9cc532953e744cd4  # master
 chem_data            cbcd51854ae4a80ed093368824382ac0931f7d63  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
@@ -32,7 +32,7 @@ phaser               02fabfd7330f4c48c916621ccab9cbebb783e2ef  # master
 phaser_regression    c49c14d51acd29002926e09c8313716017a44f55  # master
 phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2  # master
 phasertng            1df059102649c3b2ff6b834375ac6b121a8aaf60  # master
-phenix               3a90b7ddf7c108465525024b6afe6f513550025f  # master
+phenix               421fd661a160ee60394bd2cff34134469ae87dda  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      5259ea6aac9269e44f743c745f7706f31014027a  # master
 phenix_html          934a638e74888fd3e64a78d2923c6710117083d6  # master
