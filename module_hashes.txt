@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/runner/work/1/modules
-# 2026-11-11 03:12:10 UTC
+# 2026-11-12 03:10:51 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        810932bb4643bb9ff351bc3455d6d08a189fe93b  # master
+cctbx_project        68ae5b9fb61486ced1935a7be0aa5015aa0a0f28  # master
 chem_data            cbcd51854ae4a80ed093368824382ac0931f7d63  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
@@ -30,9 +30,9 @@ onedep_lib           f1897598f504cf99a51a1aa3baef0eb948c9b4bb  # main
 opt_resources        a7f3fb328557436e95455065a5b6c735fe9db3bd  # main
 phaser               02fabfd7330f4c48c916621ccab9cbebb783e2ef  # master
 phaser_regression    c49c14d51acd29002926e09c8313716017a44f55  # master
-phaser_voyager       6470c5a614ab834e598647329d3cf367662d05b2  # master
-phasertng            1df059102649c3b2ff6b834375ac6b121a8aaf60  # master
-phenix               bcb4d2159bc75f1754237590f7ce049625d99caa  # master
+phaser_voyager       58a0f58e319e086159b28c802f6d3f7535b5da60  # master
+phasertng            7190a60be9d8c999c9e882e9f9c5ce97dd6447d2  # master
+phenix               c8497aa9282717878914880946c347a7464b655f  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      5259ea6aac9269e44f743c745f7706f31014027a  # master
 phenix_html          934a638e74888fd3e64a78d2923c6710117083d6  # master
@@ -40,7 +40,7 @@ phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
 phenix_regression    edcaf8e1b4ceaf07b1ef5641618ce806c1f81ddd  # master
 probe                f3e0fadd3986d228f3b37c17f4ec20a7391daf37  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
-qrefine              3b9c7a3e63beb251d20a5c496523f877521dcd63  # master
+qrefine              3fd8ed0f5efdd812e048e3fa3ac3118ee6477850  # master
 reduce               6749e64de95fd37bc552014c03a0ababba8a8ef3  # master
 reel                 0e77ef69dd66535fb6b2bfee86a5ca07c07e1fad  # main
 solve_resolve        6891635167e65a11f3f2abc211d5ed5e7e0b617b  # master
