@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/runner/work/1/modules
-# 2026-11-13 03:12:52 UTC
+# 2026-11-14 03:12:03 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        5167f0c33fad99dfc3d5ee602605c900e4ed8db0  # master
+cctbx_project        4922affde9e64f735add84cb3fdfe77a3ab54b4b  # master
 chem_data            182d90f246c2ac953c61444792c323e674e9d720  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
@@ -32,15 +32,15 @@ phaser               02fabfd7330f4c48c916621ccab9cbebb783e2ef  # master
 phaser_regression    c49c14d51acd29002926e09c8313716017a44f55  # master
 phaser_voyager       58a0f58e319e086159b28c802f6d3f7535b5da60  # master
 phasertng            7190a60be9d8c999c9e882e9f9c5ce97dd6447d2  # master
-phenix               95b23a5fe6b3aec30d1c49d98303137637307041  # master
+phenix               44406bbfed67a39a410a971901c60b8b3dd7d807  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      5259ea6aac9269e44f743c745f7706f31014027a  # master
-phenix_html          934a638e74888fd3e64a78d2923c6710117083d6  # master
+phenix_html          baf3299b8979e5f93c06d18fd98fbef2a307018b  # master
 phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
-phenix_regression    2f90ef586e17555562e5972ec22f0aea81b2496a  # master
+phenix_regression    7f42e6e4117d17920dc656ec40995d9ea02757e3  # master
 probe                f3e0fadd3986d228f3b37c17f4ec20a7391daf37  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
-qrefine              3fd8ed0f5efdd812e048e3fa3ac3118ee6477850  # master
+qrefine              db346c64c76559bc94b3d330f6352209804eb5d2  # master
 reduce               6749e64de95fd37bc552014c03a0ababba8a8ef3  # master
 reel                 0e77ef69dd66535fb6b2bfee86a5ca07c07e1fad  # main
 solve_resolve        6891635167e65a11f3f2abc211d5ed5e7e0b617b  # master
