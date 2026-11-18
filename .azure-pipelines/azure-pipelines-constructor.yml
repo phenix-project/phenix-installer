@@ -25,7 +25,7 @@ stages:
   - job: Construct_phenix_installer
 
     strategy:
-      maxParallel: 6
+      maxParallel: 9
       matrix:
         cuda12_linux_py311:
           vmImage: ubuntu-latest
