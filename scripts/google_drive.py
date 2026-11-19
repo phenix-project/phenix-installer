@@ -9,6 +9,7 @@ https://developers.google.com/resources/api-libraries/documentation/drive/v3/pyt
 '''
 
 import argparse
+import hashlib
 import os
 import sys
 import time
@@ -42,14 +43,18 @@ def get_drive_id(name=None, credentials=None):
     print(f'An error occurred: {error}')
 
 # -----------------------------------------------------------------------------
-def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials=None):
+def get_file_ids(name=None, parent=None, driveId=None, pageSize=50, credentials=None):
+  '''
+  Return the ids of every item named name in parent, skipping trashed items
+  '''
   if os.path.isfile(name):
     name = os.path.basename(name)
+  query_name = name.replace('\\', '\\\\').replace("'", "\\'")
   try:
     service = build('drive', 'v3', credentials=credentials)
     results = service.files().list(
       pageSize=pageSize,
-      q=f"'{parent}' in parents",
+      q=f"'{parent}' in parents and name = '{query_name}' and trashed = false",
       fields='nextPageToken, files(id, name, parents)',
       includeItemsFromAllDrives=True,
       supportsAllDrives=True,
@@ -57,14 +62,35 @@ def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials
       driveId=driveId
     ).execute()
     items = results.get('files', [])
-    if len(items) == 0:
-      return None
-    for item in items:
-      if name == item['name']:
-        return item['id']
-    return None
+    return [item['id'] for item in items if name == item['name']]
   except HttpError as error:
     print(f'An error occurred: {error}')
+    return []
+
+# -----------------------------------------------------------------------------
+def get_folder_id(name=None, parent=None, driveId=None, pageSize=50, credentials=None):
+  ids = get_file_ids(name=name, parent=parent, driveId=driveId,
+                     pageSize=pageSize, credentials=credentials)
+  return ids[0] if ids else None
+
+# -----------------------------------------------------------------------------
+def wait_for_retry(retry):
+  # sleep for retry_attempt * 2 * 60 s
+  print()
+  print('='*79)
+  print(f'Retry {retry + 1} will start after {(retry + 1)*120} seconds.')
+  print(time.asctime())
+  print('='*79)
+  print()
+  time.sleep((retry + 1)*120)
+
+# -----------------------------------------------------------------------------
+def get_md5(name=None, blocksize=2**23):
+  md5 = hashlib.md5()
+  with open(name, 'rb') as f:
+    for block in iter(lambda: f.read(blocksize), b''):
+      md5.update(block)
+  return md5.hexdigest()
 
 # -----------------------------------------------------------------------------
 def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=None, retries=20):
@@ -100,14 +126,7 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
     if new_file_id is not None:
       break
 
-    # sleep for retry_attempt * 2 * 60 s
-    print()
-    print('='*79)
-    print(f'Retry {retry + 1} will start after {(retry + 1)*120} seconds.')
-    print(time.asctime())
-    print('='*79)
-    print()
-    time.sleep((retry + 1)*120)
+    wait_for_retry(retry)
 
   # stop if file was not uploaded
   if new_file_id is None:
@@ -130,14 +149,38 @@ def upload_file(name=None, parent=None, driveId=None, chunksize=-1, credentials=
     except Exception as error:
       print(f'An error occurred (move): {error}')
 
-    # sleep for retry_attempt * 2 * 60 s
-    print()
-    print('='*79)
-    print(f'Retry {retry + 1} will start after {(retry + 1)*120} seconds.')
-    print(time.asctime())
-    print('='*79)
-    print()
-    time.sleep((retry + 1)*120)
+    wait_for_retry(retry)
+
+# -----------------------------------------------------------------------------
+def update_file(file_id=None, name=None, chunksize=-1, credentials=None, retries=20):
+  '''
+  Replace the contents of an existing file. The file id does not change, so
+  existing links to the file keep working.
+  '''
+  if not os.path.exists(name):
+    raise IOError(f'The "{name}" file does not exist.')
+
+  service = build('drive', 'v3', credentials=credentials)
+  for retry in range(retries):
+    try:
+      media = MediaFileUpload(
+        name,
+        mimetype='application/octet-stream',
+        chunksize=chunksize,
+        resumable=True)
+      results = service.files().update(
+        fileId=file_id,
+        media_body=media,
+        supportsAllDrives=True,
+      ).execute()
+      return results['id']
+
+    except Exception as error:
+      print(f'An error occurred (update): {error}')
+
+    wait_for_retry(retry)
+
+  return None
 
 # -----------------------------------------------------------------------------
 def main():
@@ -150,6 +193,8 @@ def main():
   parser.add_argument('--subfolder', help='Subfolder in version folder')
   parser.add_argument('--file', help='File to upload')
   parser.add_argument('--retries', type=int, default=20, help='Number of retries to upload')
+  parser.add_argument('--overwrite', action='store_true',
+    help='Replace an existing file with the same name unless its contents are identical')
   parser.add_argument('--cleanup', action='store_true', help='Clean up "My Drive"')
 
   if len(sys.argv) == 1:
@@ -212,13 +257,14 @@ def main():
     subfolder_id = version_folder_id
 
   # check file
-  new_file_id = None
+  existing_ids = []
   if namespace.file is not None:
-    new_file_id = get_folder_id(
+    existing_ids = get_file_ids(
       name=namespace.file,
       parent=subfolder_id,
       driveId=drive_id,
       credentials=credentials)
+  new_file_id = existing_ids[0] if existing_ids else None
 
   # id summary
   print('ID Summary')
@@ -237,9 +283,38 @@ def main():
       driveId=drive_id,
       credentials=credentials,
       retries=namespace.retries)
+  elif namespace.overwrite:
+    # overwrite every copy so that a duplicate from an earlier retry or from
+    # a concurrent job is not left with stale contents
+    if len(existing_ids) > 1:
+      print(f'Found {len(existing_ids)} copies of {namespace.file}')
+      print()
+    local_md5 = get_md5(namespace.file)
+    service = build('drive', 'v3', credentials=credentials)
+    for file_id in existing_ids:
+      existing_md5 = service.files().get(
+        fileId=file_id,
+        fields='md5Checksum',
+        supportsAllDrives=True,
+      ).execute().get('md5Checksum')
+      if existing_md5 == local_md5:
+        print(f'{namespace.file} ({file_id}) was not uploaded because an identical file already exists.')
+        print()
+        continue
+      print(f'Overwriting existing {namespace.file} ({file_id})')
+      print()
+      if update_file(
+          file_id=file_id,
+          name=namespace.file,
+          credentials=credentials,
+          retries=namespace.retries) is None:
+        raise RuntimeError(f'{namespace.file} ({file_id}) could not be overwritten.')
   else:
     print(f'{namespace.file} was not uploaded because it already exists.')
     print()
+
+  if new_file_id is None:
+    raise RuntimeError(f'{namespace.file} could not be uploaded.')
 
   # verify
   service = build('drive', 'v3', credentials=credentials)
