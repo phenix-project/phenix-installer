@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/runner/work/1/modules
-# 2026-11-20 03:13:15 UTC
+# 2026-11-21 03:44:43 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        0fca42eddc481b35dabd4f823283ee39f198ee21  # master
+cctbx_project        4d4cad3ccb8d22a5f6a58d95a9da00f50bb6b32d  # master
 chem_data            182d90f246c2ac953c61444792c323e674e9d720  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
@@ -32,12 +32,12 @@ phaser               02fabfd7330f4c48c916621ccab9cbebb783e2ef  # master
 phaser_regression    848f68b2b36d24e7be6933c92c8218a59959f979  # master
 phaser_voyager       58a0f58e319e086159b28c802f6d3f7535b5da60  # master
 phasertng            7190a60be9d8c999c9e882e9f9c5ce97dd6447d2  # master
-phenix               98a6b0f572c2de3b550029ac2d1ff753c38c6531  # master
+phenix               764a6098b472cecb841e25547f1d80f4fa61717d  # master
 phenix_dev_doc       0d83b73428b4b869794f78bd20a30cf119e674f4  # master
 phenix_examples      5259ea6aac9269e44f743c745f7706f31014027a  # master
 phenix_html          4fc62d65fbf876ccf351f2910d58ee2a3bb6ab22  # master
 phenix_pathwalker    b694689f49ef6adf75f1fb03e0ba26f2aed8ddeb  # main
-phenix_regression    d57b48f77c672795f448ba262b22f1b1786f4a89  # master
+phenix_regression    728d202662c33748ffa44972ef359f8f3ebbf13a  # master
 probe                f3e0fadd3986d228f3b37c17f4ec20a7391daf37  # master
 pulchra              89fe573c0045876c09f38e119457b91c51d158f6  # main
 qrefine              d88d575261490b49fd1bd82451332cd898c50ade  # master
