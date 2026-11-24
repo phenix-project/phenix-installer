@@ -1,5 +1,5 @@
 # Module git hashes recorded from /home/runner/work/1/modules
-# 2026-11-24 03:11:28 UTC
+# 2026-11-24 10:12:30 UTC
 # format: <module_directory> <commit_hash>  # <branch>[,dirty]
 Colabs               5143d87c4dab64ee7eb2d6cefc3c82f2ca748e2c  # main
 Plex                 29a6cdb1148eca817e9ae0a67511887322d385ac  # main
@@ -11,7 +11,7 @@ annlib_adaptbx       fb1097bc37fa304eb9aba68fdc709ec08cf4a61a  # master
 cbflib               a9f39aff00580bb24d6dacb9ffa1bd2df1dedc31  # detached
 ccp4io               b58c4fb68902e4e6a58f4a585d0722e542516076  # master
 ccp4io_adaptbx       9fc313bde070557d14dbfec41831b1ffd8790eae  # master
-cctbx_project        5c946ebf2d7909186a1de049f532aaf5294a521c  # master
+cctbx_project        ccb271773b37192bd073605e49d2e4d3a9e4ab1a  # master
 chem_data            182d90f246c2ac953c61444792c323e674e9d720  # main
 chem_data/geostd     f4d21cc5f4dbf84f55cc972fb6b287354300ab2d  # master
 clipper              1d1ce3526cea2dcdc14d46f82090facffd9a9d29  # master
